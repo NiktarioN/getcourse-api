@@ -1,5 +1,5 @@
 /** Расписание пользователя */
-interface UserSchedule {
+export interface UserSchedule {
   state: string;
   schedule_type: 'individual' | 'common';
   training_title: string;
@@ -10,7 +10,7 @@ interface UserSchedule {
 }
 
 /** Позиция заказа */
-interface DealPosition {
+export interface DealPosition {
   id: number;
   offer_id: number;
   updated_at: string;
@@ -26,7 +26,7 @@ interface DealPosition {
 }
 
 /** Статус заказа */
-type DealStatus =
+export type DealStatus =
   | 'new'
   | 'in_work'
   | 'not_confirmed'
@@ -38,7 +38,7 @@ type DealStatus =
   | 'false';
 
 /** Заказ */
-interface Deal {
+export interface Deal {
   id: number;
   ACCOUNT_ID: number;
   user_id: number;
@@ -74,7 +74,7 @@ interface Deal {
 }
 
 /** Сообщение из истории диалога */
-interface DialogMessage {
+export interface DialogMessage {
   created_at: string;
   user_id: number;
   message_type: string;
@@ -87,7 +87,7 @@ interface DialogMessage {
 }
 
 /** Диплом пользователя */
-interface Diploma {
+export interface Diploma {
   id: number;
   number: string;
   diploma_template_id: number;
@@ -99,7 +99,7 @@ interface Diploma {
 }
 
 /** Комментарий к ответу на урок */
-interface LessonAnswerComment {
+export interface LessonAnswerComment {
   id: number;
   comment_text: string;
   user_id: number;
@@ -108,13 +108,13 @@ interface LessonAnswerComment {
 }
 
 /** Статус ответа на урок */
-type LessonAnswerStatus = 'new' | 'declined' | 'accepted' | 'viewed';
+export type LessonAnswerStatus = 'new' | 'declined' | 'accepted' | 'viewed';
 
 /** Тип ответа на урок */
-type LessonAnswerType = 'mission_answer' | 'free_comment';
+export type LessonAnswerType = 'mission_answer' | 'free_comment';
 
 /** Ответ на урок */
-interface LessonAnswer {
+export interface LessonAnswer {
   id: number;
   lesson_id: number;
   lesson_name: string;
@@ -136,7 +136,7 @@ interface LessonAnswer {
 }
 
 /** Предложение (продукт/оффер) */
-interface Offer {
+export interface Offer {
   id: number;
   title: string;
   code: string;
@@ -149,7 +149,7 @@ interface Offer {
 }
 
 /** Звонок по заказу */
-interface PhoneCall {
+export interface PhoneCall {
   id: number;
   file: string | null;
   caller: string | null;
@@ -167,7 +167,7 @@ interface PhoneCall {
 }
 
 /** Контактная активность (комментарий к заказу) */
-interface ContactActivity {
+export interface ContactActivity {
   id: number;
   user_id: number;
   manager_user_id: number;
@@ -189,7 +189,7 @@ interface ContactActivity {
 }
 
 /** Покупка пользователя */
-interface UserPurchase {
+export interface UserPurchase {
   id: number;
   product_id: number;
   user_id: number;
@@ -205,7 +205,7 @@ interface UserPurchase {
 }
 
 /** Тренинг */
-interface Training {
+export interface Training {
   id: number;
   title: string;
   description: string;
@@ -215,20 +215,20 @@ interface Training {
 }
 
 /** Параметры вебинара */
-interface WebinarParam {
+export interface WebinarParam {
   title: string;
   teaser_description: string;
   show_page_login: number;
 }
 
 /** Тип вебинара */
-type WebinarType = 'hangouts' | 'bigbluebutton';
+export type WebinarType = 'hangouts' | 'bigbluebutton';
 
 /** Статус вебинара */
-type WebinarStatus = 'new' | 'opened' | 'finished' | 'closed';
+export type WebinarStatus = 'new' | 'opened' | 'finished' | 'closed';
 
 /** Вебинар */
-interface Webinar {
+export interface Webinar {
   id: number;
   user_id: number;
   name: string;
@@ -248,7 +248,7 @@ interface Webinar {
 }
 
 /** Пользователь */
-interface User {
+export interface User {
   id: number;
   deleted: number;
   deleted_at: string | null;
@@ -277,7 +277,7 @@ interface User {
 }
 
 /** Кастомное поле пользователя */
-interface UserCustomFields {
+export interface UserCustomFields {
   name: string;
   value: string;
   type: string;
@@ -285,7 +285,7 @@ interface UserCustomFields {
 }
 
 /** Цель пользователя */
-interface UserGoal {
+export interface UserGoal {
   id: number;
   name: string;
   value: string;
@@ -294,45 +294,45 @@ interface UserGoal {
 }
 
 /** Группа пользователей */
-interface Group {
+export interface Group {
   id: number;
   name: string;
 }
 
 /** Персональный менеджер */
-interface PersonalManager {
+export interface PersonalManager {
   id: number;
   name: string;
   email: string;
 }
 
 /** Тег заказа */
-interface DealTag {
+export interface DealTag {
   dealId: number;
   tags: string[];
 }
 
 /** Тег оффера */
-interface OfferTag {
+export interface OfferTag {
   offerId: number;
   tags: string[];
 }
 
 /** Кастомное поле заказа */
-interface DealCustomField {
+export interface DealCustomField {
   id: number;
   value: string;
 }
 
 /** Информация о балансе пользователя */
-interface UserBalance {
+export interface UserBalance {
   value: number;
   currency: string;
   type: string;
 }
 
 /** Причина отмены заказа */
-interface CancelReason {
+export interface CancelReason {
   id: number;
   name: string;
 }

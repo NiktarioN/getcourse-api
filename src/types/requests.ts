@@ -3,10 +3,13 @@
  * Соответствуют компонентам schemas в OpenAPI схеме
  */
 
+import type { UserIdentifier } from './common.ts';
+import type { DealStatus, LessonAnswerStatus } from './models.ts';
+
 // ─── Deal ──────────────────────────────────────────────────────────────────────
 
 /** Добавить комментарий к заказу */
-interface AddCommentToDealRequest {
+export interface AddCommentToDealRequest {
   /** ID заказа */
   dealId: number;
   /** ID пользователя */
@@ -16,7 +19,7 @@ interface AddCommentToDealRequest {
 }
 
 /** Позиция для добавления в заказ */
-interface DealPositionInput {
+export interface DealPositionInput {
   /** ID оффера */
   offerId: number;
   /** Цена позиции */
@@ -26,7 +29,7 @@ interface DealPositionInput {
 }
 
 /** Добавить позиции в заказ */
-interface AddDealPositionsRequest {
+export interface AddDealPositionsRequest {
   /** ID заказа */
   dealId: number;
   /** Позиции для добавления */
@@ -34,7 +37,7 @@ interface AddDealPositionsRequest {
 }
 
 /** Удалить позиции из заказа */
-interface RemoveDealPositionsRequest {
+export interface RemoveDealPositionsRequest {
   /** ID заказа */
   dealId: number;
   /** ID позиций для удаления */
@@ -42,7 +45,7 @@ interface RemoveDealPositionsRequest {
 }
 
 /** Обновить поля заказа */
-interface UpdateDealFieldsRequest {
+export interface UpdateDealFieldsRequest {
   /** ID заказа */
   dealId: number;
   /** ID менеджера */
@@ -62,10 +65,10 @@ interface UpdateDealFieldsRequest {
  * 0 - Сайт, 1 - Email, 2 - SMS, 3 - Telegram, 4 - Facebook,
  * 5 - VK, 6 - Chatium, 7 - Whatsapp, 8 - Viber, 9 - Line
  */
-type DialogTransport = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9;
+export type DialogTransport = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9;
 
 /** Добавить комментарий в диалог */
-interface AddCommentToDialogRequest {
+export interface AddCommentToDialogRequest {
   /** ID диалога */
   dialogId: number;
   /** Текст комментария */
@@ -77,7 +80,7 @@ interface AddCommentToDialogRequest {
 }
 
 /** Изменить отдел диалога */
-interface ChangeDepartmentRequest {
+export interface ChangeDepartmentRequest {
   /** ID диалога */
   dialogId: number;
   /** ID нового отдела */
@@ -85,13 +88,13 @@ interface ChangeDepartmentRequest {
 }
 
 /** Закрыть диалог */
-interface CloseDialogRequest {
+export interface CloseDialogRequest {
   /** ID диалога */
   dialogId: number;
 }
 
 /** Получить историю диалога */
-interface GetDialogHistoryRequest {
+export interface GetDialogHistoryRequest {
   /** ID диалога */
   dialogId: number;
   /** Количество сообщений (не более 1000, по умолчанию: 100) */
@@ -101,7 +104,7 @@ interface GetDialogHistoryRequest {
 // ─── Lesson ────────────────────────────────────────────────────────────────────
 
 /** Добавить комментарий к ответу на урок */
-interface AddCommentToLessonAnswerRequest {
+export interface AddCommentToLessonAnswerRequest {
   /** ID ответа на урок */
   lessonAnswerId: number;
   /** Текст комментария */
@@ -111,7 +114,7 @@ interface AddCommentToLessonAnswerRequest {
 }
 
 /** Изменить статус ответа на урок */
-interface ChangeStatusAnswersRequest {
+export interface ChangeStatusAnswersRequest {
   /** ID ответа на урок */
   lessonAnswerId: number;
   /**
@@ -125,7 +128,7 @@ interface ChangeStatusAnswersRequest {
 // ─── Note ──────────────────────────────────────────────────────────────────────
 
 /** Добавить заметку к диалогу */
-interface AddNoteRequest {
+export interface AddNoteRequest {
   /** ID диалога */
   dialogId: number;
   /** Текст заметки */
@@ -135,10 +138,10 @@ interface AddNoteRequest {
 // ─── User ──────────────────────────────────────────────────────────────────────
 
 /** Тип баланса */
-type BalanceType = 'virtual' | 'points';
+export type BalanceType = 'virtual' | 'points';
 
 /** Добавить баланс пользователю */
-interface AddUserBalanceRequest extends UserIdentifier {
+export interface AddUserBalanceRequest extends UserIdentifier {
   /** Количество */
   value: number;
   /** Тип баланса */
@@ -148,40 +151,40 @@ interface AddUserBalanceRequest extends UserIdentifier {
 }
 
 /** Добавить пользователя в группы */
-interface AddUserGroupsRequest extends UserIdentifier {
+export interface AddUserGroupsRequest extends UserIdentifier {
   /** ID групп */
   groups: number[];
 }
 
 /** Удалить пользователя из групп */
-interface RemoveUserGroupsRequest extends UserIdentifier {
+export interface RemoveUserGroupsRequest extends UserIdentifier {
   /** ID групп */
   groups: number[];
 }
 
 /** Установить группы пользователя (заменяет текущие) */
-interface SetUserGroupsRequest extends UserIdentifier {
+export interface SetUserGroupsRequest extends UserIdentifier {
   /** ID групп */
   groups: number[];
 }
 
 /** Установить персонального менеджера */
-interface SetPersonalManagerRequest extends UserIdentifier {
+export interface SetPersonalManagerRequest extends UserIdentifier {
   /** ID менеджера (передать пустым или не передавать для удаления) */
   managerId?: number;
 }
 
 /** Обновить кастомные поля пользователя */
-interface UpdateUserCustomFieldsRequest extends UserIdentifier {
+export interface UpdateUserCustomFieldsRequest extends UserIdentifier {
   /** Поля в формате { "id_поля": "значение" } */
   customFields: Record<string, string | number>;
 }
 
 /** Пол пользователя */
-type UserGender = 'male' | 'female';
+export type UserGender = 'male' | 'female';
 
 /** Обновить поля пользователя */
-interface UpdateUserFieldsRequest extends UserIdentifier {
+export interface UpdateUserFieldsRequest extends UserIdentifier {
   gender?: UserGender | null;
   country?: string | null;
   city?: string | null;
@@ -194,7 +197,7 @@ interface UpdateUserFieldsRequest extends UserIdentifier {
 }
 
 /** Создать диплом пользователю */
-interface CreateDiplomaRequest extends UserIdentifier {
+export interface CreateDiplomaRequest extends UserIdentifier {
   /** ID шаблона диплома */
   templateId: number;
   /** Номер диплома (если не передавать — берётся следующий) */
@@ -210,7 +213,7 @@ interface CreateDiplomaRequest extends UserIdentifier {
 // ─── Webinar ───────────────────────────────────────────────────────────────────
 
 /** Получить вебинары по ID */
-interface GetWebinarsByIdsRequest {
+export interface GetWebinarsByIdsRequest {
   /** Массив ID вебинаров */
   ids: number[];
 }

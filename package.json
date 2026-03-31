@@ -1,51 +1,62 @@
 {
   "name": "getcourse-api",
-  "version": "0.0.1",
-  "description": "TypeScript SDK для API GetCourse v1",
-  "license": "MIT",
+  "version": "0.1.0",
+  "description": "TypeScript SDK для GetCourse Tech API (v1)",
+  "keywords": [
+    "getcourse",
+    "api",
+    "sdk",
+    "typescript"
+  ],
   "type": "module",
-  "main": "./.dist/index.js",
+  "author": "NiktarioN",
+  "license": "MIT",
+  "homepage": "https://github.com/NiktarioN/getcourse-api",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/NiktarioN/getcourse-api.git"
+  },
+  "bugs": {
+    "url": "https://github.com/NiktarioN/getcourse-api/issues"
+  },
+  "index": "./.dist/index.cjs",
+  "module": "./.dist/index.js",
   "types": "./.dist/index.d.ts",
   "exports": {
     ".": {
-      "types": "./.dist/index.d.ts",
-      "default": "./.dist/index.js"
+      "import": {
+        "types": "./.dist/index.d.ts",
+        "default": "./.dist/index.js"
+      },
+      "require": {
+        "types": "./.dist/index.d.cts",
+        "default": "./.dist/index.cjs"
+      }
     }
   },
-  "files": [
-    ".dist/index.js",
-    ".dist/index.d.ts",
-    "README.md",
-    "LICENSE"
-  ],
   "engines": {
     "node": ">=18"
   },
   "scripts": {
-    "postinstall": "cp pre-commit .git/hooks || copy pre-commit .git/hooks || true",
-    "build": "node esbuild.prod.ts && tsc -p tsconfig.build.json",
-    "lint": "eslint . --max-warnings=0 && tsc -p tsconfig.app.json && tsc -p tsconfig.mjs.json",
-    "typecheck": "tsc -p tsconfig.app.json && tsc -p tsconfig.mjs.json"
+    "build": "tsdown",
+    "lint": "eslint . --max-warnings=0 && tsc -p tsconfig.app.json && tsc -p tsconfig.mjs.json"
   },
   "dependencies": {
-    "esbuild": "^0.27.3",
-    "esbuild-plugin-node-externals": "^1.0.1",
-    "typescript": "^5.9.3"
+    "axios": "^1.14.0"
   },
   "devDependencies": {
     "@eslint/js": "^9.39.2",
-    "@stylistic/eslint-plugin": "^5.9.0",
-    "@types/node": "^25.3.0",
-    "esbuild": "^0.27.3",
-    "esbuild-plugin-node-externals": "^1.0.1",
+    "@stylistic/eslint-plugin": "^5.10.0",
+    "@types/node": "^25.5.0",
     "eslint": "^9.39.2",
     "eslint-config-airbnb-extended": "^3.0.1",
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-check-file": "^3.3.1",
-    "eslint-plugin-perfectionist": "^5.6.0",
-    "lint-staged": "^16.2.7",
+    "eslint-plugin-perfectionist": "^5.7.0",
+    "lint-staged": "^16.4.0",
     "prettier": "^3.8.1",
-    "typescript-eslint": "^8.56.1",
-    "vitest": "^3.2.4"
+    "tsdown": "^0.21.7",
+    "typescript": "^6.0.2",
+    "typescript-eslint": "^8.58.0"
   }
 }

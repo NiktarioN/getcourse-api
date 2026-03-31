@@ -1,5 +1,7 @@
 /* eslint-disable no-console */
 
+import type { Logger } from '../types/common.ts';
+
 type LogLevel = 'silent' | 'error' | 'debug';
 
 /**
