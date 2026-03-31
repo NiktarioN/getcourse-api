@@ -1,0 +1,18 @@
+# Исходный код (не нужен в пакете, есть dist)
+src
+
+# Конфиги разработки
+tsconfig.json
+eslint.config.js
+.prettierrc
+
+# CI/CD
+.github
+
+# Документация
+docs
+
+# Прочее
+*.log
+.env*
+node_modules
