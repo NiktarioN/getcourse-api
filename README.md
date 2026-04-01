@@ -1,6 +1,6 @@
 # getcourse-api
 
-TypeScript SDK для [GetCourse Tech API](https://getcourse.ru) (v1).
+TypeScript SDK для [GetCourse API](https://getcourse.ru) (v1).
 
 [![npm version](https://img.shields.io/npm/v/getcourse-api)](https://www.npmjs.com/package/getcourse-api)
 [![license](https://img.shields.io/npm/l/getcourse-api)](LICENSE)
@@ -82,21 +82,13 @@ const gc = new GetCourse({
 Все методы бросают исключения — используй `try/catch`:
 
 ```ts
-import GetCourse, { GetCourseApiError, GetCourseNetworkError } from "getcourse-api";
-
 try {
   const deal = await gc.getDealFields(99999);
 } catch (err) {
-  if (err instanceof GetCourseApiError) {
-    // Ошибка от API (403, 404, валидация и т.д.)
-    console.error(err.message); // Текст ошибки
-    console.error(err.statusCode); // HTTP статус: 400, 403, 404...
-    console.error(err.apiCode); // Код ошибки из тела ответа
-    console.error(err.errors); // string[] — список ошибок валидации
-  } else if (err instanceof GetCourseNetworkError) {
-    // Сетевая ошибка (таймаут, нет соединения)
-    console.error("Нет связи:", err.message);
-  }
+  console.error(err.message); // Текст ошибки
+  console.error(err.statusCode); // HTTP статус: 400, 403, 404...
+  console.error(err.apiCode); // Код ошибки из тела ответа
+  console.error(err.errors); // string[] — список ошибок валидации
 }
 ```
 
@@ -257,10 +249,13 @@ await gc.updateUserFields({
 
 ### Webinar (вебинары)
 
-| Метод                    | Описание                |
-| ------------------------ | ----------------------- |
-| `getAllWebinars()`       | Получить все вебинары   |
-| `getWebinarsByIds(body)` | Получить вебинары по ID |
+| Метод                          | Описание                            |
+| ------------------------------ | ----------------------------------- |
+| `getAllWebinars()`             | Получить все вебинары               |
+| `getWebinarsByIds(body)`       | Получить вебинары по ID             |
+| `addCommentToWebinar(body)`    | Добавить комментарий в чат вебинара |
+| `moderateWebinarComment(body)` | Модерация сообщения в чате вебинара |
+| `moderateWebinarUser(body)`    | Модерация пользователя вебинара     |
 
 ---
 

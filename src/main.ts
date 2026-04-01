@@ -32,6 +32,7 @@ import type {
   AddCommentToDealRequest,
   AddCommentToDialogRequest,
   AddCommentToLessonAnswerRequest,
+  AddCommentToWebinarRequest,
   AddDealPositionsRequest,
   AddNoteRequest,
   AddUserBalanceRequest,
@@ -43,6 +44,8 @@ import type {
   CreateDiplomaRequest,
   GetDialogHistoryRequest,
   GetWebinarsByIdsRequest,
+  ModerateWebinarChatMessageRequest,
+  ModerateWebinarUserRequest,
   RemoveDealPositionsRequest,
   RemoveUserGroupsRequest,
   SetPersonalManagerRequest,
@@ -363,5 +366,26 @@ export default class GetCourse {
   /** Получить вебинары по ID */
   async getWebinarsByIds(body: GetWebinarsByIdsRequest): Promise<ApiResponse<Webinar[]>> {
     return this.transport.post('webinar/get-webinars-by-ids', body);
+  }
+
+  /** Добавить комментарий в чат вебинара */
+  async addCommentToWebinar(
+    body: AddCommentToWebinarRequest,
+  ): Promise<ApiResponse<{ result: boolean }>> {
+    return this.transport.post('webinar/add-comment', body);
+  }
+
+  /** Модерация сообщения в чате вебинара */
+  async moderateWebinarComment(
+    body: ModerateWebinarChatMessageRequest,
+  ): Promise<ApiResponse<Webinar[]>> {
+    return this.transport.post('webinar/moderation-comment', body);
+  }
+
+  /** Модерация пользователя вебинара */
+  async moderateWebinarUser(
+    body: ModerateWebinarUserRequest,
+  ): Promise<ApiResponse<{ result: boolean }>> {
+    return this.transport.post('webinar/moderation-user', body);
   }
 }
