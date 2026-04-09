@@ -1,5 +1,5 @@
-# Исходный код (в пакете есть .dist)
-src/
+# Исходный код
+src
 
 # Конфиги сборки и линтинга
 tsdown.config.ts
@@ -13,15 +13,19 @@ prettier.config.*
 
 # Git хуки и CI
 pre-commit
-.github/
+.github
 
-# Документация для разработчиков
-docs/
-CLAUDE.md
+# DOCS
+docs
 
-# Внутренние файлы Claude Code
-.claude/
+# CLAUDE
+.claude
+CLAUDE.MD
+
+# IDE
+.vscode
 
 # Прочее
-*.log
 .env*
+*.log
+*.map

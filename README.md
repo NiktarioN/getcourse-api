@@ -1,6 +1,7 @@
 # getcourse-api
 
-TypeScript SDK для [GetCourse API](https://getcourse.ru) (v1).
+TypeScript SDK для [GetCourse API](https://getcourse.ru) (v1)
+[Официальная и полная документация по API](https://getcourse.ru/pl/postback/redoc)
 
 [![npm version](https://img.shields.io/npm/v/getcourse-api)](https://www.npmjs.com/package/getcourse-api)
 [![license](https://img.shields.io/npm/l/getcourse-api)](LICENSE)

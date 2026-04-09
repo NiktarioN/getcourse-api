@@ -1,7 +1,7 @@
 {
   "name": "getcourse-api",
-  "version": "0.1.0",
-  "description": "TypeScript SDK для GetCourse Tech API (v1)",
+  "version": "0.2.0",
+  "description": "TypeScript SDK для GetCourse API",
   "keywords": [
     "getcourse",
     "api",
@@ -9,6 +9,7 @@
     "typescript"
   ],
   "type": "module",
+  "sideEffects": false,
   "author": "NiktarioN",
   "license": "MIT",
   "homepage": "https://github.com/NiktarioN/getcourse-api",
@@ -19,18 +20,17 @@
   "bugs": {
     "url": "https://github.com/NiktarioN/getcourse-api/issues"
   },
-  "index": "./.dist/index.cjs",
-  "module": "./.dist/index.js",
-  "types": "./.dist/index.d.ts",
+  "main": "./dist/index.cjs",
+  "types": "./dist/index.d.ts",
   "exports": {
     ".": {
       "import": {
-        "types": "./.dist/index.d.ts",
-        "default": "./.dist/index.js"
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
       },
       "require": {
-        "types": "./.dist/index.d.cts",
-        "default": "./.dist/index.cjs"
+        "types": "./dist/index.d.cts",
+        "default": "./dist/index.cjs"
       }
     }
   },

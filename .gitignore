@@ -2,10 +2,10 @@
 node_modules
 
 # BUILD
-.dist
+dist
 
 # DOCS
-docs/examples
+docs
 
 # LOGS
 *.log*
@@ -13,6 +13,10 @@ docs/examples
 # ENV
 .env*
 !.env.example
+
+# CLAUDE
+.claude
+CLAUDE.MD
 
 # OS
 .DS_Store
