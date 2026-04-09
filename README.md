@@ -5,7 +5,7 @@ TypeScript SDK для [GetCourse API](https://getcourse.ru)
 [Официальная и полная документация по API](https://getcourse.ru/pl/postback/redoc)
 
 [![npm version](https://img.shields.io/npm/v/getcourse-api)](https://www.npmjs.com/package/getcourse-api)
-[![license](https://img.shields.io/npm/l/getcourse-api)](LICENSE)
+[![license](https://img.shields.io/github/license/NiktarioN/getcourse-api)](LICENSE)
 [![GitHub stars](https://img.shields.io/github/stars/NiktarioN/getcourse-api?style=social)](https://github.com/NiktarioN/getcourse-api)
 
 ## Установка
@@ -38,8 +38,8 @@ const deal = await gc.getDealFields(12345);
 
 ## Получение токена
 
-- **Ключ разработчика** — получить по [анкете на getcourse.ru](https://getcourse.ru/issuedeveloperkey)
-- **Ключ API школы** — выдаётся представителями школы на платформе
+- **Ключ разработчика** — после заполнения [анкеты](https://getcourse.ru/issuedeveloperkey) на getcourse.ru
+- **Ключ API школы** — выдаётся в каждой школе отдельно. Должны быть права на чтение и запись
 
 ## Конфигурация
 
