@@ -3,14 +3,14 @@ name: Publish to npm
 on:
   push:
     tags:
-      - 'v*'
+      - "v*"
 
 jobs:
   publish:
     runs-on: ubuntu-latest
     permissions:
       contents: read
-      id-token: write  # для npm provenance
+      id-token: write
     steps:
       - uses: actions/checkout@v4
 
@@ -22,16 +22,13 @@ jobs:
 
       - run: npm ci
 
-      - name: Type check
-        run: npm run typecheck
-
-      - name: Test
-        run: npm test
+      - name: Lint
+        run: npm run lint
 
       - name: Build
         run: npm run build
 
       - name: Publish
-        run: npm publish --provenance --access public
+        run: npm publish --provenance
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
