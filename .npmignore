@@ -1,18 +1,31 @@
-# Исходный код (не нужен в пакете, есть dist)
+# Исходный код
 src
 
-# Конфиги разработки
+# Конфиги сборки и линтинга
+tsdown.config.ts
 tsconfig.json
-eslint.config.js
-.prettierrc
+tsconfig.*.json
+eslint.config.*
+prettier.config.*
+.prettierrc*
+.editorconfig
+.lintstagedrc*
 
-# CI/CD
+# Git хуки и CI
+pre-commit
 .github
 
-# Документация
+# DOCS
 docs
 
+# CLAUDE
+.claude
+CLAUDE.MD
+
+# IDE
+.vscode
+
 # Прочее
-*.log
 .env*
-node_modules
+*.log
+*.map

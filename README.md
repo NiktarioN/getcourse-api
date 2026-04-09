@@ -1,327 +1,269 @@
 # getcourse-api
 
-TypeScript SDK РґР»СЏ РЅРѕРІРѕРіРѕ Tech API GetCourse. Zero dependencies, Node 18+.
+TypeScript SDK для [GetCourse API](https://getcourse.ru) (v1)
+[Официальная и полная документация по API](https://getcourse.ru/pl/postback/redoc)
 
-## РЈСЃС‚Р°РЅРѕРІРєР°
+[![npm version](https://img.shields.io/npm/v/getcourse-api)](https://www.npmjs.com/package/getcourse-api)
+[![license](https://img.shields.io/npm/l/getcourse-api)](LICENSE)
+
+## Установка
 
 ```bash
 npm install getcourse-api
 ```
 
-## Р‘С‹СЃС‚СЂС‹Р№ СЃС‚Р°СЂС‚
+## Быстрый старт
 
 ```ts
-import { GetCourse } from "getcourse-api";
+import GetCourse from "getcourse-api";
 
-const getcourse = new GetCourse({
-  devKey: "XXXXXXXX", // РљР»СЋС‡ СЂР°Р·СЂР°Р±РѕС‚С‡РёРєР°
-  apiKey: "YYYYYYYYYYYYYYYYYYY", // РљР»СЋС‡ API С€РєРѕР»С‹
+const gc = new GetCourse({
+  devKey: "XXXXXXXX", // Ключ разработчика
+  apiKey: "YYYYYYYYYYYYYYY", // Ключ API школы
   domain: "test.getcourse.ru",
 });
 
-// РџРѕР»СѓС‡РёС‚СЊ РґР°РЅРЅС‹Рµ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ
-const user = await getcourse.getUserFields({ userId: 123 });
+// Получить данные пользователя
+const user = await gc.getUserFields({ userId: 123 });
 console.log(user.data[0]?.first_name);
 
-// РџРѕР»СѓС‡РёС‚СЊ Р·Р°РєР°Р·С‹ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ
-const deals = await getcourse.getUserDeals({ email: "user@mail.ru" });
+// Получить заказы пользователя
+const deals = await gc.getUserDeals({ email: "user@mail.ru" });
 
-// РџРѕР»СѓС‡РёС‚СЊ РґР°РЅРЅС‹Рµ Р·Р°РєР°Р·Р°
-const deal = await getcourse.getDealFields(12345);
+// Получить данные заказа
+const deal = await gc.getDealFields(12345);
 ```
 
-## РџРѕР»СѓС‡РµРЅРёРµ С‚РѕРєРµРЅР°
+## Получение токена
 
-РўРѕРєРµРЅ СЃРѕСЃС‚РѕРёС‚ РёР· РґРІСѓС… С‡Р°СЃС‚РµР№:
+- **Ключ разработчика** — получить по [анкете на getcourse.ru](https://getcourse.ru/issuedeveloperkey)
+- **Ключ API школы** — выдаётся представителями школы на платформе
 
-- **РљР»СЋС‡ СЂР°Р·СЂР°Р±РѕС‚С‡РёРєР°** вЂ” РїРѕР»СѓС‡РёС‚СЊ РїРѕ [Р°РЅРєРµС‚Рµ РЅР° getcourse.ru](https://getcourse.ru/issuedeveloperkey)
-- **РљР»СЋС‡ API С€РєРѕР»С‹** вЂ” РїРѕР»СѓС‡РёС‚СЊ Сѓ РїСЂРµРґСЃС‚Р°РІРёС‚РµР»РµР№ С€РєРѕР»С‹ РЅР° РїР»Р°С‚С„РѕСЂРјРµ
+## Конфигурация
 
-## РљРѕРЅС„РёРіСѓСЂР°С†РёСЏ
+| Параметр   | Тип                              | Обязательный | По умолчанию | Описание                                    |
+| ---------- | -------------------------------- | ------------ | ------------ | ------------------------------------------- |
+| `devKey`   | `string`                         | да           | —            | Ключ разработчика                           |
+| `apiKey`   | `string`                         | да           | —            | Ключ API школы                              |
+| `domain`   | `string`                         | да           | —            | Домен школы, например `school.getcourse.ru` |
+| `timeout`  | `number`                         | нет          | `15000`      | Таймаут запросов в мс                       |
+| `logLevel` | `'silent' \| 'error' \| 'debug'` | нет          | `'silent'`   | Уровень встроенного логгера                 |
+| `logger`   | `Logger`                         | нет          | —            | Кастомный логгер (winston, pino и др.)      |
 
 ```ts
-const getcourse = new GetCourse({
+const gc = new GetCourse({
   devKey: "XXXXXXXX",
-  apiKey: "YYYYYYYYYYYYYYYYYYY",
-  domain: "myschool.getcourse.ru",
-
-  // РћРїС†РёРѕРЅР°Р»СЊРЅРѕ:
-  timeout: 15000, // РўР°Р№РјР°СѓС‚ Р·Р°РїСЂРѕСЃРѕРІ РІ РјСЃ (РїРѕ СѓРјРѕР»С‡Р°РЅРёСЋ: 15000)
-  logger: myLogger, // РЎРѕРІРјРµСЃС‚РёРј СЃ winston, pino Рё Р»СЋР±С‹Рј РґСЂСѓРіРёРј Р»РѕРіРіРµСЂРѕРј
-  fetch: customFetch, // РљР°СЃС‚РѕРјРЅС‹Р№ fetch (РґР»СЏ РїСЂРѕРєСЃРё, С‚РµСЃС‚РѕРІ Рё С‚.Рґ.)
+  apiKey: "YYYYYYYYYYYYYYY",
+  domain: "test.getcourse.ru",
+  timeout: 10_000,
+  logLevel: "debug",
 });
 ```
 
-### РћС‚РєР»СЋС‡РµРЅРёРµ Р»РѕРіРѕРІ
-
-```ts
-import { GetCourse, SilentLogger } from "getcourse-api";
-
-const getcourse = new GetCourse({
-  // ...
-  logger: new SilentLogger(),
-});
-```
-
-### РСЃРїРѕР»СЊР·РѕРІР°РЅРёРµ СЃ winston
+### Кастомный логгер (winston, pino)
 
 ```ts
 import winston from "winston";
-import { GetCourse } from "getcourse-api";
+import GetCourse from "getcourse-api";
 
 const logger = winston.createLogger({
   /* ... */
 });
 
-const getcourse = new GetCourse({
-  // ...
-  logger, // winston СЃРѕРІРјРµСЃС‚РёРј СЃ РёРЅС‚РµСЂС„РµР№СЃРѕРј Logger
+const gc = new GetCourse({
+  devKey: "XXXXXXXX",
+  apiKey: "YYYYYYYYYYYYYYY",
+  domain: "test.getcourse.ru",
+  logger, // совместим с интерфейсом Logger
 });
 ```
 
-## РћР±СЂР°Р±РѕС‚РєР° РѕС€РёР±РѕРє
+## Обработка ошибок
+
+Все методы бросают исключения — используй `try/catch`:
 
 ```ts
-import { GetCourse, GetCourseApiError, GetCourseNetworkError } from "getcourse-api";
-
 try {
-  const deal = await getcourse.getDealFields(99999);
+  const deal = await gc.getDealFields(99999);
 } catch (err) {
-  if (err instanceof GetCourseApiError) {
-    // РћС€РёР±РєР° РѕС‚ API (403, 404, validation error Рё С‚.Рґ.)
-    console.error(err.message); // РўРµРєСЃС‚ РѕС€РёР±РєРё
-    console.error(err.statusCode); // HTTP СЃС‚Р°С‚СѓСЃ: 403, 404, 400...
-    console.error(err.errors); // string[] вЂ” СЃРїРёСЃРѕРє РѕС€РёР±РѕРє РІР°Р»РёРґР°С†РёРё
-  } else if (err instanceof GetCourseNetworkError) {
-    // РЎРµС‚РµРІР°СЏ РѕС€РёР±РєР° (С‚Р°Р№РјР°СѓС‚, РЅРµС‚ СЃРѕРµРґРёРЅРµРЅРёСЏ)
-    console.error("РќРµС‚ СЃРІСЏР·Рё:", err.message);
-  }
+  console.error(err.message); // Текст ошибки
+  console.error(err.statusCode); // HTTP статус: 400, 403, 404...
+  console.error(err.apiCode); // Код ошибки из тела ответа
+  console.error(err.errors); // string[] — список ошибок валидации
 }
 ```
 
-## РЎРїСЂР°РІРѕС‡РЅРёРє РјРµС‚РѕРґРѕРІ
+## Справочник методов
 
 ### Webhooks
 
-| РњРµС‚РѕРґ          | РћРїРёСЃР°РЅРёРµ                             |
+| Метод          | Описание                             |
 | -------------- | ------------------------------------ |
-| `setUri(body)` | РЈСЃС‚Р°РЅРѕРІРёС‚СЊ URI РґР»СЏ РїРѕР»СѓС‡РµРЅРёСЏ СЃРѕР±С‹С‚РёР№ |
-
-**РџСЂРёРјРµСЂ:**
+| `setUri(body)` | Установить URI для получения событий |
 
 ```ts
-import { EventObjectId, DealEventId } from "getcourse-api";
-
-await getcourse.setUri({
+await gc.setUri({
   uri: "https://myapp.ru/webhook",
-  event_object_id: EventObjectId.Deal,
-  event_id: DealEventId.DealPaid,
+  event_object_id: 2, // Deal
+  event_id: 3, // DealPaid
 });
 ```
 
 ---
 
-### School (common)
+### School (общее)
 
-| РњРµС‚РѕРґ                      | РћРїРёСЃР°РЅРёРµ                              |
+| Метод                      | Описание                              |
 | -------------------------- | ------------------------------------- |
-| `getAllGroups()`           | РџРѕР»СѓС‡РёС‚СЊ РІСЃРµ РіСЂСѓРїРїС‹ РїРѕР»СЊР·РѕРІР°С‚РµР»РµР№     |
-| `getAllPersonalManagers()` | РџРѕР»СѓС‡РёС‚СЊ РІСЃРµС… РїРµСЂСЃРѕРЅР°Р»СЊРЅС‹С… РјРµРЅРµРґР¶РµСЂРѕРІ |
-| `getTrainings()`           | РџРѕР»СѓС‡РёС‚СЊ РІСЃРµ С‚СЂРµРЅРёРЅРіРё                 |
+| `getAllGroups()`           | Получить все группы пользователей     |
+| `getAllPersonalManagers()` | Получить всех персональных менеджеров |
+| `getTrainings()`           | Получить все тренинги                 |
 
 ---
 
-### Deal (Р·Р°РєР°Р·С‹)
+### Deal (заказы)
 
-| РњРµС‚РѕРґ                         | РћРїРёСЃР°РЅРёРµ                       |
+| Метод                         | Описание                       |
 | ----------------------------- | ------------------------------ |
-| `getDealFields(dealId)`       | РџРѕР»СѓС‡РёС‚СЊ РїРѕР»СЏ Р·Р°РєР°Р·Р°           |
-| `getDealCustomFields(dealId)` | РџРѕР»СѓС‡РёС‚СЊ РєР°СЃС‚РѕРјРЅС‹Рµ РїРѕР»СЏ Р·Р°РєР°Р·Р° |
-| `getDealComments(dealId)`     | РџРѕР»СѓС‡РёС‚СЊ РєРѕРјРјРµРЅС‚Р°СЂРёРё Р·Р°РєР°Р·Р°    |
-| `getDealCalls(dealId)`        | РџРѕР»СѓС‡РёС‚СЊ Р·РІРѕРЅРєРё РїРѕ Р·Р°РєР°Р·Сѓ      |
-| `getDealCancelReasons()`      | РџРѕР»СѓС‡РёС‚СЊ РїСЂРёС‡РёРЅС‹ РѕС‚РјРµРЅС‹        |
-| `getDealsTags(params?)`       | РџРѕР»СѓС‡РёС‚СЊ Р·Р°РєР°Р·С‹ СЃ С‚РµРіР°РјРё       |
-| `addCommentToDeal(body)`      | Р”РѕР±Р°РІРёС‚СЊ РєРѕРјРјРµРЅС‚Р°СЂРёР№ Рє Р·Р°РєР°Р·Сѓ  |
-| `addDealPositions(body)`      | Р”РѕР±Р°РІРёС‚СЊ РїРѕР·РёС†РёРё РІ Р·Р°РєР°Р·       |
-| `removeDealPositions(body)`   | РЈРґР°Р»РёС‚СЊ РїРѕР·РёС†РёРё РёР· Р·Р°РєР°Р·Р°      |
-| `updateDealFields(body)`      | РћР±РЅРѕРІРёС‚СЊ РїРѕР»СЏ Р·Р°РєР°Р·Р°           |
-
-**РџСЂРёРјРµСЂС‹:**
+| `getDealFields(dealId)`       | Получить поля заказа           |
+| `getDealCustomFields(dealId)` | Получить кастомные поля заказа |
+| `getDealComments(dealId)`     | Получить комментарии заказа    |
+| `getDealCalls(dealId)`        | Получить звонки по заказу      |
+| `getDealCancelReasons()`      | Получить причины отмены        |
+| `getDealsTags(params?)`       | Получить заказы с тегами       |
+| `addCommentToDeal(body)`      | Добавить комментарий к заказу  |
+| `addDealPositions(body)`      | Добавить позиции в заказ       |
+| `removeDealPositions(body)`   | Удалить позиции из заказа      |
+| `updateDealFields(body)`      | Обновить поля заказа           |
 
 ```ts
-// РџРѕР»СѓС‡РёС‚СЊ Р·Р°РєР°Р·
-const deal = await getcourse.getDealFields(12345);
+// Получить заказ
+const deal = await gc.getDealFields(12345);
 
-// РћР±РЅРѕРІРёС‚СЊ СЃС‚Р°С‚СѓСЃ Р·Р°РєР°Р·Р°
-await getcourse.updateDealFields({
+// Обновить статус заказа
+await gc.updateDealFields({
   dealId: 12345,
   status: "cancelled",
-  cancel_reason_comment: "РљР»РёРµРЅС‚ РїРµСЂРµРґСѓРјР°Р»",
+  cancel_reason_comment: "Клиент передумал",
 });
 
-// Р”РѕР±Р°РІРёС‚СЊ РїРѕР·РёС†РёРё
-await getcourse.addDealPositions({
+// Добавить позиции
+await gc.addDealPositions({
   dealId: 12345,
-  positions: [
-    { offerId: 1, price: 1000, quantity: 2 },
-    { offerId: 3, price: 500 },
-  ],
+  positions: [{ offerId: 1, price: 1000, quantity: 2 }, { offerId: 3 }],
 });
 ```
 
 ---
 
-### Dialog (РґРёР°Р»РѕРіРё)
+### Dialog (диалоги)
 
-| РњРµС‚РѕРґ                      | РћРїРёСЃР°РЅРёРµ                      |
+| Метод                      | Описание                      |
 | -------------------------- | ----------------------------- |
-| `getDialogHistory(body)`   | РџРѕР»СѓС‡РёС‚СЊ РёСЃС‚РѕСЂРёСЋ РґРёР°Р»РѕРіР°      |
-| `addCommentToDialog(body)` | Р”РѕР±Р°РІРёС‚СЊ РєРѕРјРјРµРЅС‚Р°СЂРёР№ РІ РґРёР°Р»РѕРі |
-| `changeDepartment(body)`   | РР·РјРµРЅРёС‚СЊ РѕС‚РґРµР» РґРёР°Р»РѕРіР°        |
-| `closeDialog(body)`        | Р—Р°РєСЂС‹С‚СЊ РґРёР°Р»РѕРі                |
+| `getDialogHistory(body)`   | Получить историю диалога      |
+| `addCommentToDialog(body)` | Добавить комментарий в диалог |
+| `changeDepartment(body)`   | Изменить отдел диалога        |
+| `closeDialog(body)`        | Закрыть диалог                |
 
 ---
 
-### Lesson (СѓСЂРѕРєРё)
+### Lesson (уроки)
 
-| РњРµС‚РѕРґ                            | РћРїРёСЃР°РЅРёРµ                      |
+| Метод                            | Описание                      |
 | -------------------------------- | ----------------------------- |
-| `getLessonAnswers(lessonId?)`    | РџРѕР»СѓС‡РёС‚СЊ РѕС‚РІРµС‚С‹ РЅР° СѓСЂРѕРє       |
-| `addCommentToLessonAnswer(body)` | Р”РѕР±Р°РІРёС‚СЊ РєРѕРјРјРµРЅС‚Р°СЂРёР№ Рє РѕС‚РІРµС‚Сѓ |
-| `changeStatusAnswers(body)`      | РР·РјРµРЅРёС‚СЊ СЃС‚Р°С‚СѓСЃ РѕС‚РІРµС‚Р°        |
+| `getLessonAnswers(lessonId?)`    | Получить ответы на урок       |
+| `addCommentToLessonAnswer(body)` | Добавить комментарий к ответу |
+| `changeStatusAnswers(body)`      | Изменить статус ответа        |
 
 ---
 
-### Note (Р·Р°РјРµС‚РєРё)
+### Note (заметки)
 
-| РњРµС‚РѕРґ           | РћРїРёСЃР°РЅРёРµ                   |
+| Метод           | Описание                   |
 | --------------- | -------------------------- |
-| `addNote(body)` | Р”РѕР±Р°РІРёС‚СЊ Р·Р°РјРµС‚РєСѓ Рє РґРёР°Р»РѕРіСѓ |
+| `addNote(body)` | Добавить заметку к диалогу |
 
 ---
 
-### Offer (РїСЂРµРґР»РѕР¶РµРЅРёСЏ)
+### Offer (предложения)
 
-| РњРµС‚РѕРґ                    | РћРїРёСЃР°РЅРёРµ                 |
+| Метод                    | Описание                 |
 | ------------------------ | ------------------------ |
-| `getOffers()`            | РџРѕР»СѓС‡РёС‚СЊ РІСЃРµ РѕС„С„РµСЂС‹      |
-| `getOfferById(offerId)`  | РџРѕР»СѓС‡РёС‚СЊ РѕС„С„РµСЂ РїРѕ ID     |
-| `getOffersTags(params?)` | РџРѕР»СѓС‡РёС‚СЊ РѕС„С„РµСЂС‹ СЃ С‚РµРіР°РјРё |
+| `getOffers()`            | Получить все офферы      |
+| `getOfferById(offerId)`  | Получить оффер по ID     |
+| `getOffersTags(params?)` | Получить офферы с тегами |
 
 ---
 
-### User (РїРѕР»СЊР·РѕРІР°С‚РµР»Рё)
+### User (пользователи)
 
-| РњРµС‚РѕРґ                             | РћРїРёСЃР°РЅРёРµ                     |
+| Метод                             | Описание                     |
 | --------------------------------- | ---------------------------- |
-| `getUserFields(params)`           | РџРѕР»СѓС‡РёС‚СЊ РїРѕР»СЏ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ   |
-| `getUserCustomFields(params)`     | РџРѕР»СѓС‡РёС‚СЊ РєР°СЃС‚РѕРјРЅС‹Рµ РїРѕР»СЏ      |
-| `getUserDeals(params)`            | РџРѕР»СѓС‡РёС‚СЊ Р·Р°РєР°Р·С‹ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ |
-| `getUserDiplomas(params)`         | РџРѕР»СѓС‡РёС‚СЊ РґРёРїР»РѕРјС‹             |
-| `getUserGroups(params)`           | РџРѕР»СѓС‡РёС‚СЊ РіСЂСѓРїРїС‹              |
-| `getUserBalance(params)`          | РџРѕР»СѓС‡РёС‚СЊ Р±Р°Р»Р°РЅСЃ              |
-| `getUserPurchases(params)`        | РџРѕР»СѓС‡РёС‚СЊ РїРѕРєСѓРїРєРё             |
-| `getUserTrainings(params)`        | РџРѕР»СѓС‡РёС‚СЊ С‚СЂРµРЅРёРЅРіРё            |
-| `getUserSchedule(params)`         | РџРѕР»СѓС‡РёС‚СЊ СЂР°СЃРїРёСЃР°РЅРёРµ          |
-| `getUserGoalRecords(params)`      | РџРѕР»СѓС‡РёС‚СЊ Р·Р°РїРёСЃРё С†РµР»РµР№        |
-| `getUserAnswers(params)`          | РџРѕР»СѓС‡РёС‚СЊ РѕС‚РІРµС‚С‹              |
-| `getUserLessonAnswers(params)`    | РџРѕР»СѓС‡РёС‚СЊ РѕС‚РІРµС‚С‹ РЅР° СѓСЂРѕРєРё     |
-| `getUserByTelegramChatId(chatId)` | РќР°Р№С‚Рё РїРѕ Telegram Chat ID    |
-| `addUserBalance(body)`            | Р”РѕР±Р°РІРёС‚СЊ Р±Р°Р»Р°РЅСЃ              |
-| `addUserGroups(body)`             | Р”РѕР±Р°РІРёС‚СЊ РІ РіСЂСѓРїРїС‹            |
-| `removeUserGroups(body)`          | РЈРґР°Р»РёС‚СЊ РёР· РіСЂСѓРїРї             |
-| `setUserGroups(body)`             | РЈСЃС‚Р°РЅРѕРІРёС‚СЊ РіСЂСѓРїРїС‹            |
-| `setPersonalManager(body)`        | РЈСЃС‚Р°РЅРѕРІРёС‚СЊ РјРµРЅРµРґР¶РµСЂР°         |
-| `updateUserFields(body)`          | РћР±РЅРѕРІРёС‚СЊ РїРѕР»СЏ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ   |
-| `updateUserCustomFields(body)`    | РћР±РЅРѕРІРёС‚СЊ РєР°СЃС‚РѕРјРЅС‹Рµ РїРѕР»СЏ      |
-| `createDiploma(body)`             | РЎРѕР·РґР°С‚СЊ РґРёРїР»РѕРј               |
-
-**РџСЂРёРјРµСЂС‹:**
+| `getUserFields(params)`           | Получить поля пользователя   |
+| `getUserCustomFields(params)`     | Получить кастомные поля      |
+| `getUserDeals(params)`            | Получить заказы пользователя |
+| `getUserDiplomas(params)`         | Получить дипломы             |
+| `getUserGroups(params)`           | Получить группы              |
+| `getUserBalance(params)`          | Получить баланс              |
+| `getUserPurchases(params)`        | Получить покупки             |
+| `getUserTrainings(params)`        | Получить тренинги            |
+| `getUserSchedule(params)`         | Получить расписание          |
+| `getUserGoalRecords(params)`      | Получить записи целей        |
+| `getUserAnswers(params)`          | Получить ответы              |
+| `getUserLessonAnswers(params)`    | Получить ответы на уроки     |
+| `getUserByTelegramChatId(chatId)` | Найти по Telegram Chat ID    |
+| `addUserBalance(body)`            | Добавить баланс              |
+| `addUserGroups(body)`             | Добавить в группы            |
+| `removeUserGroups(body)`          | Удалить из групп             |
+| `setUserGroups(body)`             | Установить группы            |
+| `setPersonalManager(body)`        | Установить менеджера         |
+| `updateUserFields(body)`          | Обновить поля пользователя   |
+| `updateUserCustomFields(body)`    | Обновить кастомные поля      |
+| `createDiploma(body)`             | Создать диплом               |
 
 ```ts
-// РџРѕРёСЃРє РїРѕ userId РёР»Рё email
-const user = await getcourse.getUserFields({ userId: 123 });
-const user2 = await getcourse.getUserFields({ email: "user@mail.ru" });
+// Поиск по userId или email
+const user = await gc.getUserFields({ userId: 123 });
+const user2 = await gc.getUserFields({ email: "user@mail.ru" });
 
-// РџРѕР»СѓС‡РёС‚СЊ Р±Р°Р»Р°РЅСЃ
-const balance = await getcourse.getUserBalance({ userId: 123, type: "virtual" });
+// Получить баланс
+const balance = await gc.getUserBalance({ userId: 123, type: "virtual" });
 
-// Р”РѕР±Р°РІРёС‚СЊ Р±Р°Р»Р°РЅСЃ
-await getcourse.addUserBalance({
+// Добавить баланс
+await gc.addUserBalance({
   userId: 123,
   value: 500,
   type: "virtual",
-  comment: "Р‘РѕРЅСѓСЃ Р·Р° Р°РєС‚РёРІРЅРѕСЃС‚СЊ",
+  comment: "Бонус за активность",
 });
 
-// РћР±РЅРѕРІРёС‚СЊ РїРѕР»СЏ
-await getcourse.updateUserFields({
+// Обновить поля
+await gc.updateUserFields({
   userId: 123,
-  first_name: "РРІР°РЅ",
-  last_name: "РРІР°РЅРѕРІ",
+  first_name: "Иван",
+  last_name: "Иванов",
   phone: "+79991234567",
 });
 ```
 
 ---
 
-### Webinar (РІРµР±РёРЅР°СЂС‹)
+### Webinar (вебинары)
 
-| РњРµС‚РѕРґ                    | РћРїРёСЃР°РЅРёРµ                |
-| ------------------------ | ----------------------- |
-| `getAllWebinars()`       | РџРѕР»СѓС‡РёС‚СЊ РІСЃРµ РІРµР±РёРЅР°СЂС‹   |
-| `getWebinarsByIds(body)` | РџРѕР»СѓС‡РёС‚СЊ РІРµР±РёРЅР°СЂС‹ РїРѕ ID |
+| Метод                          | Описание                            |
+| ------------------------------ | ----------------------------------- |
+| `getAllWebinars()`             | Получить все вебинары               |
+| `getWebinarsByIds(body)`       | Получить вебинары по ID             |
+| `addCommentToWebinar(body)`    | Добавить комментарий в чат вебинара |
+| `moderateWebinarComment(body)` | Модерация сообщения в чате вебинара |
+| `moderateWebinarUser(body)`    | Модерация пользователя вебинара     |
 
 ---
 
-## РљРѕРЅСЃС‚Р°РЅС‚С‹ РІРµР±С…СѓРєРѕРІ
-
-```ts
-import { EventObjectId, DealEventId, DialogEventId } from "getcourse-api";
-
-// EventObjectId: Dialog=1, Deal=2, LessonComment=4, AnswerComment=5, WebinarComment=7
-// DialogEventId: NewDialog=1, DialogReopened=2, NewMessage=3
-// DealEventId: DealCreated=1, DealStatusChanged=2, DealPaid=3
-// LessonCommentEventId: AnswerAdded=1
-// AnswerCommentEventId: CommentAdded=1
-// WebinarCommentEventId: NewComment=1
-```
-
-## РўСЂРµР±РѕРІР°РЅРёСЏ
+## Требования
 
 - Node.js >= 18.0.0
-- Zero runtime dependencies
 
-## Р›РёС†РµРЅР·РёСЏ
+## Лицензия
 
 MIT
-
-## Smoke Check (Local, No Tests)
-
-1. Create `.env` from `.env.example` and fill `GC_DEV_KEY`, `GC_API_KEY`, `GC_DOMAIN`.
-2. Run smoke request:
-
-```bash
-npm run smoke
-```
-
-For Windows PowerShell with blocked `npm.ps1`, use:
-
-```bash
-npm.cmd run smoke
-```
-
-Run another SDK method:
-
-```bash
-npm.cmd run smoke -- getUserFields
-```
-
-For methods with args, set `GC_SMOKE_ARGS` as JSON array in `.env`.
-
-Example for `getUserFields({ userId: 123 })`:
-
-```env
-GC_SMOKE_METHOD=getUserFields
-GC_SMOKE_ARGS=[{"userId":123}]
-```

@@ -1,7 +1,7 @@
 /**
  * Базовый ответ от API GetCourse
  */
-interface ResultResponse {
+export interface ResultResponse {
   status: boolean;
   message: string;
   code: number;
@@ -11,14 +11,14 @@ interface ResultResponse {
 /**
  * Типизированный ответ с данными
  */
-interface ApiResponse<T> extends ResultResponse {
+export interface ApiResponse<T> extends ResultResponse {
   data: T;
 }
 
 /**
  * Идентификатор пользователя — можно передать userId ИЛИ email
  */
-interface UserIdentifier {
+export interface UserIdentifier {
   userId?: number;
   email?: string;
 }
@@ -26,7 +26,7 @@ interface UserIdentifier {
 /**
  * Параметры пагинации
  */
-interface PaginationParams {
+export interface PaginationParams {
   limit?: number;
   offset?: number;
 }
@@ -34,7 +34,7 @@ interface PaginationParams {
 /**
  * Интерфейс логгера — совместим с winston, pino, console и любым другим логгером
  */
-interface Logger {
+export interface Logger {
   debug: (message: string, context?: Record<string, unknown>) => void;
   info: (message: string, context?: Record<string, unknown>) => void;
   warn: (message: string, context?: Record<string, unknown>) => void;
@@ -44,7 +44,7 @@ interface Logger {
 /**
  * Конфигурация клиента
  */
-interface GetCourseConfig {
+export interface GetCourseConfig {
   /** Ключ разработчика (первая часть токена) */
   devKey: string;
   /** Ключ API школы (вторая часть токена) */
@@ -57,6 +57,4 @@ interface GetCourseConfig {
   logLevel?: 'silent' | 'error' | 'debug';
   /** Кастомный логгер (совместим с winston, pino и т.д.) */
   logger?: Logger;
-  /** Кастомная реализация fetch (для тестов, прокси и т.д.) */
-  fetch?: typeof globalThis.fetch;
 }
