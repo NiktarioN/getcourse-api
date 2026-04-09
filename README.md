@@ -1,10 +1,12 @@
-# getcourse-api
+# GetCourse API
 
-TypeScript SDK для [GetCourse API](https://getcourse.ru) (v1)
+TypeScript SDK для [GetCourse API](https://getcourse.ru)
+
 [Официальная и полная документация по API](https://getcourse.ru/pl/postback/redoc)
 
 [![npm version](https://img.shields.io/npm/v/getcourse-api)](https://www.npmjs.com/package/getcourse-api)
 [![license](https://img.shields.io/npm/l/getcourse-api)](LICENSE)
+[![GitHub stars](https://img.shields.io/github/stars/NiktarioN/getcourse-api?style=social)](https://github.com/NiktarioN/getcourse-api)
 
 ## Установка
 
@@ -260,9 +262,19 @@ await gc.updateUserFields({
 
 ---
 
-## Требования
+## Автор
 
-- Node.js >= 18.0.0
+### NiktarioN
+
+- GitHub: [github.com/NiktarioN](https://github.com/NiktarioN)
+- Telegram: [@NiktarioN](https://t.me/niktarion_channels)
+- Telegram-чат: [Присоединяйся](https://t.me/+dwbz2Ksle485YmVi)
+
+---
+
+Если проект полезен — поставь ⭐ на [GitHub](https://github.com/NiktarioN/getcourse-api)
+
+---
 
 ## Лицензия
 
