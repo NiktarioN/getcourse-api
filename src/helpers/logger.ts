@@ -1,5 +1,3 @@
-/* eslint-disable no-console */
-
 import type { Logger } from '../types/common.ts';
 
 type LogLevel = 'silent' | 'error' | 'debug';
@@ -25,12 +23,12 @@ export default class ConsoleLogger implements Logger {
     }
 
     if (context === undefined) {
-      console.debug(this.prefix, message);
+      globalThis.console.debug(this.prefix, message);
 
       return;
     }
 
-    console.debug(this.prefix, message, context);
+    globalThis.console.debug(this.prefix, message, context);
   }
 
   info(message: string, context?: Record<string, unknown>): void {
@@ -39,12 +37,12 @@ export default class ConsoleLogger implements Logger {
     }
 
     if (context === undefined) {
-      console.info(this.prefix, message);
+      globalThis.console.info(this.prefix, message);
 
       return;
     }
 
-    console.info(this.prefix, message, context);
+    globalThis.console.info(this.prefix, message, context);
   }
 
   warn(message: string, context?: Record<string, unknown>): void {
@@ -53,12 +51,12 @@ export default class ConsoleLogger implements Logger {
     }
 
     if (context === undefined) {
-      console.warn(this.prefix, message);
+      globalThis.console.warn(this.prefix, message);
 
       return;
     }
 
-    console.warn(this.prefix, message, context);
+    globalThis.console.warn(this.prefix, message, context);
   }
 
   error(message: string, context?: Record<string, unknown>): void {
@@ -67,11 +65,11 @@ export default class ConsoleLogger implements Logger {
     }
 
     if (context === undefined) {
-      console.error(this.prefix, message);
+      globalThis.console.error(this.prefix, message);
 
       return;
     }
 
-    console.error(this.prefix, message, context);
+    globalThis.console.error(this.prefix, message, context);
   }
 }

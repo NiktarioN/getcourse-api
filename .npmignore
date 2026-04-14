@@ -25,6 +25,10 @@ CLAUDE.MD
 # IDE
 .vscode
 
+# Тесты
+tests
+vitest.config.ts
+
 # Прочее
 .env*
 *.log

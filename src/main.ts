@@ -1,3 +1,6 @@
+import ExportPoller from './helpers/export-poller.ts';
+import LegacyTransport from './helpers/legacy-transport.ts';
+import ConsoleLogger from './helpers/logger.ts';
 import HttpTransport from './helpers/transport.ts';
 
 import type {
@@ -6,6 +9,20 @@ import type {
   PaginationParams,
   UserIdentifier,
 } from './types/common.ts';
+import type {
+  AddUserRequest,
+  AddUserResult,
+  CreateDealRequest,
+  CreateDealResult,
+  CustomField,
+  ExportDealsFilters,
+  ExportedData,
+  ExportGroupUsersFilters,
+  ExportInfo,
+  ExportPaymentsFilters,
+  ExportPollingOptions,
+  ExportUsersFilters,
+} from './types/legacy.ts';
 import type {
   CancelReason,
   ContactActivity,
@@ -76,7 +93,13 @@ import type { SetUriRequest } from './types/webhooks.ts';
 export default class GetCourse {
   private readonly transport: HttpTransport;
 
+  private readonly legacyTransport: LegacyTransport;
+
+  private readonly exportPoller: ExportPoller;
+
   constructor(config: GetCourseConfig) {
+    const logger = config.logger ?? new ConsoleLogger(config.logLevel);
+
     this.transport = new HttpTransport({
       baseUrl: `https://${config.domain}/pl/api/v1`,
       token: `Bearer ${config.devKey}_${config.apiKey}`,
@@ -84,6 +107,18 @@ export default class GetCourse {
       logLevel: config.logLevel,
       logger: config.logger,
     });
+
+    this.legacyTransport = new LegacyTransport({
+      baseUrl: `https://${config.domain}/pl/api`,
+      apiKey: config.apiKey,
+      timeout: config.timeout,
+      logger,
+    });
+
+    this.exportPoller = new ExportPoller(
+      async (exportId) => this.legacyTransport.getExportResult<ExportedData>(exportId),
+      logger,
+    );
   }
 
   // ─── Webhooks ───────────────────────────────────────────────────────────────
@@ -387,5 +422,116 @@ export default class GetCourse {
     body: ModerateWebinarUserRequest,
   ): Promise<ApiResponse<{ result: boolean }>> {
     return this.transport.post('webinar/moderation-user', body);
+  }
+
+  // ─── Legacy API (старое API) ─────────────────────────────────────────────────
+
+  /**
+   * Создать/обновить пользователя (Legacy API)
+   *
+   * Если пользователь с таким email существует и system.refresh_if_exists = 1,
+   * данные будут обновлены. Иначе создаётся новый пользователь
+   */
+  async addUser(params: AddUserRequest): Promise<ApiResponse<AddUserResult>> {
+    return this.legacyTransport.importRequest<AddUserResult>('users', 'add', params);
+  }
+
+  /**
+   * Создать сделку (Legacy API)
+   *
+   * Минимальные параметры:
+   * - offer_code + deal_cost + user.email
+   * - ИЛИ offer_id + user.email
+   */
+  async createDeal(params: CreateDealRequest): Promise<ApiResponse<CreateDealResult>> {
+    return this.legacyTransport.importRequest<CreateDealResult>('deals', 'add', params);
+  }
+
+  /**
+   * Экспорт пользователей (Legacy API)
+   *
+   * Запускает асинхронный экспорт и автоматически поллит результат
+   * Для ручного контроля используйте getExportResult()
+   *
+   * Лимит: 100 запросов Export API за 2 часа
+   */
+  async exportUsers(
+    filters?: ExportUsersFilters,
+    polling?: ExportPollingOptions,
+  ): Promise<ApiResponse<ExportedData>> {
+    const response = await this.legacyTransport.exportRequest<ExportInfo>('account/users', filters);
+
+    return this.exportPoller.poll(response.data.export_id, polling);
+  }
+
+  /**
+   * Экспорт пользователей группы (Legacy API)
+   *
+   * Возвращает пользователей конкретной группы с дополнительными полями:
+   * ID группы и дата добавления в группу
+   *
+   * Лимит: 100 запросов Export API за 2 часа
+   */
+  async exportGroupUsers(
+    groupId: number,
+    filters?: ExportGroupUsersFilters,
+    polling?: ExportPollingOptions,
+  ): Promise<ApiResponse<ExportedData>> {
+    const response = await this.legacyTransport.exportRequest<ExportInfo>(
+      `account/groups/${groupId}/users`,
+      filters,
+    );
+
+    return this.exportPoller.poll(response.data.export_id, polling);
+  }
+
+  /**
+   * Экспорт сделок (Legacy API)
+   *
+   * Лимит: 100 запросов Export API за 2 часа
+   */
+  async exportDeals(
+    filters?: ExportDealsFilters,
+    polling?: ExportPollingOptions,
+  ): Promise<ApiResponse<ExportedData>> {
+    const response = await this.legacyTransport.exportRequest<ExportInfo>('account/deals', filters);
+
+    return this.exportPoller.poll(response.data.export_id, polling);
+  }
+
+  /**
+   * Экспорт платежей (Legacy API)
+   *
+   * Лимит: 100 запросов Export API за 2 часа
+   */
+  async exportPayments(
+    filters?: ExportPaymentsFilters,
+    polling?: ExportPollingOptions,
+  ): Promise<ApiResponse<ExportedData>> {
+    const response = await this.legacyTransport.exportRequest<ExportInfo>(
+      'account/payments',
+      filters,
+    );
+
+    return this.exportPoller.poll(response.data.export_id, polling);
+  }
+
+  /**
+   * Получить кастомные поля аккаунта (Legacy API)
+   *
+   * Возвращает справочник дополнительных полей пользователей и заказов
+   */
+  async getCustomFields(): Promise<ApiResponse<CustomField[]>> {
+    return this.legacyTransport.exportRequest<CustomField[]>('account/fields');
+  }
+
+  /**
+   * Получить результат экспорта по ID (Legacy API)
+   *
+   * Для ручного контроля поллинга — если не нужен автоматический.
+   * Полезно если предыдущий запрос упал по таймауту, а экспорт на сервере продолжается
+   */
+  async getExportResult(exportId: number): Promise<ApiResponse<ExportedData>> {
+    return this.legacyTransport.getExportResult<ExportedData>(exportId);
   }
 }

@@ -1,6 +1,7 @@
 import axios, { AxiosError } from 'axios';
 import { GetCourseApiError, GetCourseNetworkError } from './errors.ts';
 import ConsoleLogger from './logger.ts';
+import { isPresent } from './utils.ts';
 
 import type { AxiosInstance } from 'axios';
 import type { ApiResponse, Logger } from '../types/common.ts';
@@ -63,7 +64,7 @@ export default class HttpTransport {
     const result: Record<string, string> = {};
 
     Object.entries(params).forEach(([key, value]) => {
-      if (value !== undefined && value !== null && value !== '') {
+      if (isPresent(value)) {
         result[key] = String(value);
       }
     });

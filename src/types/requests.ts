@@ -6,7 +6,7 @@
 import type { UserIdentifier } from './common.ts';
 import type { DealStatus, LessonAnswerStatus } from './models.ts';
 
-// ─── Deal ──────────────────────────────────────────────────────────────────────
+// ─── Заказы ──────────────────────────────────────────────────────────────────────
 
 /** Добавить комментарий к заказу */
 export interface AddCommentToDealRequest {
@@ -58,7 +58,7 @@ export interface UpdateDealFieldsRequest {
   tags?: string[];
 }
 
-// ─── Dialog ────────────────────────────────────────────────────────────────────
+// ─── Диалоги ────────────────────────────────────────────────────────────────────
 
 /**
  * Транспорт для отправки комментария к диалогу:
@@ -101,7 +101,7 @@ export interface GetDialogHistoryRequest {
   limit?: number;
 }
 
-// ─── Lesson ────────────────────────────────────────────────────────────────────
+// ─── Уроки ────────────────────────────────────────────────────────────────────
 
 /** Добавить комментарий к ответу на урок */
 export interface AddCommentToLessonAnswerRequest {
@@ -125,7 +125,7 @@ export interface ChangeStatusAnswersRequest {
   status: LessonAnswerStatus;
 }
 
-// ─── Note ──────────────────────────────────────────────────────────────────────
+// ─── Записка ──────────────────────────────────────────────────────────────────────
 
 /** Добавить заметку к диалогу */
 export interface AddNoteRequest {
@@ -135,7 +135,7 @@ export interface AddNoteRequest {
   text: string;
 }
 
-// ─── User ──────────────────────────────────────────────────────────────────────
+// ─── Пользователь ──────────────────────────────────────────────────────────────────────
 
 /** Тип баланса */
 export type BalanceType = 'virtual' | 'points';
@@ -210,7 +210,7 @@ export interface CreateDiplomaRequest extends UserIdentifier {
   allowDuplicates?: boolean;
 }
 
-// ─── Webinar ───────────────────────────────────────────────────────────────────
+// ─── Вебинары ───────────────────────────────────────────────────────────────────
 
 /** Получить вебинары по ID */
 export interface GetWebinarsByIdsRequest {
