@@ -2,14 +2,14 @@
 
 > **All-in-one пакет для нового и старого API**
 
+[![npm version](https://img.shields.io/npm/v/getcourse-api)](https://www.npmjs.com/package/getcourse-api)
+[![license](https://img.shields.io/github/license/NiktarioN/getcourse-api)](LICENSE)
+[![GitHub stars](https://img.shields.io/github/stars/NiktarioN/getcourse-api?style=social)](https://github.com/NiktarioN/getcourse-api)
+
 Официальная документация:
 
 - [GetCourse API](https://getcourse.ru/pl/postback/redoc)
 - [GetCourse Legacy API](https://getcourse.ru/help/api)
-
-[![npm version](https://img.shields.io/npm/v/getcourse-api)](https://www.npmjs.com/package/getcourse-api)
-[![license](https://img.shields.io/github/license/NiktarioN/getcourse-api)](LICENSE)
-[![GitHub stars](https://img.shields.io/github/stars/NiktarioN/getcourse-api?style=social)](https://github.com/NiktarioN/getcourse-api)
 
 ---
 
