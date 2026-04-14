@@ -1,12 +1,28 @@
-# GetCourse API
+# ⚙️ GetCourse API
 
-TypeScript SDK для [GetCourse API](https://getcourse.ru)
+> **All-in-one пакет для нового и старого API**
 
-[Официальная и полная документация по API](https://getcourse.ru/pl/postback/redoc)
+Официальная документация
+[GetCourse API](https://getcourse.ru/pl/postback/redoc)
+[GetCourse Legacy API](https://getcourse.ru/help/api)
 
 [![npm version](https://img.shields.io/npm/v/getcourse-api)](https://www.npmjs.com/package/getcourse-api)
 [![license](https://img.shields.io/github/license/NiktarioN/getcourse-api)](LICENSE)
 [![GitHub stars](https://img.shields.io/github/stars/NiktarioN/getcourse-api?style=social)](https://github.com/NiktarioN/getcourse-api)
+
+---
+
+## Основная идея
+
+GetCourse предоставляет два API: новое и старое. Оба этих API независимы друг от друга, не имеют типизацию и неудобны в использовании
+
+Мне, как разработчику, захотелось создать пакет, который объединяет оба API в одном SDK с полной TypeScript-типизацией и с понятным неймингом методов, который был в Chatium SDK
+
+Теперь не нужно вручную разбираться в документации, формировать HTTP-запросы и описывать типы. Просто добавь воды (вызывай методы) и работай
+
+Пакет покрывает все актуальные эндпоинты: работу с пользователями, заказами, офферами, уроками, вебинарами, диалогами и экспорт данных
+
+Приятной работы, коллеги 😉
 
 ## Установка
 
@@ -22,7 +38,7 @@ import GetCourse from "getcourse-api";
 const gc = new GetCourse({
   devKey: "XXXXXXXX", // Ключ разработчика
   apiKey: "YYYYYYYYYYYYYYY", // Ключ API школы
-  domain: "test.getcourse.ru",
+  domain: "test.getcourse.ru", // Пойдет технический или другой подключенный домен к аккаунту
 });
 
 // Получить данные пользователя
@@ -38,19 +54,19 @@ const deal = await gc.getDealFields(12345);
 
 ## Получение токена
 
-- **Ключ разработчика** — после заполнения [анкеты](https://getcourse.ru/issuedeveloperkey) на getcourse.ru
+- **Ключ разработчика** — после заполнения [анкеты](https://getcourse.ru/issuedeveloperkey)
 - **Ключ API школы** — выдаётся в каждой школе отдельно. Должны быть права на чтение и запись
 
 ## Конфигурация
 
-| Параметр   | Тип                              | Обязательный | По умолчанию | Описание                                    |
-| ---------- | -------------------------------- | ------------ | ------------ | ------------------------------------------- |
-| `devKey`   | `string`                         | да           | —            | Ключ разработчика                           |
-| `apiKey`   | `string`                         | да           | —            | Ключ API школы                              |
-| `domain`   | `string`                         | да           | —            | Домен школы, например `school.getcourse.ru` |
-| `timeout`  | `number`                         | нет          | `15000`      | Таймаут запросов в мс                       |
-| `logLevel` | `'silent' \| 'error' \| 'debug'` | нет          | `'silent'`   | Уровень встроенного логгера                 |
-| `logger`   | `Logger`                         | нет          | —            | Кастомный логгер (winston, pino и др.)      |
+| Параметр   | Тип                              | Обязательный | По умолчанию | Описание                                  |
+| ---------- | -------------------------------- | ------------ | ------------ | ----------------------------------------- |
+| `devKey`   | `string`                         | да           | —            | Ключ разработчика                         |
+| `apiKey`   | `string`                         | да           | —            | Ключ API школы                            |
+| `domain`   | `string`                         | да           | —            | Домен школы, например `test.getcourse.ru` |
+| `timeout`  | `number`                         | нет          | `15000`      | Таймаут запросов в мс                     |
+| `logLevel` | `'silent' \| 'error' \| 'debug'` | нет          | `'silent'`   | Уровень встроенного логгера               |
+| `logger`   | `Logger`                         | нет          | —            | Кастомный логгер (winston, pino и др.)    |
 
 ```ts
 const gc = new GetCourse({
@@ -97,7 +113,7 @@ try {
 
 ## Справочник методов
 
-### Webhooks
+### Вебхуки
 
 | Метод          | Описание                             |
 | -------------- | ------------------------------------ |
@@ -113,7 +129,7 @@ await gc.setUri({
 
 ---
 
-### School (общее)
+### Общее
 
 | Метод                      | Описание                              |
 | -------------------------- | ------------------------------------- |
@@ -123,7 +139,7 @@ await gc.setUri({
 
 ---
 
-### Deal (заказы)
+### Заказы
 
 | Метод                         | Описание                       |
 | ----------------------------- | ------------------------------ |
@@ -158,7 +174,7 @@ await gc.addDealPositions({
 
 ---
 
-### Dialog (диалоги)
+### Диалоги
 
 | Метод                      | Описание                      |
 | -------------------------- | ----------------------------- |
@@ -169,7 +185,7 @@ await gc.addDealPositions({
 
 ---
 
-### Lesson (уроки)
+### Уроки
 
 | Метод                            | Описание                      |
 | -------------------------------- | ----------------------------- |
@@ -179,7 +195,7 @@ await gc.addDealPositions({
 
 ---
 
-### Note (заметки)
+### Заметки
 
 | Метод           | Описание                   |
 | --------------- | -------------------------- |
@@ -187,7 +203,7 @@ await gc.addDealPositions({
 
 ---
 
-### Offer (предложения)
+### Предложения
 
 | Метод                    | Описание                 |
 | ------------------------ | ------------------------ |
@@ -197,7 +213,7 @@ await gc.addDealPositions({
 
 ---
 
-### User (пользователи)
+### Пользователи
 
 | Метод                             | Описание                     |
 | --------------------------------- | ---------------------------- |
@@ -250,7 +266,7 @@ await gc.updateUserFields({
 
 ---
 
-### Webinar (вебинары)
+### Вебинары
 
 | Метод                          | Описание                            |
 | ------------------------------ | ----------------------------------- |
@@ -262,12 +278,104 @@ await gc.updateUserFields({
 
 ---
 
-## Автор
+### Старое API (Legacy API)
+
+> Используй эти методы для задач, которых нет в новом API: создание пользователей/сделок и массовый экспорт данных
+>
+> **Лимит Export API:** 100 запросов за 2 часа
+
+#### Импорт
+
+| Метод                | Описание                          |
+| -------------------- | --------------------------------- |
+| `addUser(params)`    | Создать или обновить пользователя |
+| `createDeal(params)` | Создать сделку                    |
+
+```ts
+// Создать пользователя
+await gc.addUser({
+  user: { email: "user@mail.ru", first_name: "Иван" },
+  system: { refresh_if_exists: 1 },
+});
+
+// Создать сделку (вариант 1: по offer_code)
+await gc.createDeal({
+  user: { email: "user@mail.ru" },
+  deal: { offer_code: "offer123", deal_cost: "1990" },
+});
+
+// Создать сделку (вариант 2: по offer_id)
+await gc.createDeal({
+  user: { email: "user@mail.ru" },
+  deal: { offer_id: "42" },
+});
+```
+
+#### Экспорт
+
+Методы экспорта запускают асинхронный процесс на сервере и автоматически ждут результата
+
+| Метод                                           | Описание                                |
+| ----------------------------------------------- | --------------------------------------- |
+| `exportUsers(filters?, polling?)`               | Экспорт пользователей                   |
+| `exportGroupUsers(groupId, filters?, polling?)` | Экспорт пользователей группы            |
+| `exportDeals(filters?, polling?)`               | Экспорт сделок                          |
+| `exportPayments(filters?, polling?)`            | Экспорт платежей                        |
+| `getCustomFields()`                             | Дополнительные поля аккаунта            |
+| `getExportResult(exportId)`                     | Результат экспорта по ID (ручной режим) |
+
+```ts
+// Экспорт всех пользователей
+const users = await gc.exportUsers();
+
+// Экспорт с фильтрами
+const activeUsers = await gc.exportUsers({ status: "active" });
+
+// Экспорт пользователей группы
+const groupUsers = await gc.exportGroupUsers(123);
+
+// Экспорт сделок за период
+const deals = await gc.exportDeals({
+  created_at: { from: "2026-01-01", to: "2026-03-31" },
+});
+
+// Настройка поллинга (интервал 5с, таймаут 5 мин)
+const payments = await gc.exportPayments(
+  { status: "accepted" },
+  { pollInterval: 5_000, timeout: 300_000 },
+);
+
+// Ручное получение результата по ID
+const result = await gc.getExportResult(456789);
+```
+
+---
+
+## Тестирование
+
+Все тесты интеграционные — работают с реальной школой GetCourse. Для запуска нужен файл `.env` с ключами API и тестовыми ID (пример в `.env.example`)
+
+Тесты охватывают все методы, кроме установки вебхука
+
+```bash
+# Все тесты
+npm run test
+
+# Только экспорт (медленно — тратит лимит API: 100 запросов за 2 часа)
+npm run test:export
+
+# Можно запускать тесты на отдельных файлах
+npx vitest run tests/user.test.ts
+```
+
+---
+
+## 🤓 Автор
 
 ### NiktarioN
 
 - GitHub: [github.com/NiktarioN](https://github.com/NiktarioN)
-- Telegram: [@NiktarioN](https://t.me/niktarion_channels)
+- Telegram: [NiktarioN](https://t.me/niktarion_channels)
 - Telegram-чат: [Присоединяйся](https://t.me/+dwbz2Ksle485YmVi)
 
 ---
