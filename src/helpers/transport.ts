@@ -1,5 +1,6 @@
 import axios, { AxiosError } from 'axios';
-import { GetCourseApiError, GetCourseNetworkError } from './errors.ts';
+import GetCourseApiError from './errors/api-error.ts';
+import GetCourseNetworkError from './errors/network-error.ts';
 import ConsoleLogger from './logger.ts';
 import { isPresent } from './utils.ts';
 

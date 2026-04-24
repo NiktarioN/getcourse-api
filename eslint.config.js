@@ -8,8 +8,6 @@ import pluginPerfectionist from 'eslint-plugin-perfectionist';
 import { defineConfig, globalIgnores } from 'eslint/config';
 import typescriptEslint from 'typescript-eslint';
 
-const nodeVersion = 24;
-
 const configBase = defineConfig([
   eslint.configs.recommended,
   plugins.stylistic,
@@ -23,7 +21,6 @@ const configBase = defineConfig([
       'no-console': 'error',
       'no-negated-condition': 'error',
       'no-implicit-coercion': 'error',
-      'n/no-unsupported-features/node-builtins': ['error', { version: `>=${nodeVersion}.0.0` }],
     },
   },
 ]);

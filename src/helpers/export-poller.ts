@@ -1,4 +1,4 @@
-import { GetCourseApiError } from './errors.ts';
+import GetCourseApiError from './errors/api-error.ts';
 
 import type { ApiResponse, Logger } from '../types/common.ts';
 import type { ExportedData, ExportPollingOptions } from '../types/legacy.ts';
