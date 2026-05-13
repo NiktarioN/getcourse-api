@@ -44,6 +44,14 @@ export interface RemoveDealPositionsRequest {
   positionIds: number[];
 }
 
+/** Обновить доп. поля заказа */
+export interface UpdateDealCustomFieldsRequest {
+  /** ID заказа */
+  dealId: number;
+  /** Поля в формате { "id_поля": "значение" } */
+  customFields: Record<string, string | number>;
+}
+
 /** Обновить поля заказа */
 export interface UpdateDealFieldsRequest {
   /** ID заказа */
@@ -63,9 +71,9 @@ export interface UpdateDealFieldsRequest {
 /**
  * Транспорт для отправки комментария к диалогу:
  * 0 - Сайт, 1 - Email, 2 - SMS, 3 - Telegram, 4 - Facebook,
- * 5 - VK, 6 - Chatium, 7 - Whatsapp, 8 - Viber, 9 - Line
+ * 5 - VK, 6 - Chatium, 7 - Whatsapp, 8 - Viber, 13 - MAX
  */
-export type DialogTransport = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9;
+export type DialogTransport = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 13;
 
 /** Добавить комментарий в диалог */
 export interface AddCommentToDialogRequest {
@@ -138,7 +146,7 @@ export interface AddNoteRequest {
 // ─── Пользователь ──────────────────────────────────────────────────────────────────────
 
 /** Тип баланса */
-export type BalanceType = 'virtual' | 'points';
+export type BalanceType = 'normal' | 'virtual' | 'points';
 
 /** Добавить баланс пользователю */
 export interface AddUserBalanceRequest extends UserIdentifier {
@@ -252,7 +260,7 @@ export interface ModerateWebinarChatMessageRequest {
   /** Действие модерации */
   action: WebinarCommentModerationAction;
   /** ID пользователя-модератора */
-  moderatorId?: number;
+  moderatorId: number;
 }
 
 /** Действие модерации пользователя вебинара */
@@ -265,11 +273,11 @@ export interface ModerateWebinarUserRequest {
   /** ID пользователя */
   userId: number;
   /** Тип пользователя */
-  userType: number;
+  userType: 1 | 2;
   /** Действие модерации */
   action: WebinarUserModerationAction;
   /** ID запущенного автовебинара (для типов "Частые параллельные запуски" или "По расписанию") */
   webinarLaunchNumber?: number;
   /** ID пользователя-модератора */
-  moderatorId?: number;
+  moderatorId: number;
 }

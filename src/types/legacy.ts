@@ -283,6 +283,7 @@ export interface CustomField {
   title: string;
   required: 0 | 1;
   field_order_pos: number;
+  params: string;
   form_id: number;
   context_type: string;
 }

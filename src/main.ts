@@ -14,7 +14,7 @@ import type {
   AddUserResult,
   CreateDealRequest,
   CreateDealResult,
-  CustomField,
+  CustomField as LegacyCustomField,
   ExportDealsFilters,
   ExportedData,
   ExportGroupUsersFilters,
@@ -25,21 +25,23 @@ import type {
 } from './types/legacy.ts';
 import type {
   CancelReason,
-  ContactActivity,
-  Deal,
   DealCustomField,
+  UserCustomField,
+  UpdateCustomField,
+  Deal,
+  DealCall,
+  DealComment,
   DealTag,
   DialogMessage,
   Diploma,
   Group,
   LessonAnswer,
+  LessonAnswerComment,
   Offer,
   OfferTag,
-  PersonalManager,
   Training,
   User,
   UserBalance,
-  UserCustomFields,
   UserGoal,
   UserPurchase,
   UserSchedule,
@@ -67,6 +69,7 @@ import type {
   RemoveUserGroupsRequest,
   SetPersonalManagerRequest,
   SetUserGroupsRequest,
+  UpdateDealCustomFieldsRequest,
   UpdateDealFieldsRequest,
   UpdateUserCustomFieldsRequest,
   UpdateUserFieldsRequest,
@@ -145,7 +148,7 @@ export default class GetCourse {
   }
 
   /** Получить всех персональных менеджеров */
-  async getAllPersonalManagers(): Promise<ApiResponse<PersonalManager[]>> {
+  async getAllPersonalManagers(): Promise<ApiResponse<User[]>> {
     return this.transport.get('common/get-personal-managers');
   }
 
@@ -172,12 +175,12 @@ export default class GetCourse {
   }
 
   /** Обновить поля заказа */
-  async updateDealFields(body: UpdateDealFieldsRequest): Promise<ApiResponse<Deal[]>> {
+  async updateDealFields(body: UpdateDealFieldsRequest): Promise<ApiResponse<Deal>> {
     return this.transport.post('deal/update-fields', body);
   }
 
   /** Получить поля заказа */
-  async getDealFields(dealId: number): Promise<ApiResponse<Deal[]>> {
+  async getDealFields(dealId: number): Promise<ApiResponse<Deal>> {
     return this.transport.get('deal/get-fields', { dealId });
   }
 
@@ -187,13 +190,20 @@ export default class GetCourse {
   }
 
   /** Получить комментарии заказа */
-  async getDealComments(dealId: number): Promise<ApiResponse<ContactActivity[]>> {
+  async getDealComments(dealId: number): Promise<ApiResponse<DealComment[]>> {
     return this.transport.get('deal/get-comments', { dealId });
   }
 
   /** Получить звонки по заказу */
-  async getDealCalls(dealId: number): Promise<ApiResponse<ContactActivity[]>> {
+  async getDealCalls(dealId: number): Promise<ApiResponse<DealCall[]>> {
     return this.transport.get('deal/get-calls', { dealId });
+  }
+
+  /** Обновить доп. поля заказа */
+  async updateDealCustomFields(
+    body: UpdateDealCustomFieldsRequest,
+  ): Promise<ApiResponse<UpdateCustomField[]>> {
+    return this.transport.post('deal/update-custom-fields', body);
   }
 
   /** Получить список причин отмены заказов */
@@ -235,14 +245,12 @@ export default class GetCourse {
   /** Добавить комментарий к ответу на урок */
   async addCommentToLessonAnswer(
     body: AddCommentToLessonAnswerRequest,
-  ): Promise<ApiResponse<{ result: boolean }>> {
+  ): Promise<ApiResponse<LessonAnswerComment>> {
     return this.transport.post('lesson/add-comment-to-lesson-answer', body);
   }
 
   /** Изменить статус ответа на урок */
-  async changeStatusAnswers(
-    body: ChangeStatusAnswersRequest,
-  ): Promise<ApiResponse<{ result: boolean }>> {
+  async changeStatusAnswers(body: ChangeStatusAnswersRequest): Promise<ApiResponse<LessonAnswer>> {
     return this.transport.post('lesson/change-status-answers', body);
   }
 
@@ -257,7 +265,7 @@ export default class GetCourse {
   // ─── Note (заметки) ─────────────────────────────────────────────────────────
 
   /** Добавить заметку к диалогу */
-  async addNote(body: AddNoteRequest): Promise<ApiResponse<{ result: boolean }>> {
+  async addNote(body: AddNoteRequest): Promise<ApiResponse<[]>> {
     return this.transport.post('note/add', body);
   }
 
@@ -281,46 +289,44 @@ export default class GetCourse {
   // ─── User (пользователи) ────────────────────────────────────────────────────
 
   /** Добавить баланс пользователю */
-  async addUserBalance(body: AddUserBalanceRequest): Promise<ApiResponse<{ result: boolean }>> {
+  async addUserBalance(body: AddUserBalanceRequest): Promise<ApiResponse<UserBalance>> {
     return this.transport.post('user/add-balance', body);
   }
 
   /** Добавить пользователя в группы */
-  async addUserGroups(body: AddUserGroupsRequest): Promise<ApiResponse<{ result: boolean }>> {
+  async addUserGroups(body: AddUserGroupsRequest): Promise<ApiResponse<Group[]>> {
     return this.transport.post('user/add-groups', body);
   }
 
   /** Удалить пользователя из групп */
-  async removeUserGroups(body: RemoveUserGroupsRequest): Promise<ApiResponse<{ result: boolean }>> {
+  async removeUserGroups(body: RemoveUserGroupsRequest): Promise<ApiResponse<[]>> {
     return this.transport.post('user/remove-groups', body);
   }
 
   /** Установить группы пользователя (заменяет текущие) */
-  async setUserGroups(body: SetUserGroupsRequest): Promise<ApiResponse<{ result: boolean }>> {
+  async setUserGroups(body: SetUserGroupsRequest): Promise<ApiResponse<Group[]>> {
     return this.transport.post('user/set-groups', body);
   }
 
   /** Установить персонального менеджера */
-  async setPersonalManager(
-    body: SetPersonalManagerRequest,
-  ): Promise<ApiResponse<{ result: boolean }>> {
+  async setPersonalManager(body: SetPersonalManagerRequest): Promise<ApiResponse<[]>> {
     return this.transport.post('user/set-personal-manager', body);
   }
 
   /** Обновить кастомные поля пользователя */
   async updateUserCustomFields(
     body: UpdateUserCustomFieldsRequest,
-  ): Promise<ApiResponse<{ result: boolean }>> {
+  ): Promise<ApiResponse<UpdateCustomField[]>> {
     return this.transport.post('user/update-custom-fields', body);
   }
 
   /** Обновить поля пользователя */
-  async updateUserFields(body: UpdateUserFieldsRequest): Promise<ApiResponse<{ result: boolean }>> {
+  async updateUserFields(body: UpdateUserFieldsRequest): Promise<ApiResponse<[]>> {
     return this.transport.post('user/update-fields', body);
   }
 
   /** Создать диплом пользователю */
-  async createDiploma(body: CreateDiplomaRequest): Promise<ApiResponse<Diploma[]>> {
+  async createDiploma(body: CreateDiplomaRequest): Promise<ApiResponse<{ id: number }>> {
     return this.transport.post('user/create-diploma', body);
   }
 
@@ -347,7 +353,9 @@ export default class GetCourse {
   }
 
   /** Получить кастомные поля пользователя */
-  async getUserCustomFields(params: UserIdentifier): Promise<ApiResponse<UserCustomFields[]>> {
+  async getUserCustomFields(
+    params: UserIdentifier,
+  ): Promise<ApiResponse<Record<string, UserCustomField>>> {
     return this.transport.get('user/get-custom-fields', params);
   }
 
@@ -377,7 +385,9 @@ export default class GetCourse {
   }
 
   /** Получить покупки пользователя */
-  async getUserPurchases(params: UserIdentifier): Promise<ApiResponse<UserPurchase[]>> {
+  async getUserPurchases(
+    params: UserIdentifier & { productId?: number },
+  ): Promise<ApiResponse<UserPurchase[]>> {
     return this.transport.get('user/get-purchases', params);
   }
 
@@ -404,9 +414,7 @@ export default class GetCourse {
   }
 
   /** Добавить комментарий в чат вебинара */
-  async addCommentToWebinar(
-    body: AddCommentToWebinarRequest,
-  ): Promise<ApiResponse<{ result: boolean }>> {
+  async addCommentToWebinar(body: AddCommentToWebinarRequest): Promise<ApiResponse<[]>> {
     return this.transport.post('webinar/add-comment', body);
   }
 
@@ -521,8 +529,8 @@ export default class GetCourse {
    *
    * Возвращает справочник дополнительных полей пользователей и заказов
    */
-  async getCustomFields(): Promise<ApiResponse<CustomField[]>> {
-    return this.legacyTransport.exportRequest<CustomField[]>('account/fields');
+  async getCustomFields(): Promise<ApiResponse<LegacyCustomField[]>> {
+    return this.legacyTransport.exportRequest<LegacyCustomField[]>('account/fields');
   }
 
   /**
