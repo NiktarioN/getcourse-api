@@ -3,109 +3,165 @@ import gc from './helpers/client.ts';
 import { envNum } from './helpers/env.ts';
 
 const userId = envNum(process.env.TEST_USER_ID);
+const adminUserId = envNum(process.env.TEST_ADMIN_USER_ID);
 const groupId = envNum(process.env.TEST_GROUP_ID);
 const telegramChatId = envNum(process.env.TEST_TELEGRAM_CHAT_ID);
 const diplomaTemplateId = envNum(process.env.TEST_DIPLOMA_TEMPLATE_ID);
 
 describe('user', () => {
   it.skipIf(Number.isNaN(userId))('getUserFields', async () => {
-    expect((await gc.getUserFields({ userId })).status).toBe(true);
+    const result = await gc.getUserFields({ userId });
+
+    globalThis.console.dir(result, { depth: null });
+    expect(result.status).toBe(true);
   });
 
   it.skipIf(Number.isNaN(userId))('getUserCustomFields', async () => {
-    expect((await gc.getUserCustomFields({ userId })).status).toBe(true);
+    const result = await gc.getUserCustomFields({ userId });
+
+    globalThis.console.dir(result, { depth: null });
+    expect(result.status).toBe(true);
   });
 
   it.skipIf(Number.isNaN(userId))('getUserBalance', async () => {
-    expect((await gc.getUserBalance({ userId })).status).toBe(true);
+    const result = await gc.getUserBalance({ userId });
+
+    globalThis.console.dir(result, { depth: null });
+    expect(result.status).toBe(true);
   });
 
   it.skipIf(Number.isNaN(userId))('getUserDeals', async () => {
-    expect((await gc.getUserDeals({ userId })).status).toBe(true);
+    const result = await gc.getUserDeals({ userId });
+
+    globalThis.console.dir(result, { depth: null });
+    expect(result.status).toBe(true);
   });
 
   it.skipIf(Number.isNaN(userId))('getUserPurchases', async () => {
-    expect((await gc.getUserPurchases({ userId })).status).toBe(true);
+    const result = await gc.getUserPurchases({ userId });
+
+    globalThis.console.dir(result, { depth: null });
+    expect(result.status).toBe(true);
   });
 
   it.skipIf(Number.isNaN(userId))('getUserGroups', async () => {
-    expect((await gc.getUserGroups({ userId })).status).toBe(true);
+    const result = await gc.getUserGroups({ userId });
+
+    globalThis.console.dir(result, { depth: null });
+    expect(result.status).toBe(true);
   });
 
   it.skipIf(Number.isNaN(userId))('getUserTrainings', async () => {
-    expect((await gc.getUserTrainings({ userId })).status).toBe(true);
+    const result = await gc.getUserTrainings({ userId });
+
+    globalThis.console.dir(result, { depth: null });
+    expect(result.status).toBe(true);
   });
 
   it.skipIf(Number.isNaN(userId))('getUserLessonAnswers', async () => {
-    expect((await gc.getUserLessonAnswers({ userId })).status).toBe(true);
+    const result = await gc.getUserLessonAnswers({ userId });
+
+    globalThis.console.dir(result, { depth: null });
+    expect(result.status).toBe(true);
   });
 
   it.skipIf(Number.isNaN(userId))('getUserAnswers', async () => {
-    expect((await gc.getUserAnswers({ userId })).status).toBe(true);
+    const result = await gc.getUserAnswers({ userId });
+
+    globalThis.console.dir(result, { depth: null });
+    expect(result.status).toBe(true);
   });
 
   it.skipIf(Number.isNaN(userId))('getUserGoalRecords', async () => {
-    expect((await gc.getUserGoalRecords({ userId })).status).toBe(true);
+    const result = await gc.getUserGoalRecords({ userId });
+
+    globalThis.console.dir(result, { depth: null });
+    expect(result.status).toBe(true);
   });
 
   it.skipIf(Number.isNaN(userId))('getUserSchedule', async () => {
-    expect((await gc.getUserSchedule({ userId })).status).toBe(true);
+    const result = await gc.getUserSchedule({ userId });
+
+    globalThis.console.dir(result, { depth: null });
+    expect(result.status).toBe(true);
   });
 
   it.skipIf(Number.isNaN(userId))('getUserDiplomas', async () => {
-    expect((await gc.getUserDiplomas({ userId })).status).toBe(true);
+    const result = await gc.getUserDiplomas({ userId });
+
+    globalThis.console.dir(result, { depth: null });
+    expect(result.status).toBe(true);
   });
 
   it.skipIf(Number.isNaN(telegramChatId))('getUserByTelegramChatId', async () => {
-    expect((await gc.getUserByTelegramChatId(telegramChatId)).status).toBe(true);
+    const result = await gc.getUserByTelegramChatId(telegramChatId);
+
+    globalThis.console.dir(result, { depth: null });
+    expect(result.status).toBe(true);
   });
 
   it.skipIf(Number.isNaN(userId) || Number.isNaN(groupId))('addUserGroups', async () => {
-    expect((await gc.addUserGroups({ userId, groups: [groupId] })).status).toBe(true);
+    const result = await gc.addUserGroups({ userId, groups: [groupId] });
+
+    globalThis.console.dir(result, { depth: null });
+    expect(result.status).toBe(true);
   });
 
   it.skipIf(Number.isNaN(userId) || Number.isNaN(groupId))('removeUserGroups', async () => {
-    expect((await gc.removeUserGroups({ userId, groups: [groupId] })).status).toBe(true);
+    const result = await gc.removeUserGroups({ userId, groups: [groupId] });
+
+    globalThis.console.dir(result, { depth: null });
+    expect(result.status).toBe(true);
   });
 
   it.skipIf(Number.isNaN(userId) || Number.isNaN(groupId))('setUserGroups', async () => {
-    expect((await gc.setUserGroups({ userId, groups: [groupId] })).status).toBe(true);
+    const result = await gc.setUserGroups({ userId, groups: [groupId] });
+
+    globalThis.console.dir(result, { depth: null });
+    expect(result.status).toBe(true);
   });
 
   it.skipIf(Number.isNaN(userId))('setPersonalManager', async () => {
-    expect((await gc.setPersonalManager({ userId, managerId: 0 })).status).toBe(true);
+    const result = await gc.setPersonalManager({ userId, managerId: adminUserId });
+
+    globalThis.console.dir(result, { depth: null });
+    expect(result.status).toBe(true);
   });
 
   it.skipIf(Number.isNaN(userId))('updateUserFields', async () => {
-    expect((await gc.updateUserFields({ userId })).status).toBe(true);
+    const result = await gc.updateUserFields({ userId, comment: 'Тестовый комментарий' });
+
+    globalThis.console.dir(result, { depth: null });
+    expect(result.status).toBe(true);
   });
 
   it.skipIf(Number.isNaN(userId))('addUserBalance', async () => {
-    expect(
-      (
-        await gc.addUserBalance({
-          userId,
-          value: 10,
-          type: 'virtual',
-          comment: 'Тестовые рубли',
-        })
-      ).status,
-    ).toBe(true);
+    const result = await gc.addUserBalance({
+      userId,
+      value: 10,
+      type: 'virtual',
+      comment: 'Тестовые рубли',
+    });
+
+    globalThis.console.dir(result, { depth: null });
+    expect(result.status).toBe(true);
   });
 
   it.skipIf(Number.isNaN(userId) || Number.isNaN(diplomaTemplateId))('createDiploma', async () => {
-    expect(
-      (
-        await gc.createDiploma({
-          userId,
-          templateId: diplomaTemplateId,
-          allowDuplicates: true,
-        })
-      ).status,
-    ).toBe(true);
+    const result = await gc.createDiploma({
+      userId,
+      templateId: diplomaTemplateId,
+      allowDuplicates: true,
+    });
+
+    globalThis.console.dir(result, { depth: null });
+    expect(result.status).toBe(true);
   });
 
   it.skipIf(Number.isNaN(userId))('updateUserCustomFields', async () => {
-    expect((await gc.updateUserCustomFields({ userId, customFields: {} })).status).toBe(true);
+    const result = await gc.updateUserCustomFields({ userId, customFields: {} });
+
+    globalThis.console.dir(result, { depth: null });
+    expect(result.status).toBe(true);
   });
 });

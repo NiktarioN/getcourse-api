@@ -40,7 +40,7 @@ export type DealStatus =
 /** Заказ */
 export interface Deal {
   id: number;
-  ACCOUNT_ID: number;
+  account_id: number;
   user_id: number;
   updated_at: string;
   created_at: string;
@@ -48,25 +48,26 @@ export interface Deal {
   cost: number;
   currency: string;
   status: DealStatus;
-  is_payed: number;
+  is_payed: boolean;
   title: string;
   number: number;
   foreign_code: string;
-  manager_user_id: number;
+  manager_user_id: number | null;
   partner_user_id: number | null;
   partner_code_id: number | null;
   payed_value: number;
   earned_value: number;
+  commission_value: number;
   payed_at: string | null;
-  is_finished: number;
+  is_finished: boolean;
   finished_at: string | null;
   user_payed_money_value: number;
   created_by_session_id: number | null;
   client_deal_number: number;
   promo_code_id: number | null;
-  cancel_reason_id: number;
-  cancel_reason_comment: string;
-  status_updated_at: string;
+  cancel_reason_id: number | null;
+  cancel_reason_comment: string | null;
+  status_updated_at: string | null;
   to_deposit_money_value: number;
   created_by_visit_id: number | null;
   for_account_id: number | null;
@@ -75,6 +76,7 @@ export interface Deal {
 
 /** Сообщение из истории диалога */
 export interface DialogMessage {
+  message_id: number;
   created_at: string;
   user_id: number;
   message_type: string;
@@ -83,6 +85,8 @@ export interface DialogMessage {
     id: number;
     title: string;
   };
+  attached_files: { url: string }[] | null;
+  transport: (number | null)[] | null;
   comment_text: string;
 }
 
@@ -103,7 +107,7 @@ export interface LessonAnswerComment {
   id: number;
   comment_text: string;
   user_id: number;
-  files: string;
+  files: string | string[];
   created_at: string;
 }
 
@@ -125,17 +129,20 @@ export interface LessonAnswer {
   status: LessonAnswerStatus;
   type: LessonAnswerType;
   reviewer_user_id: number;
-  reviewed_at: string;
-  review_text: string;
-  review_file: string;
+  reviewed_at: string | null;
+  review_text?: string | null;
+  review_file?: string | null;
   training_id: number;
   training_name: string;
-  need_teacher_reaction: number;
+  need_teacher_reaction: 1 | 0;
   need_teacher_reaction_at: string;
-  response_teacher_id: number;
+  response_teacher_id: number | null;
+  comments: LessonAnswerComment[];
+  /** Пустая коллекция приходит как [], непустая — как Record */
+  additional_fields: Record<string, string | number> | [];
 }
 
-/** Предложение (продукт/оффер) */
+/** Предложение */
 export interface Offer {
   id: number;
   title: string;
@@ -193,15 +200,42 @@ export interface UserPurchase {
   id: number;
   product_id: number;
   user_id: number;
-  start_at: string;
-  finish_at: string;
+  ACCOUNT_ID: number;
+  initial_deal_position_id: number | null;
+  start_at: string | null;
+  finish_at: string | null;
   period_type: string;
   is_actual: number;
+  is_active: number;
+  is_payed: number;
+  is_auto_prolongate: number;
+  is_disabled: number;
+  is_disabled_by_manager: number | null;
+  number: number;
+  money_sum: number;
+  state: string | null;
   created_at: string;
   updated_at: string;
-  money_sum: number;
-  is_payed: number;
-  state: string | null;
+  rollbacked_at: string | null;
+  user_started_at: string | null;
+  user_finished_at: string | null;
+  template_payment_id: number | null;
+  replaced_by_user_product_id: number | null;
+  saas_account_id: number | null;
+  stream_id: number | null;
+  prolong_offer_id: number | null;
+  promo_code_id: number | null;
+  cancel_reason_id: number | null;
+  form_value_set_id: number | null;
+  user_product_group_id: number | null;
+  response_teacher_id: number | null;
+  auto_prolong_enabled: number | null;
+  last_prolong_status: string | null;
+  manager_status: number;
+  manager_status_comment: string | null;
+  need_select_stream: number;
+  training_options: number;
+  training_answer_priority: number;
 }
 
 /** Тренинг */
@@ -250,7 +284,7 @@ export interface Webinar {
 /** Пользователь */
 export interface User {
   id: number;
-  deleted: number;
+  deleted: boolean;
   deleted_at: string | null;
   type: string;
   profile_image: string | null;
@@ -258,13 +292,13 @@ export interface User {
   created_at: string;
   profile_id: number;
   activated_at: string;
-  first_name: string;
-  last_name: string;
+  first_name: string | null;
+  last_name: string | null;
   country: string | null;
   city: string | null;
   phone: string | null;
   phone_standart: string | null;
-  phone_confirmed: number;
+  phone_confirmed: boolean;
   comment: string | null;
   partner_user_id: number | null;
   subscribe_status: string;
@@ -272,16 +306,9 @@ export interface User {
   birthday: string | null;
   language: string;
   gender: string | null;
-  is_email_confirmed: number;
+  email: string;
+  is_email_confirmed: boolean;
   geo_area_id: number | null;
-}
-
-/** Кастомное поле пользователя */
-export interface UserCustomFields {
-  name: string;
-  value: string;
-  type: string;
-  units: string;
 }
 
 /** Цель пользователя */
@@ -318,12 +345,6 @@ export interface OfferTag {
   tags: string[];
 }
 
-/** Кастомное поле заказа */
-export interface DealCustomField {
-  id: number;
-  value: string;
-}
-
 /** Информация о балансе пользователя */
 export interface UserBalance {
   value: number;
@@ -331,8 +352,64 @@ export interface UserBalance {
   type: string;
 }
 
+/** Комментарий к заказу */
+export interface DealComment {
+  id: number;
+  created_at: string;
+  user_id: number;
+  text: string;
+}
+
+/** Звонок по заказу */
+export interface DealCall {
+  id: number;
+  created_at: string;
+  user_id: number;
+  text: string;
+  file_link: string;
+  duration: number | null;
+}
+
 /** Причина отмены заказа */
 export interface CancelReason {
   id: number;
   name: string;
+}
+
+/** Тип поля */
+type FieldType =
+  | 'select'
+  | 'multiselect'
+  | 'string'
+  | 'text'
+  | 'date'
+  | 'numeric'
+  | 'checkbox'
+  | 'file';
+
+/** Значение поля */
+type FieldValue = string | string[] | number | null;
+
+/** Кастомное поле заказа */
+export interface DealCustomField {
+  id: number;
+  name: string;
+  value: FieldValue;
+  type: FieldType;
+}
+
+/** Кастомное поле пользователя */
+export interface UserCustomField {
+  name: string;
+  value: FieldValue;
+  type: FieldType;
+  units: string | null;
+}
+
+/** Кастомное поле после обновления */
+export interface UpdateCustomField {
+  name: string;
+  value: FieldValue;
+  type: FieldType;
+  units: string | null;
 }
