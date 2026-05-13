@@ -10,55 +10,79 @@ const dealPositionId = envNum(process.env.TEST_DEAL_POSITION_ID);
 
 describe('deal', () => {
   it('getDealCancelReasons', async () => {
-    expect((await gc.getDealCancelReasons()).status).toBe(true);
+    const result = await gc.getDealCancelReasons();
+
+    globalThis.console.dir(result, { depth: null });
+    expect(result.status).toBe(true);
   });
 
   it('getDealsTags', async () => {
-    expect((await gc.getDealsTags()).status).toBe(true);
+    const result = await gc.getDealsTags();
+
+    globalThis.console.dir(result, { depth: null });
+    expect(result.status).toBe(true);
   });
 
   it.skipIf(Number.isNaN(dealId))('getDealFields', async () => {
-    expect((await gc.getDealFields(dealId)).status).toBe(true);
+    const result = await gc.getDealFields(dealId);
+
+    globalThis.console.dir(result, { depth: null });
+    expect(result.status).toBe(true);
   });
 
   it.skipIf(Number.isNaN(dealId))('getDealCustomFields', async () => {
-    expect((await gc.getDealCustomFields(dealId)).status).toBe(true);
+    const result = await gc.getDealCustomFields(dealId);
+
+    globalThis.console.dir(result, { depth: null });
+    expect(result.status).toBe(true);
   });
 
   it.skipIf(Number.isNaN(dealId))('getDealComments', async () => {
-    expect((await gc.getDealComments(dealId)).status).toBe(true);
+    const result = await gc.getDealComments(dealId);
+
+    globalThis.console.dir(result, { depth: null });
+    expect(result.status).toBe(true);
   });
 
   it.skipIf(Number.isNaN(dealId))('getDealCalls', async () => {
-    expect((await gc.getDealCalls(dealId)).status).toBe(true);
+    const result = await gc.getDealCalls(dealId);
+
+    globalThis.console.dir(result, { depth: null });
+    expect(result.status).toBe(true);
   });
 
   it.skipIf(Number.isNaN(dealId))('updateDealFields', async () => {
-    expect((await gc.updateDealFields({ dealId })).status).toBe(true);
+    const result = await gc.updateDealFields({ dealId });
+
+    globalThis.console.dir(result, { depth: null });
+    expect(result.status).toBe(true);
   });
 
   it.skipIf(Number.isNaN(dealId) || Number.isNaN(offerId))('addDealPositions', async () => {
-    expect((await gc.addDealPositions({ dealId, positions: [{ offerId }] })).status).toBe(true);
+    const result = await gc.addDealPositions({ dealId, positions: [{ offerId }] });
+
+    globalThis.console.dir(result, { depth: null });
+    expect(result.status).toBe(true);
   });
 
   it.skipIf(Number.isNaN(dealId) || Number.isNaN(dealPositionId))(
     'removeDealPositions',
     async () => {
-      expect((await gc.removeDealPositions({ dealId, positionIds: [dealPositionId] })).status).toBe(
-        true,
-      );
+      const result = await gc.removeDealPositions({ dealId, positionIds: [dealPositionId] });
+
+      globalThis.console.dir(result, { depth: null });
+      expect(result.status).toBe(true);
     },
   );
 
   it.skipIf(Number.isNaN(dealId) || Number.isNaN(userId))('addCommentToDeal', async () => {
-    expect(
-      (
-        await gc.addCommentToDeal({
-          dealId,
-          userId: adminUserId,
-          text: 'Тестовый комментарий',
-        })
-      ).status,
-    ).toBe(true);
+    const result = await gc.addCommentToDeal({
+      dealId,
+      userId: adminUserId,
+      text: 'Тестовый комментарий',
+    });
+
+    globalThis.console.dir(result, { depth: null });
+    expect(result.status).toBe(true);
   });
 });
