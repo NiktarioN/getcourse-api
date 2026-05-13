@@ -143,18 +143,19 @@ await gc.setUri({
 
 ### Заказы
 
-| Метод                         | Описание                       |
-| ----------------------------- | ------------------------------ |
-| `getDealFields(dealId)`       | Получить поля заказа           |
-| `getDealCustomFields(dealId)` | Получить кастомные поля заказа |
-| `getDealComments(dealId)`     | Получить комментарии заказа    |
-| `getDealCalls(dealId)`        | Получить звонки по заказу      |
-| `getDealCancelReasons()`      | Получить причины отмены        |
-| `getDealsTags(params?)`       | Получить заказы с тегами       |
-| `addCommentToDeal(body)`      | Добавить комментарий к заказу  |
-| `addDealPositions(body)`      | Добавить позиции в заказ       |
-| `removeDealPositions(body)`   | Удалить позиции из заказа      |
-| `updateDealFields(body)`      | Обновить поля заказа           |
+| Метод                          | Описание                       |
+| ------------------------------ | ------------------------------ |
+| `getDealFields(dealId)`        | Получить поля заказа           |
+| `getDealCustomFields(dealId)`  | Получить кастомные поля заказа |
+| `getDealComments(dealId)`      | Получить комментарии заказа    |
+| `getDealCalls(dealId)`         | Получить звонки по заказу      |
+| `getDealCancelReasons()`       | Получить причины отмены        |
+| `getDealsTags(params?)`        | Получить заказы с тегами       |
+| `addCommentToDeal(body)`       | Добавить комментарий к заказу  |
+| `addDealPositions(body)`       | Добавить позиции в заказ       |
+| `removeDealPositions(body)`    | Удалить позиции из заказа      |
+| `updateDealFields(body)`       | Обновить поля заказа           |
+| `updateDealCustomFields(body)` | Обновить кастомные поля заказа |
 
 ```ts
 // Получить заказ
@@ -366,8 +367,11 @@ npm run test
 # Только экспорт (медленно — тратит лимит API: 100 запросов за 2 часа)
 npm run test:export
 
-# Можно запускать тесты на отдельных файлах
-npx vitest run tests/user.test.ts
+# Запуск тестов отдельного файла
+npm run test -- tests/user.test.ts
+
+# Запуск конкретного теста в файле по имени
+npm run test -- tests/user.test.ts -t "getUserFields"
 ```
 
 ---
