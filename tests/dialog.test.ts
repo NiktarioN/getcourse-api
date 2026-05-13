@@ -8,7 +8,7 @@ const departmentId = envNum(process.env.TEST_DEPARTMENT_ID);
 
 describe('dialog', () => {
   it.skipIf(Number.isNaN(dialogId))('getDialogHistory', async () => {
-    const result = await gc.getDialogHistory({ dialogId: 318232881 });
+    const result = await gc.getDialogHistory({ dialogId });
 
     globalThis.console.dir(result, { depth: null });
     expect(result.status).toBe(true);

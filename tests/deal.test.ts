@@ -85,4 +85,18 @@ describe('deal', () => {
     globalThis.console.dir(result, { depth: null });
     expect(result.status).toBe(true);
   });
+
+  it.skipIf(Number.isNaN(dealId))('updateDealCustomFields', async () => {
+    const result = await gc.updateDealCustomFields({
+      dealId,
+      customFields: {
+        '1': 'Значение 1',
+        '3': 34,
+        '15': 'Значение 2',
+      },
+    });
+
+    globalThis.console.dir(result, { depth: null });
+    expect(result.status).toBe(true);
+  });
 });

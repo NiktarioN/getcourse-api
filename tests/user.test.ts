@@ -3,6 +3,7 @@ import gc from './helpers/client.ts';
 import { envNum } from './helpers/env.ts';
 
 const userId = envNum(process.env.TEST_USER_ID);
+const adminUserId = envNum(process.env.TEST_ADMIN_USER_ID);
 const groupId = envNum(process.env.TEST_GROUP_ID);
 const telegramChatId = envNum(process.env.TEST_TELEGRAM_CHAT_ID);
 const diplomaTemplateId = envNum(process.env.TEST_DIPLOMA_TEMPLATE_ID);
@@ -121,14 +122,14 @@ describe('user', () => {
   });
 
   it.skipIf(Number.isNaN(userId))('setPersonalManager', async () => {
-    const result = await gc.setPersonalManager({ userId, managerId: 0 });
+    const result = await gc.setPersonalManager({ userId, managerId: adminUserId });
 
     globalThis.console.dir(result, { depth: null });
     expect(result.status).toBe(true);
   });
 
   it.skipIf(Number.isNaN(userId))('updateUserFields', async () => {
-    const result = await gc.updateUserFields({ userId });
+    const result = await gc.updateUserFields({ userId, comment: 'Тестовый комментарий' });
 
     globalThis.console.dir(result, { depth: null });
     expect(result.status).toBe(true);

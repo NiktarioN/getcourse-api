@@ -6,7 +6,10 @@ const offerId = process.env.TEST_OFFER_ID;
 
 describe('legacy', () => {
   it('getCustomFields', async () => {
-    expect((await gc.getCustomFields()).status).toBe(true);
+    const result = await gc.getCustomFields();
+
+    globalThis.console.dir(result, { depth: null });
+    expect(result.status).toBe(true);
   });
 
   it.skipIf(!addUserEmail)('addUser', async () => {
