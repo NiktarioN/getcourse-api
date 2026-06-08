@@ -55,6 +55,7 @@ export interface Deal {
   manager_user_id: number | null;
   partner_user_id: number | null;
   partner_code_id: number | null;
+  payment_link: string;
   payed_value: number;
   earned_value: number;
   commission_value: number;
@@ -102,6 +103,16 @@ export interface Diploma {
   title: string;
 }
 
+/** Дополнительное поле ответа на урок */
+export interface LessonAnswerAdditionalField {
+  id: number;
+  title: string;
+  type: string;
+  required: string | boolean;
+  hidden: boolean;
+  value: string | string[] | { text: string; hash: string } | null;
+}
+
 /** Комментарий к ответу на урок */
 export interface LessonAnswerComment {
   id: number;
@@ -138,8 +149,7 @@ export interface LessonAnswer {
   need_teacher_reaction_at: string;
   response_teacher_id: number | null;
   comments: LessonAnswerComment[];
-  /** Пустая коллекция приходит как [], непустая — как Record */
-  additional_fields: Record<string, string | number> | [];
+  additional_fields: LessonAnswerAdditionalField[];
 }
 
 /** Предложение */
@@ -281,6 +291,13 @@ export interface Webinar {
   params: WebinarParam;
 }
 
+/** Связки пользователя с ботами мессенджеров */
+export interface UserBotLink {
+  telegram: { gc_bot_id: number; tg_user_id: number }[];
+  max: { gc_bot_id: number; max_user_id: number }[];
+  vk: { vk_user_id: number }[];
+}
+
 /** Пользователь */
 export interface User {
   id: number;
@@ -309,6 +326,7 @@ export interface User {
   email: string;
   is_email_confirmed: boolean;
   geo_area_id: number | null;
+  bot_link: UserBotLink;
 }
 
 /** Цель пользователя */
