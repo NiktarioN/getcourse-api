@@ -148,6 +148,14 @@ export interface AddNoteRequest {
 /** Тип баланса */
 export type BalanceType = 'normal' | 'virtual' | 'points';
 
+/** Добавить комментарий к пользователю */
+export interface AddCommentToUserRequest extends UserIdentifier {
+  /** ID автора комментария */
+  authorId: number;
+  /** Текст комментария */
+  text: string;
+}
+
 /** Добавить баланс пользователю */
 export interface AddUserBalanceRequest extends UserIdentifier {
   /** Количество */

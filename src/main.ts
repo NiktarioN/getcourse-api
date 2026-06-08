@@ -51,6 +51,7 @@ import type {
   AddCommentToDealRequest,
   AddCommentToDialogRequest,
   AddCommentToLessonAnswerRequest,
+  AddCommentToUserRequest,
   AddCommentToWebinarRequest,
   AddDealPositionsRequest,
   AddNoteRequest,
@@ -221,7 +222,7 @@ export default class GetCourse {
   /** Добавить комментарий в диалог */
   async addCommentToDialog(
     body: AddCommentToDialogRequest,
-  ): Promise<ApiResponse<{ result: boolean }>> {
+  ): Promise<ApiResponse<{ result: boolean; comment_id: number }>> {
     return this.transport.post('dialog/add-comment', body);
   }
 
@@ -291,6 +292,11 @@ export default class GetCourse {
   /** Добавить баланс пользователю */
   async addUserBalance(body: AddUserBalanceRequest): Promise<ApiResponse<UserBalance>> {
     return this.transport.post('user/add-balance', body);
+  }
+
+  /** Добавить комментарий к пользователю */
+  async addCommentToUser(body: AddCommentToUserRequest): Promise<ApiResponse<{ result: boolean }>> {
+    return this.transport.post('user/add-comment', body);
   }
 
   /** Добавить пользователя в группы */
@@ -370,7 +376,7 @@ export default class GetCourse {
   }
 
   /** Получить поля пользователя */
-  async getUserFields(params: UserIdentifier): Promise<ApiResponse<User[]>> {
+  async getUserFields(params: UserIdentifier): Promise<ApiResponse<User>> {
     return this.transport.get('user/get-fields', params);
   }
 
