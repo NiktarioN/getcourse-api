@@ -135,6 +135,17 @@ describe('user', () => {
     expect(result.status).toBe(true);
   });
 
+  it.skipIf(Number.isNaN(userId) || Number.isNaN(adminUserId))('addCommentToUser', async () => {
+    const result = await gc.addCommentToUser({
+      userId,
+      authorId: adminUserId,
+      text: 'Тестовый комментарий в пользователя',
+    });
+
+    globalThis.console.dir(result, { depth: null });
+    expect(result.status).toBe(true);
+  });
+
   it.skipIf(Number.isNaN(userId))('addUserBalance', async () => {
     const result = await gc.addUserBalance({
       userId,
