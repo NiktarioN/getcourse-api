@@ -45,7 +45,7 @@ const gc = new GetCourse({
 
 // Получить данные пользователя
 const user = await gc.getUserFields({ userId: 123 });
-console.log(user.data[0]?.first_name);
+console.log(user.data.first_name);
 
 // Получить заказы пользователя
 const deals = await gc.getUserDeals({ email: "user@mail.ru" });
@@ -151,7 +151,7 @@ await gc.setUri({
 | `getDealCalls(dealId)`         | Получить звонки по заказу      |
 | `getDealCancelReasons()`       | Получить причины отмены        |
 | `getDealsTags(params?)`        | Получить заказы с тегами       |
-| `addCommentToDeal(body)`       | Добавить комментарий к заказу  |
+| `addCommentToDeal(body)`       | Добавить комментарий заказу    |
 | `addDealPositions(body)`       | Добавить позиции в заказ       |
 | `removeDealPositions(body)`    | Удалить позиции из заказа      |
 | `updateDealFields(body)`       | Обновить поля заказа           |
@@ -218,29 +218,30 @@ await gc.addDealPositions({
 
 ### Пользователи
 
-| Метод                             | Описание                     |
-| --------------------------------- | ---------------------------- |
-| `getUserFields(params)`           | Получить поля пользователя   |
-| `getUserCustomFields(params)`     | Получить кастомные поля      |
-| `getUserDeals(params)`            | Получить заказы пользователя |
-| `getUserDiplomas(params)`         | Получить дипломы             |
-| `getUserGroups(params)`           | Получить группы              |
-| `getUserBalance(params)`          | Получить баланс              |
-| `getUserPurchases(params)`        | Получить покупки             |
-| `getUserTrainings(params)`        | Получить тренинги            |
-| `getUserSchedule(params)`         | Получить расписание          |
-| `getUserGoalRecords(params)`      | Получить записи целей        |
-| `getUserAnswers(params)`          | Получить ответы              |
-| `getUserLessonAnswers(params)`    | Получить ответы на уроки     |
-| `getUserByTelegramChatId(chatId)` | Найти по Telegram Chat ID    |
-| `addUserBalance(body)`            | Добавить баланс              |
-| `addUserGroups(body)`             | Добавить в группы            |
-| `removeUserGroups(body)`          | Удалить из групп             |
-| `setUserGroups(body)`             | Установить группы            |
-| `setPersonalManager(body)`        | Установить менеджера         |
-| `updateUserFields(body)`          | Обновить поля пользователя   |
-| `updateUserCustomFields(body)`    | Обновить кастомные поля      |
-| `createDiploma(body)`             | Создать диплом               |
+| Метод                             | Описание                          |
+| --------------------------------- | --------------------------------- |
+| `getUserFields(params)`           | Получить поля пользователя        |
+| `getUserCustomFields(params)`     | Получить кастомные поля           |
+| `getUserDeals(params)`            | Получить заказы пользователя      |
+| `getUserDiplomas(params)`         | Получить дипломы                  |
+| `getUserGroups(params)`           | Получить группы                   |
+| `getUserBalance(params)`          | Получить баланс                   |
+| `getUserPurchases(params)`        | Получить покупки                  |
+| `getUserTrainings(params)`        | Получить тренинги                 |
+| `getUserSchedule(params)`         | Получить расписание               |
+| `getUserGoalRecords(params)`      | Получить записи целей             |
+| `getUserAnswers(params)`          | Получить ответы                   |
+| `getUserLessonAnswers(params)`    | Получить ответы на уроки          |
+| `getUserByTelegramChatId(chatId)` | Найти по Telegram Chat ID         |
+| `addUserBalance(body)`            | Добавить баланс                   |
+| `addCommentToUser(body)`          | Добавить комментарий пользователю |
+| `addUserGroups(body)`             | Добавить в группы                 |
+| `removeUserGroups(body)`          | Удалить из групп                  |
+| `setUserGroups(body)`             | Установить группы                 |
+| `setPersonalManager(body)`        | Установить менеджера              |
+| `updateUserFields(body)`          | Обновить поля пользователя        |
+| `updateUserCustomFields(body)`    | Обновить кастомные поля           |
+| `createDiploma(body)`             | Создать диплом                    |
 
 ```ts
 // Поиск по userId или email
@@ -256,6 +257,13 @@ await gc.addUserBalance({
   value: 500,
   type: "virtual",
   comment: "Бонус за активность",
+});
+
+// Добавить комментарий пользователю (userId — адресат, authorId — автор)
+await gc.addCommentToUser({
+  userId: 123,
+  authorId: 456,
+  text: "Тестовый комментарий в ленту пользователя",
 });
 
 // Обновить поля
