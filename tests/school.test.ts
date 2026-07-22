@@ -1,25 +1,17 @@
-import { describe, expect, it } from 'vitest';
+import { describe, it } from 'vitest';
 import gc from './helpers/client.ts';
+import expectTrue from './helpers/expect-true.ts';
 
 describe('school', () => {
   it('getAllGroups', async () => {
-    const result = await gc.getAllGroups();
-
-    globalThis.console.dir(result, { depth: null });
-    expect(result.status).toBe(true);
+    await expectTrue(gc.getAllGroups());
   });
 
   it('getAllPersonalManagers', async () => {
-    const result = await gc.getAllPersonalManagers();
-
-    globalThis.console.dir(result, { depth: null });
-    expect(result.status).toBe(true);
+    await expectTrue(gc.getAllPersonalManagers());
   });
 
   it('getTrainings', async () => {
-    const result = await gc.getTrainings();
-
-    globalThis.console.dir(result, { depth: null });
-    expect(result.status).toBe(true);
+    await expectTrue(gc.getTrainings());
   });
 });
