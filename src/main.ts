@@ -75,7 +75,7 @@ import type {
   UpdateUserCustomFieldsRequest,
   UpdateUserFieldsRequest,
 } from './types/requests.ts';
-import type { SetUriRequest } from './types/webhooks.ts';
+import type { SetUriRequest, SetUriResponse } from './types/webhooks.ts';
 
 /**
  * Клиент для работы с API GetCourse
@@ -130,15 +130,16 @@ export default class GetCourse {
   /**
    * Установить URI для получения событий (вебхук)
    *
-   * Поддерживаемые события:
-   * - Входящие сообщения (event_object_id = 1): event_id = 1, 2, 3
-   * - Заказы (event_object_id = 2): event_id = 1, 2, 3
-   * - Комментарии к урокам (event_object_id = 4): event_id = 1
-   * - Комментарии к ответам (event_object_id = 5): event_id = 1
-   * - Комментарии вебинаров (event_object_id = 7): event_id = 1
+   * Поддерживаемые события (event_object_id → event_id):
+   * - Входящие сообщения (1): 1 — новый диалог, 2 — переоткрыт диалог, 3 — новое сообщение
+   * - Заказы (2): 1 — создан, 2 — смена статуса, 3 — оплачен
+   * - Комментарии к урокам (4): 1 — добавлен ответ на урок
+   * - Комментарии к ответам (5): 1 — добавлен комментарий к ответу
+   * - Комментарии вебинаров (7): 1 — новый комментарий от зрителя
+   * - Звонки (8): 1 — новый звонок
    */
-  async setUri(body: SetUriRequest): Promise<ApiResponse<null>> {
-    return this.transport.post('set-uri', body);
+  async setUri(body: SetUriRequest): Promise<SetUriResponse> {
+    return this.transport.postRaw<SetUriResponse>('set-uri', body);
   }
 
   // ─── School (common) ────────────────────────────────────────────────────────

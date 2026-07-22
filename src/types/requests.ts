@@ -1,8 +1,3 @@
-/**
- * Request-типы для POST эндпоинтов
- * Соответствуют компонентам schemas в OpenAPI схеме
- */
-
 import type { UserIdentifier } from './common.ts';
 import type { DealStatus, LessonAnswerStatus } from './models.ts';
 

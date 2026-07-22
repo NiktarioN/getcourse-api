@@ -1,7 +1,7 @@
 /**
  * Базовый ответ от API GetCourse
  */
-export interface ResultResponse {
+export interface BaseResultResponse {
   status: boolean;
   message: string;
   code: number;
@@ -9,9 +9,21 @@ export interface ResultResponse {
 }
 
 /**
+ * Отдельный вид ответа от API GetCourse
+ */
+export interface SuccessResultResponse {
+  success: string;
+}
+
+/**
+ * Результат выполнения запроса
+ */
+export type ResultResponse = Partial<BaseResultResponse & SuccessResultResponse>;
+
+/**
  * Типизированный ответ с данными
  */
-export interface ApiResponse<T> extends ResultResponse {
+export interface ApiResponse<T> extends BaseResultResponse {
   data: T;
 }
 

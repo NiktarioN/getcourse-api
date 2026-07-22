@@ -1,161 +1,77 @@
-/**
- * Типы вебхуков GetCourse API
- */
-
-/** Объекты событий */
-export interface EventObjectId {
+/** Карта поддерживаемых событий setUri: объект события → допустимые event_id */
+interface SetUriEventMap {
   /** Входящие сообщения */
-  Dialog: 1;
+  1: 1 | 2 | 3;
   /** Заказы */
-  Deal: 2;
+  2: 1 | 2 | 3;
   /** Комментарии к урокам */
-  LessonComment: 4;
+  4: 1;
   /** Комментарии к ответам */
-  AnswerComment: 5;
+  5: 1;
   /** Комментарии вебинаров */
-  WebinarComment: 7;
+  7: 1;
   /** Звонки */
-  Call: 8;
-}
-
-/** ID событий для Входящих сообщений (event_object_id = 1) */
-export interface DialogEventId {
-  /** Создан новый диалог по сообщению ученика */
-  NewDialog: 1;
-  /** Переоткрыт закрытый диалог по сообщению ученика */
-  DialogReopened: 2;
-  /** Новое сообщение в диалоге от ученика */
-  NewMessage: 3;
-}
-
-/** ID событий для Заказов (event_object_id = 2) */
-export interface DealEventId {
-  /** Создан новый заказ */
-  DealCreated: 1;
-  /** Смена статуса заказа */
-  DealStatusChanged: 2;
-  /** Заказ оплачен */
-  DealPaid: 3;
-}
-
-/** ID событий для Комментариев к урокам (event_object_id = 4) */
-export interface LessonCommentEventId {
-  /** Добавлен ответ на урок */
-  AnswerAdded: 1;
-}
-
-/** ID событий для Комментариев к ответам (event_object_id = 5) */
-export interface AnswerCommentEventId {
-  /** Добавлен комментарий к ответу */
-  CommentAdded: 1;
-}
-
-/** ID событий для Комментариев вебинаров (event_object_id = 7) */
-export interface WebinarCommentEventId {
-  /** Получение новых комментариев от зрителей */
-  NewComment: 1;
-}
-
-/** ID событий для Звонков (event_object_id = 8) */
-export interface CallEventId {
-  /** Получение нового звонка */
-  NewCall: 1;
-}
-
-// ─── Конкретные типы для setUri ────────────────────────────────────────────────
-
-export interface BaseSetUriRequest {
-  /** URI для отправки события */
-  uri: string;
-}
-
-/** Установить URI для события: Создан новый диалог */
-export interface SetUriNewDialogRequest extends BaseSetUriRequest {
-  event_object_id: 1;
-  event_id: 1;
-}
-
-/** Установить URI для события: Переоткрыт диалог */
-export interface SetUriDialogReopenedRequest extends BaseSetUriRequest {
-  event_object_id: 1;
-  event_id: 2;
-}
-
-/** Установить URI для события: Новое сообщение в диалоге */
-export interface SetUriNewMessageRequest extends BaseSetUriRequest {
-  event_object_id: 1;
-  event_id: 3;
-}
-
-/** Установить URI для события: Создан новый заказ */
-export interface SetUriDealCreatedRequest extends BaseSetUriRequest {
-  event_object_id: 2;
-  event_id: 1;
-}
-
-/** Установить URI для события: Смена статуса заказа */
-export interface SetUriDealStatusChangedRequest extends BaseSetUriRequest {
-  event_object_id: 2;
-  event_id: 2;
-}
-
-/** Установить URI для события: Заказ оплачен */
-export interface SetUriDealPaidRequest extends BaseSetUriRequest {
-  event_object_id: 2;
-  event_id: 3;
-}
-
-/** Установить URI для события: Новый звонок */
-export interface SetUriNewCallRequest extends BaseSetUriRequest {
-  event_object_id: 8;
-  event_id: 1;
+  8: 1;
 }
 
 /** Все возможные запросы для метода setUri */
-export type SetUriRequest =
-  | SetUriNewDialogRequest
-  | SetUriDialogReopenedRequest
-  | SetUriNewMessageRequest
-  | SetUriDealCreatedRequest
-  | SetUriDealStatusChangedRequest
-  | SetUriDealPaidRequest
-  | SetUriNewCallRequest;
+export type SetUriRequest = {
+  [Key in keyof SetUriEventMap]: { uri: string } & {
+    event_object_id: Key;
+    event_id: SetUriEventMap[Key];
+  };
+}[keyof SetUriEventMap];
 
-// ─── Payload-типы хуков ──────────────────────────────────────────────────────
-
-/** Данные пользователя в хуке диалога */
-export interface DialogEventUserData {
-  id: number;
-  name: string;
-  email: string;
+/** Ответ метода setUri */
+export interface SetUriResponse {
+  success: 'OK';
 }
 
-/** Данные отдела в хуке диалога */
-export interface DialogEventDepartment {
-  id: number;
-  title: string;
+// ─── Данные о звонках (event_object_id: 8) ───────────────────────────────────────────────────────────────────
+
+/** Длительность звонка в секундах */
+interface WebhookCallAtcDuration {
+  billsec: number;
+  seconds: number;
 }
 
-/** Payload хука входящего диалога (event_object_id = 1) */
-export interface DialogMessageEventPayload {
-  message_id: number;
-  dialog_id: number;
-  event_id: number;
-  message: string;
+/** Данные АТС по звонку */
+interface WebhookCallAtc {
+  to: string;
+  date: string;
+  atc_id: number;
+  caller: string;
+  /** Часто встречаются: "Carousel_OnLinePBX", "Carusel", также попадаются номера телефонов и пустая строка */
+  gateway: string;
+  duration: WebhookCallAtcDuration;
+  /** null у коротких звонков без записи разговора */
+  file_link: string | null;
+  caller_name: string;
+  hangup_cause: string;
+}
+
+/** Объект звонка */
+interface WebhookCallContext {
+  id: number;
+  type: 'Deal' | 'User';
+}
+
+/** Объект звонка */
+export interface WebhookCall {
+  id: number;
+  type: 'call';
+  direction: 'outcome' | 'income';
+  created_by: 'user' | 'atc';
   created_at: string;
-  transport: number | null;
-  personal_manager_id: number | null;
-  department: DialogEventDepartment;
-  attached_files: { url: string }[] | null;
-  user_data: DialogEventUserData;
-}
-
-/** Payload хука комментария к ответу (event_object_id = 5, event_id = 1) */
-export interface AnswerCommentEventPayload {
-  answer_id: number;
-  comment_id: number;
-  lesson_id: number;
+  contact_time: string;
+  finish_status: 'contacted' | 'failed';
+  failed_reason: 'no_answer' | 'bad_phone' | 'phone_disabled' | null;
   user_id: number;
-  comment_text: string;
-  created_at: string;
+  manager_user_id: number | null;
+  created_user_id: number | null;
+  title: string | null;
+  comment: string | null;
+  description: string | null;
+  atc: WebhookCallAtc | null;
+  context: WebhookCallContext | null;
 }
