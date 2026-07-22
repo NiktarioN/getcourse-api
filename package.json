@@ -43,6 +43,7 @@
     "postinstall": "cp pre-commit .git/hooks || true",
     "build": "tsdown",
     "lint": "eslint . --max-warnings=0 && tsc -p tsconfig.app.json && tsc -p tsconfig.mjs.json",
+    "lint:fix": "eslint . --fix",
     "test": "vitest run",
     "test:export": "vitest run tests/legacy-export.test.ts"
   },
