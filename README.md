@@ -1,6 +1,6 @@
 # ⚙️ GetCourse API
 
-> **All-in-one пакет для нового и старого API**
+> **All in one пакет для нового и старого API**
 
 [![npm version](https://img.shields.io/npm/v/getcourse-api)](https://www.npmjs.com/package/getcourse-api)
 [![license](https://img.shields.io/github/license/NiktarioN/getcourse-api)](LICENSE)
@@ -366,7 +366,7 @@ const result = await gc.getExportResult(456789);
 
 Все тесты интеграционные — работают с реальным проектом на GetCourse. Для запуска нужен файл `.env` с ключами API и тестовыми ID (пример в `.env.example`)
 
-Тесты охватывают все методы, кроме установки вебхука
+Тесты охватывают все методы
 
 ```bash
 # Все тесты
