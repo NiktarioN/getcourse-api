@@ -1,5 +1,6 @@
 import 'dotenv/config';
-import GetCourse from '../../src/main.ts';
+
+import GetCourse from '../../src/index.ts';
 
 const { GC_DOMAIN, GC_DEV_KEY, GC_API_KEY } = process.env;
 

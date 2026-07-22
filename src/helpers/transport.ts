@@ -1,4 +1,5 @@
 import axios, { AxiosError } from 'axios';
+
 import GetCourseApiError from './errors/api-error.ts';
 import GetCourseNetworkError from './errors/network-error.ts';
 import ConsoleLogger from './logger.ts';
