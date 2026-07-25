@@ -99,6 +99,10 @@ const configStylistic = defineConfig([
           ],
         },
       ],
+      'perfectionist/sort-named-imports': [
+        'warn',
+        { type: 'alphabetical', order: 'asc', ignoreAlias: true },
+      ],
       '@stylistic/padding-line-between-statements': [
         'warn',
         { blankLine: 'never', prev: '*', next: '*' },

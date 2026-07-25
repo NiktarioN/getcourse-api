@@ -6,7 +6,7 @@ import ConsoleLogger from './logger.ts';
 import { isPresent } from './utils.ts';
 
 import type { AxiosInstance } from 'axios';
-import type { ApiResponse, ResultResponse, Logger } from '../types/common.ts';
+import type { ApiResponse, Logger, ResultResponse } from '../types/common.ts';
 
 const DEFAULT_TIMEOUT = 15_000;
 
