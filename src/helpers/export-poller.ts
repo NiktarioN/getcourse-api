@@ -1,7 +1,7 @@
 import GetCourseApiError from './errors/api-error.ts';
 
 import type { ApiResponse, Logger } from '../types/common.ts';
-import type { ExportedData, ExportPollingOptions } from '../types/legacy.ts';
+import type { ExportedData, ExportPollingOptions } from '../types/legacy/export.ts';
 
 const DEFAULT_POLL_INTERVAL = 30_000;
 const DEFAULT_POLL_TIMEOUT = 300_000;

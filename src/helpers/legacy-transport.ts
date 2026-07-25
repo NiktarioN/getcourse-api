@@ -12,7 +12,7 @@ import type {
   LegacyExportApiResponse,
   LegacyImportApiResponse,
   LegacyImportResult,
-} from '../types/legacy.ts';
+} from '../types/legacy/common.ts';
 
 const DEFAULT_TIMEOUT = 15_000;
 

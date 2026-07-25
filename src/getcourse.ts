@@ -10,11 +10,6 @@ import type {
   UserIdentifier,
 } from './types/common.ts';
 import type {
-  AddUserRequest,
-  AddUserResult,
-  CreateDealRequest,
-  CreateDealResult,
-  CustomField as LegacyCustomField,
   ExportDealsFilters,
   ExportedData,
   ExportGroupUsersFilters,
@@ -22,60 +17,71 @@ import type {
   ExportPaymentsFilters,
   ExportPollingOptions,
   ExportUsersFilters,
-} from './types/legacy.ts';
+  LegacyCustomField,
+} from './types/legacy/export.ts';
 import type {
-  CancelReason,
+  AddUserRequest,
+  AddUserResult,
+  CreateDealRequest,
+  CreateDealResult,
+} from './types/legacy/import.ts';
+import type { ContactActivity } from './types/models/call.ts';
+import type {
   DealCustomField,
-  UserCustomField,
   UpdateCustomField,
-  Deal,
-  DealCall,
-  DealComment,
-  DealTag,
-  DialogMessage,
+  UserCustomField,
+} from './types/models/custom-field.ts';
+import type { CancelReason, Deal, DealComment, DealTag } from './types/models/deal.ts';
+import type { DialogMessage } from './types/models/dialog.ts';
+import type { LessonAnswer, LessonAnswerComment } from './types/models/lesson.ts';
+import type { Offer, OfferTag } from './types/models/offer.ts';
+import type { Group, Training } from './types/models/school.ts';
+import type {
   Diploma,
-  Group,
-  LessonAnswer,
-  LessonAnswerComment,
-  Offer,
-  OfferTag,
-  Training,
   User,
   UserBalance,
   UserGoal,
   UserPurchase,
   UserSchedule,
-  Webinar,
-} from './types/models.ts';
+} from './types/models/user.ts';
+import type { Webinar } from './types/models/webinar.ts';
 import type {
   AddCommentToDealRequest,
-  AddCommentToDialogRequest,
-  AddCommentToLessonAnswerRequest,
-  AddCommentToUserRequest,
-  AddCommentToWebinarRequest,
   AddDealPositionsRequest,
+  RemoveDealPositionsRequest,
+  UpdateDealCustomFieldsRequest,
+  UpdateDealFieldsRequest,
+} from './types/requests/deal.ts';
+import type {
+  AddCommentToDialogRequest,
   AddNoteRequest,
+  ChangeDepartmentRequest,
+  CloseDialogRequest,
+  GetDialogHistoryRequest,
+} from './types/requests/dialog.ts';
+import type {
+  AddCommentToLessonAnswerRequest,
+  ChangeStatusAnswersRequest,
+} from './types/requests/lesson.ts';
+import type {
+  AddCommentToUserRequest,
   AddUserBalanceRequest,
   AddUserGroupsRequest,
   BalanceType,
-  ChangeDepartmentRequest,
-  ChangeStatusAnswersRequest,
-  CloseDialogRequest,
   CreateDiplomaRequest,
-  GetDialogHistoryRequest,
-  GetWebinarsByIdsRequest,
-  ModerateWebinarChatMessageRequest,
-  ModerateWebinarUserRequest,
-  RemoveDealPositionsRequest,
   RemoveUserGroupsRequest,
   SetPersonalManagerRequest,
   SetUserGroupsRequest,
-  UpdateDealCustomFieldsRequest,
-  UpdateDealFieldsRequest,
   UpdateUserCustomFieldsRequest,
   UpdateUserFieldsRequest,
-} from './types/requests.ts';
-import type { SetUriRequest, SetUriResponse } from './types/webhooks.ts';
+} from './types/requests/user.ts';
+import type { SetUriRequest, SetUriResponse } from './types/requests/webhook.ts';
+import type {
+  AddCommentToWebinarRequest,
+  GetWebinarsByIdsRequest,
+  ModerateWebinarChatMessageRequest,
+  ModerateWebinarUserRequest,
+} from './types/requests/webinar.ts';
 
 /**
  * Клиент для работы с API GetCourse
@@ -197,7 +203,7 @@ export default class GetCourse {
   }
 
   /** Получить звонки по заказу */
-  async getDealCalls(dealId: number): Promise<ApiResponse<DealCall[]>> {
+  async getDealCalls(dealId: number): Promise<ApiResponse<ContactActivity[]>> {
     return this.transport.get('deal/get-calls', { dealId });
   }
 
