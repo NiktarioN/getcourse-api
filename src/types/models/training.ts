@@ -1,4 +1,4 @@
-/** Тренинг */
+/** Информация о тренинге */
 export interface Training {
   id: number;
   title: string;
@@ -6,10 +6,4 @@ export interface Training {
   created_at: string;
   status: string;
   lesson_count: number;
-}
-
-/** Группа пользователей */
-export interface Group {
-  id: number;
-  name: string;
 }

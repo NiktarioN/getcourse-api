@@ -29,7 +29,7 @@ export interface UserCustomField {
 }
 
 /** Кастомное поле после обновления */
-export interface UpdateCustomField {
+export interface UpdatedCustomField {
   name: string;
   value: FieldValue;
   type: FieldType;

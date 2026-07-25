@@ -32,7 +32,7 @@ export interface PhoneCall {
   file_link: string | null;
 }
 
-/** Звонки по заказу. Со всеми попытками дозвона */
+/** Звонки по заказу (со всеми попытками дозвона) */
 export interface ContactActivity {
   id: number;
   user_id: number;

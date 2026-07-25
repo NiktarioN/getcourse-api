@@ -81,7 +81,7 @@ export interface DealComment {
 }
 
 /** Причина отмены заказа */
-export interface CancelReason {
+export interface DealCancelReason {
   id: number;
   name: string;
 }

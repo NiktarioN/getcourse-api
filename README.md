@@ -117,15 +117,32 @@ try {
 
 ### Вебхуки
 
-| Метод          | Описание                             |
-| -------------- | ------------------------------------ |
-| `setUri(body)` | Установить URI для получения событий |
+| Метод                       | Описание                 |
+| --------------------------- | ------------------------ |
+| `subscribeWebhook(body)`    | Подписать URI на событие |
+| `unsubscribeWebhook(event)` | Отписать URI от события  |
+
+| Объект события        | `event_object_id` | `event_id`                                                                                     |
+| --------------------- | ----------------- | ---------------------------------------------------------------------------------------------- |
+| Входящие сообщения    | 1                 | 1 — новый диалог, 2 — переоткрыт диалог, 3 — сообщение от ученика, 4 — сообщение от сотрудника |
+| Заказы                | 2                 | 1 — создан, 2 — смена статуса, 3 — оплачен                                                     |
+| Комментарии к урокам  | 4                 | 1 — добавлен ответ на урок                                                                     |
+| Комментарии к ответам | 5                 | 1 — добавлен комментарий к ответу                                                              |
+| Комментарии вебинаров | 7                 | 1 — новый комментарий от зрителя                                                               |
+| Звонки                | 8                 | 1 — новый звонок                                                                               |
+| HelpDesk              | 9                 | 1 — новый тикет, 2 — сообщение от клиента, 3 — сообщение от сотрудника                         |
 
 ```ts
-await gc.setUri({
+await gc.subscribeWebhook({
   uri: "https://myapp.ru/webhook",
-  event_object_id: 2, // Deal
-  event_id: 3, // DealPaid
+  event_object_id: 2, // Заказы
+  event_id: 3, // Заказ оплачен
+});
+
+await gc.unsubscribeWebhook({
+  uri: "https://myapp.ru/webhook",
+  event_object_id: 2,
+  event_id: 3,
 });
 ```
 
@@ -138,6 +155,7 @@ await gc.setUri({
 | `getAllGroups()`           | Получить все группы пользователей     |
 | `getAllPersonalManagers()` | Получить всех персональных менеджеров |
 | `getTrainings()`           | Получить все тренинги                 |
+| `getAllDepartments()`      | Получить все отделы                   |
 
 ---
 
@@ -185,6 +203,25 @@ await gc.addDealPositions({
 | `addCommentToDialog(body)` | Добавить комментарий в диалог |
 | `changeDepartment(body)`   | Изменить отдел диалога        |
 | `closeDialog(body)`        | Закрыть диалог                |
+
+---
+
+### HelpDesk
+
+| Метод                            | Описание                   |
+| -------------------------------- | -------------------------- |
+| `helpdeskGetHistory(body)`       | Получить историю тикета    |
+| `helpdeskAddComment(body)`       | Добавить сообщение в тикет |
+| `helpdeskChangeDepartment(body)` | Изменить отдел тикета      |
+| `helpdeskCloseTicket(body)`      | Закрыть тикет              |
+
+```ts
+await gc.helpdeskCloseTicket({
+  ticketId: 123,
+  closedReason: 2, // клиент доволен
+  closedComment: "Вопрос решён",
+});
+```
 
 ---
 
@@ -380,6 +417,14 @@ npm run test -- tests/api/user.test.ts
 
 # Запуск конкретного теста в файле по имени
 npm run test -- tests/api/user.test.ts -t "getUserFields"
+
+# Подписка на все события вебхуков и отписка от всех
+npm run test -- tests/api/webhooks/subscribe.test.ts
+npm run test -- tests/api/webhooks/unsubscribe.test.ts
+
+# Точечно, по координатам события — имена тестов в обоих файлах совпадают
+npm run test -- tests/api/webhooks/subscribe.test.ts -t "(1,1)"
+npm run test -- tests/api/webhooks/unsubscribe.test.ts -t "(1,1)"
 ```
 
 ---

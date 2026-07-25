@@ -1,4 +1,4 @@
-import type { DialogTransport } from '../models/dialog.ts';
+import type { MessageTransport } from '../models/dialog.ts';
 
 /** Добавить комментарий в диалог */
 export interface AddCommentToDialogRequest {
@@ -7,7 +7,7 @@ export interface AddCommentToDialogRequest {
   /** Текст комментария */
   commentText: string;
   /** Транспорты для отправки */
-  transport: DialogTransport[];
+  transport: MessageTransport[];
   /** ID сотрудника/администратора */
   userId: number;
 }

@@ -1,4 +1,4 @@
-import type { DialogTransport } from '../models/dialog.ts';
+import type { DialogDepartment, MessageTransport } from '../models/dialog.ts';
 
 /** Пользователь в теле вебхука диалога */
 interface WebhookDialogUser {
@@ -7,30 +7,30 @@ interface WebhookDialogUser {
   email: string;
 }
 
-/** Отдел, в котором находится диалог */
-interface WebhookDialogDepartment {
-  id: number;
-  title: string;
-}
-
 /** Файл, приложенный к сообщению */
 interface WebhookDialogFile {
   url: string;
 }
 
-/** Общие поля событий диалога */
-interface WebhookDialogBase {
+/**
+ * Общие поля событий диалога
+ *
+ * Тикеты HelpDesk приходят с точно такой же структурой, поэтому база переиспользуется
+ * в `webhooks/helpdesk.ts` — включая поле `dialog_id`, в котором GetCourse присылает ID тикета
+ */
+export interface WebhookDialogBase {
   /**
    * Текст сообщения. Может быть пустой строкой
-   * У сообщений с вложением GetCourse обычно подставляет текст вида "Получен файл: <имя>"
+   * У сообщений с вложением обычно подставляется текст вида "Получен файл: <имя>"
    */
   message: string;
   dialog_id: number;
-  transport: DialogTransport;
+  /** null у сообщений от сотрудника во «Входящих» — в HelpDesk там приходит 0 */
+  transport: MessageTransport | null;
   user_data: WebhookDialogUser;
   /** Время сообщения в формате "2026-07-24 11:14:09" — не ISO, в отличие от ts в новых событиях */
   created_at: string;
-  department: WebhookDialogDepartment;
+  department: DialogDepartment;
   message_id: number;
   /** Всегда массив, при отсутствии файлов — пустой */
   attached_files: WebhookDialogFile[];
@@ -48,7 +48,12 @@ export interface DialogReopenedWebhook extends WebhookDialogBase {
   event_id: 2;
 }
 
-/** Новое сообщение в диалоге. Приходит и на создание диалога, и на переоткрытие */
-export interface DialogMessageWebhook extends WebhookDialogBase {
+/** Новое сообщение от ученика. Приходит и на создание диалога, и на переоткрытие */
+export interface DialogClientMessageWebhook extends WebhookDialogBase {
   event_id: 3;
+}
+
+/** Новое сообщение от сотрудника */
+export interface DialogEmployeeMessageWebhook extends WebhookDialogBase {
+  event_id: 4;
 }

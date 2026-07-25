@@ -12,7 +12,7 @@ export interface UserSchedule {
 }
 
 /** Диплом пользователя */
-export interface Diploma {
+export interface UserDiploma {
   id: number;
   number: string;
   diploma_template_id: number;
@@ -21,6 +21,12 @@ export interface Diploma {
   image: string | null;
   user_id: number;
   title: string;
+}
+
+/** Группа в которой находится пользователь */
+export interface Group {
+  id: number;
+  name: string;
 }
 
 /** Покупка пользователя */

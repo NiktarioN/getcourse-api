@@ -28,18 +28,19 @@ import type {
 import type { ContactActivity } from './types/models/call.ts';
 import type {
   DealCustomField,
-  UpdateCustomField,
+  UpdatedCustomField,
   UserCustomField,
 } from './types/models/custom-field.ts';
-import type { CancelReason, Deal, DealComment, DealTag } from './types/models/deal.ts';
-import type { DialogMessage } from './types/models/dialog.ts';
+import type { Deal, DealCancelReason, DealComment, DealTag } from './types/models/deal.ts';
+import type { DialogDepartment, DialogMessage } from './types/models/dialog.ts';
 import type { LessonAnswer, LessonAnswerComment } from './types/models/lesson.ts';
 import type { Offer, OfferTag } from './types/models/offer.ts';
-import type { Group, Training } from './types/models/school.ts';
+import type { Training } from './types/models/training.ts';
 import type {
-  Diploma,
+  Group,
   User,
   UserBalance,
+  UserDiploma,
   UserGoal,
   UserPurchase,
   UserSchedule,
@@ -60,6 +61,12 @@ import type {
   GetDialogHistoryRequest,
 } from './types/requests/dialog.ts';
 import type {
+  HelpdeskAddCommentRequest,
+  HelpdeskChangeDepartmentRequest,
+  HelpdeskCloseTicketRequest,
+  HelpdeskGetHistoryRequest,
+} from './types/requests/helpdesk.ts';
+import type {
   AddCommentToLessonAnswerRequest,
   ChangeStatusAnswersRequest,
 } from './types/requests/lesson.ts';
@@ -75,7 +82,11 @@ import type {
   UpdateUserCustomFieldsRequest,
   UpdateUserFieldsRequest,
 } from './types/requests/user.ts';
-import type { SetUriRequest, SetUriResponse } from './types/requests/webhook.ts';
+import type {
+  SubscribeWebhookRequest,
+  SubscribeWebhookResponse,
+  WebhookSubscription,
+} from './types/requests/webhook.ts';
 import type {
   AddCommentToWebinarRequest,
   GetWebinarsByIdsRequest,
@@ -134,18 +145,25 @@ export default class GetCourse {
   // ─── Webhooks ───────────────────────────────────────────────────────────────
 
   /**
-   * Установить URI для получения событий (вебхук)
+   * Подписать URI на событие (вебхук)
    *
    * Поддерживаемые события (event_object_id → event_id):
-   * - Входящие сообщения (1): 1 — новый диалог, 2 — переоткрыт диалог, 3 — новое сообщение
+   * - Входящие сообщения (1): 1 — новый диалог, 2 — переоткрыт диалог,
+   *   3 — сообщение от ученика, 4 — сообщение от сотрудника
    * - Заказы (2): 1 — создан, 2 — смена статуса, 3 — оплачен
    * - Комментарии к урокам (4): 1 — добавлен ответ на урок
    * - Комментарии к ответам (5): 1 — добавлен комментарий к ответу
    * - Комментарии вебинаров (7): 1 — новый комментарий от зрителя
    * - Звонки (8): 1 — новый звонок
+   * - HelpDesk (9): 1 — новый тикет, 2 — сообщение от клиента, 3 — сообщение от сотрудника
    */
-  async setUri(body: SetUriRequest): Promise<SetUriResponse> {
-    return this.transport.postRaw<SetUriResponse>('set-uri', body);
+  async subscribeWebhook(body: SubscribeWebhookRequest): Promise<SubscribeWebhookResponse> {
+    return this.transport.postRaw<SubscribeWebhookResponse>('set-uri', body);
+  }
+
+  /** Отписать URI от события — тот же set-uri с subscribe: 0 */
+  async unsubscribeWebhook(event: WebhookSubscription): Promise<SubscribeWebhookResponse> {
+    return this.transport.postRaw<SubscribeWebhookResponse>('set-uri', { ...event, subscribe: 0 });
   }
 
   // ─── School (common) ────────────────────────────────────────────────────────
@@ -163,6 +181,11 @@ export default class GetCourse {
   /** Получить все тренинги */
   async getTrainings(): Promise<ApiResponse<Training[]>> {
     return this.transport.get('common/get-trainings');
+  }
+
+  /** Получить все отделы */
+  async getAllDepartments(): Promise<ApiResponse<DialogDepartment[]>> {
+    return this.transport.get('common/get-departments');
   }
 
   // ─── Deal (заказы) ──────────────────────────────────────────────────────────
@@ -210,12 +233,12 @@ export default class GetCourse {
   /** Обновить доп. поля заказа */
   async updateDealCustomFields(
     body: UpdateDealCustomFieldsRequest,
-  ): Promise<ApiResponse<UpdateCustomField[]>> {
+  ): Promise<ApiResponse<UpdatedCustomField[]>> {
     return this.transport.post('deal/update-custom-fields', body);
   }
 
   /** Получить список причин отмены заказов */
-  async getDealCancelReasons(): Promise<ApiResponse<CancelReason[]>> {
+  async getDealCancelReasons(): Promise<ApiResponse<DealCancelReason[]>> {
     return this.transport.get('deal/get-cancel-reasons');
   }
 
@@ -246,6 +269,34 @@ export default class GetCourse {
   /** Получить историю диалога */
   async getDialogHistory(body: GetDialogHistoryRequest): Promise<ApiResponse<DialogMessage[]>> {
     return this.transport.get('dialog/get-history', body);
+  }
+
+  // ─── HelpDesk (тикеты) ──────────────────────────────────────────────────────
+
+  /** Добавить сообщение в тикет от имени сотрудника */
+  async helpdeskAddComment(
+    body: HelpdeskAddCommentRequest,
+  ): Promise<ApiResponse<{ result: boolean; comment_id: number }>> {
+    return this.transport.post('helpdesk/add-comment', body);
+  }
+
+  /** Изменить отдел тикета */
+  async helpdeskChangeDepartment(
+    body: HelpdeskChangeDepartmentRequest,
+  ): Promise<ApiResponse<{ result: boolean }>> {
+    return this.transport.post('helpdesk/change-department', body);
+  }
+
+  /** Закрыть тикет */
+  async helpdeskCloseTicket(
+    body: HelpdeskCloseTicketRequest,
+  ): Promise<ApiResponse<{ result: boolean }>> {
+    return this.transport.post('helpdesk/close', body);
+  }
+
+  /** Получить историю переписки тикета */
+  async helpdeskGetHistory(body: HelpdeskGetHistoryRequest): Promise<ApiResponse<DialogMessage[]>> {
+    return this.transport.get('helpdesk/get-history', body);
   }
 
   // ─── Lesson (уроки) ─────────────────────────────────────────────────────────
@@ -329,7 +380,7 @@ export default class GetCourse {
   /** Обновить кастомные поля пользователя */
   async updateUserCustomFields(
     body: UpdateUserCustomFieldsRequest,
-  ): Promise<ApiResponse<UpdateCustomField[]>> {
+  ): Promise<ApiResponse<UpdatedCustomField[]>> {
     return this.transport.post('user/update-custom-fields', body);
   }
 
@@ -378,7 +429,7 @@ export default class GetCourse {
   }
 
   /** Получить дипломы пользователя */
-  async getUserDiplomas(params: UserIdentifier): Promise<ApiResponse<Diploma[]>> {
+  async getUserDiplomas(params: UserIdentifier): Promise<ApiResponse<UserDiploma[]>> {
     return this.transport.get('user/get-diplomas', params);
   }
 
