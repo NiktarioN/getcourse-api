@@ -2,6 +2,7 @@ import { describe, it } from 'vitest';
 
 import gc from '../helpers/client.ts';
 import { envNum } from '../helpers/env.ts';
+import expectResultTrue from '../helpers/expect-result-true.ts';
 import expectTrue from '../helpers/expect-true.ts';
 
 const adminUserId = envNum(process.env.TEST_ADMIN_USER_ID);
@@ -51,7 +52,7 @@ describe('deal', () => {
   );
 
   it.skipIf(Number.isNaN(dealId) || Number.isNaN(userId))('addCommentToDeal', async () => {
-    await expectTrue(
+    await expectResultTrue(
       gc.addCommentToDeal({
         dealId,
         userId: adminUserId,

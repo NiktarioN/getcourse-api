@@ -2,6 +2,7 @@ import { describe, it } from 'vitest';
 
 import gc from '../helpers/client.ts';
 import { envNum } from '../helpers/env.ts';
+import expectResultTrue from '../helpers/expect-result-true.ts';
 import expectTrue from '../helpers/expect-true.ts';
 
 const dialogId = envNum(process.env.TEST_DIALOG_ID);
@@ -14,7 +15,7 @@ describe('dialog', () => {
   });
 
   it.skipIf(Number.isNaN(dialogId) || Number.isNaN(userId))('addCommentToDialog', async () => {
-    await expectTrue(
+    await expectResultTrue(
       gc.addCommentToDialog({
         dialogId,
         commentText: 'Тестовый ответ в диалоге',
@@ -25,7 +26,7 @@ describe('dialog', () => {
   });
 
   it.skipIf(Number.isNaN(dialogId) || Number.isNaN(departmentId))('changeDepartment', async () => {
-    await expectTrue(
+    await expectResultTrue(
       gc.changeDepartment({
         dialogId,
         newDepartmentId: departmentId,
@@ -34,7 +35,7 @@ describe('dialog', () => {
   });
 
   it.skipIf(Number.isNaN(dialogId))('closeDialog', async () => {
-    await expectTrue(gc.closeDialog({ dialogId }));
+    await expectResultTrue(gc.closeDialog({ dialogId }));
   });
 
   it.skipIf(Number.isNaN(dialogId))('addNote', async () => {

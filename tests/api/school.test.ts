@@ -15,4 +15,8 @@ describe('school', () => {
   it('getTrainings', async () => {
     await expectTrue(gc.getTrainings());
   });
+
+  it('getAllDepartments', async () => {
+    await expectTrue(gc.getAllDepartments());
+  });
 });
