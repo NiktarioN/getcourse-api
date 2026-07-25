@@ -1,8 +1,8 @@
 import { describe, it } from 'vitest';
 
-import gc from './helpers/client.ts';
-import { envNum } from './helpers/env.ts';
-import expectTrue from './helpers/expect-true.ts';
+import gc from '../helpers/client.ts';
+import { envNum } from '../helpers/env.ts';
+import expectTrue from '../helpers/expect-true.ts';
 
 const dialogId = envNum(process.env.TEST_DIALOG_ID);
 const userId = envNum(process.env.TEST_ADMIN_USER_ID);

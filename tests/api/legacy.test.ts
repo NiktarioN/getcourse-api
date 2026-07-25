@@ -1,7 +1,7 @@
 import { describe, it } from 'vitest';
 
-import gc from './helpers/client.ts';
-import expectTrue from './helpers/expect-true.ts';
+import gc from '../helpers/client.ts';
+import expectTrue from '../helpers/expect-true.ts';
 
 const addUserEmail = process.env.TEST_USER_EMAIL;
 const offerId = process.env.TEST_OFFER_ID;

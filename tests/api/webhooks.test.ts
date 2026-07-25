@@ -1,8 +1,8 @@
 import { describe, expect, it } from 'vitest';
 
-import gc from './helpers/client.ts';
+import gc from '../helpers/client.ts';
 
-import type { SetUriResponse } from '../src/types/webhooks.ts';
+import type { SetUriResponse } from '../../src/types/requests/webhook.ts';
 
 const uri = process.env.TEST_WEBHOOK_URI ?? '';
 

@@ -4,6 +4,6 @@ export default defineConfig({
   test: {
     testTimeout: 30_000,
     include: ['tests/**/*.test.ts'],
-    exclude: ['tests/legacy-export.test.ts', 'node_modules/**'],
+    exclude: ['tests/api/legacy-export.test.ts', 'node_modules/**'],
   },
 });

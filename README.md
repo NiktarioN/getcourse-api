@@ -364,7 +364,7 @@ const result = await gc.getExportResult(456789);
 
 ## Тестирование
 
-Все тесты интеграционные — работают с реальным проектом на GetCourse. Для запуска нужен файл `.env` с ключами API и тестовыми ID (пример в `.env.example`)
+Тесты в `tests/api` интеграционные — работают с реальным проектом на GetCourse. Для запуска нужен файл `.env` с ключами API и тестовыми ID (пример в `.env.example`)
 
 Тесты охватывают все методы
 
@@ -376,10 +376,10 @@ npm run test
 npm run test:export
 
 # Запуск тестов отдельного файла
-npm run test -- tests/user.test.ts
+npm run test -- tests/api/user.test.ts
 
 # Запуск конкретного теста в файле по имени
-npm run test -- tests/user.test.ts -t "getUserFields"
+npm run test -- tests/api/user.test.ts -t "getUserFields"
 ```
 
 ---

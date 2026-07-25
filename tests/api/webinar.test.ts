@@ -1,8 +1,8 @@
 import { describe, it } from 'vitest';
 
-import gc from './helpers/client.ts';
-import { envNum } from './helpers/env.ts';
-import expectTrue from './helpers/expect-true.ts';
+import gc from '../helpers/client.ts';
+import { envNum } from '../helpers/env.ts';
+import expectTrue from '../helpers/expect-true.ts';
 
 const webinarId = envNum(process.env.TEST_WEBINAR_ID);
 const webinarCommentId = envNum(process.env.TEST_WEBINAR_COMMENT_ID);

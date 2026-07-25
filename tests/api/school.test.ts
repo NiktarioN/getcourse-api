@@ -1,7 +1,7 @@
 import { describe, it } from 'vitest';
 
-import gc from './helpers/client.ts';
-import expectTrue from './helpers/expect-true.ts';
+import gc from '../helpers/client.ts';
+import expectTrue from '../helpers/expect-true.ts';
 
 describe('school', () => {
   it('getAllGroups', async () => {
