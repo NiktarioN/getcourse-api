@@ -126,7 +126,7 @@ export interface LessonAnswerComment {
 export type LessonAnswerStatus = 'new' | 'declined' | 'accepted' | 'viewed';
 
 /** Тип ответа на урок */
-export type LessonAnswerType = 'mission_answer' | 'free_comment';
+export type LessonAnswerType = 'mission_answer' | 'free_comment' | 'mission_answer_no_check';
 
 /** Ответ на урок */
 export interface LessonAnswer {
