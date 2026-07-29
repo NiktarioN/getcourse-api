@@ -3,7 +3,11 @@
 > **All in one пакет для нового и старого API**
 
 [![npm version](https://img.shields.io/npm/v/getcourse-api)](https://www.npmjs.com/package/getcourse-api)
-[![license](https://img.shields.io/github/license/NiktarioN/getcourse-api)](LICENSE)
+[![license](https://img.shields.io/github/license/NiktarioN/getcourse-api)](https://github.com/NiktarioN/getcourse-api/blob/master/LICENSE)
+
+> **Обновляетесь с 1.x?** В 2.0.0 есть глобальные изменения: переименованы методы, изменился импорт через `require`, поднялась минимальная версия Node. Что и на что менять — [заметках к релизу](https://github.com/NiktarioN/getcourse-api/releases/tag/v2.0.0)
+>
+> Перед обновлением до любой новой версии заглядывайте в [релизы](https://github.com/NiktarioN/getcourse-api/releases) — там описано, что изменилось
 
 Официальная документация:
 
@@ -31,6 +35,8 @@ GetCourse предоставляет два API: новое и старое. О�
 ```bash
 npm install getcourse-api
 ```
+
+Нужен Node 22 или новее
 
 ## Быстрый старт
 
@@ -103,13 +109,98 @@ const gc = new GetCourse({
 Все методы бросают исключения — используй `try/catch`:
 
 ```ts
+import { GetCourseApiError, GetCourseNetworkError, GetCourseValidationError } from "getcourse-api";
+
 try {
   const deal = await gc.getDealFields(99999);
 } catch (err) {
-  console.error(err.message); // Текст ошибки
-  console.error(err.statusCode); // HTTP статус: 400, 403, 404...
-  console.error(err.apiCode); // Код ошибки из тела ответа
-  console.error(err.errors); // string[] — список ошибок валидации
+  if (err instanceof GetCourseValidationError) {
+    console.error(err.message); // Текст ошибки
+    console.error(err.details); // Причина с машиночитаемым кодом
+
+    return;
+  }
+
+  if (err instanceof GetCourseApiError) {
+    console.error(err.message); // Текст ошибки
+    console.error(err.statusCode); // HTTP статус: 400, 403, 404...
+    console.error(err.apiCode); // Код ошибки из тела ответа
+    console.error(err.errors); // string[] — список ошибок валидации
+
+    return;
+  }
+
+  if (err instanceof GetCourseNetworkError) {
+    console.error(err.message); // Таймаут, DNS, connection refused
+    console.error(err.cause); // Исходная ошибка
+
+    return;
+  }
+
+  throw err;
+}
+```
+
+| Класс                      | Когда бросается                            | Дополнительные поля               |
+| -------------------------- | ------------------------------------------ | --------------------------------- |
+| `GetCourseError`           | базовый класс, наследник `Error`           | —                                 |
+| `GetCourseValidationError` | данные не прошли проверку, запроса не было | `details` — причина с кодом       |
+| `GetCourseApiError`        | сервер ответил ошибкой или `status: false` | `statusCode`, `apiCode`, `errors` |
+| `GetCourseNetworkError`    | таймаут, DNS, connection refused           | `cause` — исходная ошибка         |
+
+`GetCourseValidationError` отличается от остальных тем, что запрос к API вообще не выполнялся — данные не прошли проверку на стороне пакета. Разбирать причину по тексту не нужно, для этого есть `details` с кодом:
+
+```ts
+if (err instanceof GetCourseValidationError) {
+  if (err.details.code === "attachments_limit") {
+    // Файлов больше разрешённого: details.limit и details.received
+  }
+
+  if (err.details.code === "attachment_size") {
+    // Файл больше лимита: details.filename, details.size и details.limit
+  }
+}
+```
+
+Чтобы поймать любую ошибку SDK разом, хватит базового класса:
+
+```ts
+import { GetCourseError } from "getcourse-api";
+
+if (err instanceof GetCourseError) {
+  // и ошибка проверки, и ошибка API, и сетевая
+}
+```
+
+## Типы
+
+Всё, что встречается в сигнатурах методов, импортируется из корня пакета — отдельных путей вроде `getcourse-api/types` нет:
+
+```ts
+import type { CallWebhook, User } from "getcourse-api";
+
+// Получить Telegram-ID пользователя
+function getTelegramId(user: User): number | undefined {
+  return user.bot_link.telegram[0]?.tg_user_id;
+}
+
+app.post("/gc/calls", (req, res) => {
+  const call = req.body as CallWebhook;
+
+  if (call.finish_status === "failed") {
+    console.log("Недозвон:", call.failed_reason);
+  }
+
+  res.sendStatus(200);
+});
+```
+
+В чистом JavaScript типы доступны через JSDoc:
+
+```js
+/** @param {import("getcourse-api").User} user */
+function getTelegramId(user) {
+  return user.bot_link.telegram[0]?.tg_user_id;
 }
 ```
 
@@ -117,10 +208,10 @@ try {
 
 ### Вебхуки
 
-| Метод                       | Описание                 |
-| --------------------------- | ------------------------ |
-| `subscribeWebhook(body)`    | Подписать URI на событие |
-| `unsubscribeWebhook(event)` | Отписать URI от события  |
+| Метод                       | Описание               |
+| --------------------------- | ---------------------- |
+| `subscribeWebhook(body)`    | Подписаться на событие |
+| `unsubscribeWebhook(event)` | Отписаться от события  |
 
 | Объект события        | `event_object_id` | `event_id`                                                                                     |
 | --------------------- | ----------------- | ---------------------------------------------------------------------------------------------- |
@@ -134,28 +225,30 @@ try {
 
 ```ts
 await gc.subscribeWebhook({
-  uri: "https://myapp.ru/webhook",
-  event_object_id: 2, // Заказы
-  event_id: 3, // Заказ оплачен
+  uri: "https://example.com/webhook",
+  event_object_id: 2,
+  event_id: 3,
 });
 
 await gc.unsubscribeWebhook({
-  uri: "https://myapp.ru/webhook",
+  uri: "https://example.com/webhook",
   event_object_id: 2,
   event_id: 3,
 });
 ```
 
+Здесь собраны примеры тел вебхуков, которые прилетают на подписанный URI: [examples/webhooks](https://github.com/NiktarioN/getcourse-api/tree/master/examples/webhooks)
+
 ---
 
 ### Общее
 
-| Метод                      | Описание                              |
-| -------------------------- | ------------------------------------- |
-| `getAllGroups()`           | Получить все группы пользователей     |
-| `getAllPersonalManagers()` | Получить всех персональных менеджеров |
-| `getTrainings()`           | Получить все тренинги                 |
-| `getAllDepartments()`      | Получить все отделы                   |
+| Метод                   | Описание                              |
+| ----------------------- | ------------------------------------- |
+| `getGroups()`           | Получить все группы пользователей     |
+| `getPersonalManagers()` | Получить всех персональных менеджеров |
+| `getTrainings()`        | Получить все тренинги                 |
+| `getDepartments()`      | Получить все отделы                   |
 
 ---
 
@@ -168,8 +261,8 @@ await gc.unsubscribeWebhook({
 | `getDealComments(dealId)`      | Получить комментарии заказа    |
 | `getDealCalls(dealId)`         | Получить звонки по заказу      |
 | `getDealCancelReasons()`       | Получить причины отмены        |
-| `getDealsTags(params?)`        | Получить заказы с тегами       |
-| `addCommentToDeal(body)`       | Добавить комментарий заказу    |
+| `getDealsWithTags(params?)`    | Получить заказы с тегами       |
+| `addDealComment(body)`         | Добавить комментарий заказу    |
 | `addDealPositions(body)`       | Добавить позиции в заказ       |
 | `removeDealPositions(body)`    | Удалить позиции из заказа      |
 | `updateDealFields(body)`       | Обновить поля заказа           |
@@ -195,33 +288,109 @@ await gc.addDealPositions({
 
 ---
 
+### Звонки
+
+| Метод                        | Описание                               |
+| ---------------------------- | -------------------------------------- |
+| `addCallComment(body)`       | Добавить комментарий — поле «Описание» |
+| `addCallTranscription(body)` | Добавить транскрибацию звонка          |
+
+```ts
+await gc.addCallComment({
+  callId: 8421,
+  text: "Клиент просил перезвонить в пятницу",
+});
+
+await gc.addCallTranscription({
+  callId: 8421,
+  text: "<p>— Здравствуйте! Вам удобно говорить?</p><p>— Да, слушаю вас</p>",
+});
+```
+
+У полей разный формат, и переносы строк в них делаются по-разному:
+
+| Поле                        | Формат | Перенос строки                                 |
+| --------------------------- | ------ | ---------------------------------------------- |
+| «Описание» — `description`  | текст  | `\n`, `\r` или `\r\n` — работает любой         |
+| «Транскрибация» — `comment` | HTML   | `<p>текст</p>` для абзаца, `<br>` для переноса |
+
+Транскрибация отображается в школе как HTML, поэтому обычный `\n` сохранится и вернётся в ответе, но в интерфейсе схлопнется в пробел — разговор будет выглядеть сплошным абзацем:
+
+```ts
+const replicas = ["— Здравствуйте! Вам удобно говорить?", "— Да, слушаю вас"];
+
+await gc.addCallTranscription({
+  callId: 8421,
+  text: replicas.map((line) => `<p>${line}</p>`).join(""),
+});
+
+// Короче и без map — реплики пойдут подряд, без абзацных отступов
+await gc.addCallTranscription({ callId: 8421, text: replicas.join("<br />") });
+```
+
+Расшифровка попадает в разметку как есть, поэтому символы `<`, `>` и `&` в тексте нужно экранировать
+
+Оба метода перезаписывают значение: повторный вызов заменяет текст, а не добавляет ещё один
+
+У транскрибации есть недокументированный предел длины: на превышении API отвечает `500` с пустым `errors`, отличить это от падения сервера нельзя. Замеры по живому API — кириллица упирается около 4600 символов, латиница держит больше 60 000, текст пополам — около 8700. Для русского текста безопасный ориентир — **до 4000 символов**
+
+---
+
 ### Диалоги
 
-| Метод                      | Описание                      |
-| -------------------------- | ----------------------------- |
-| `getDialogHistory(body)`   | Получить историю диалога      |
-| `addCommentToDialog(body)` | Добавить комментарий в диалог |
-| `changeDepartment(body)`   | Изменить отдел диалога        |
-| `closeDialog(body)`        | Закрыть диалог                |
+| Метод                          | Описание                                    |
+| ------------------------------ | ------------------------------------------- |
+| `getDialogHistory(body)`       | Получить историю диалога                    |
+| `sendDialogMessage(body)`      | Отправить сообщение в диалог                |
+| `addDialogNote(body)`          | Добавить заметку — видна только сотрудникам |
+| `changeDialogDepartment(body)` | Изменить отдел диалога                      |
+| `closeDialog(body)`            | Закрыть диалог                              |
+
+### Вложения в сообщениях
+
+К сообщению в диалоге или тикете можно приложить до 5 файлов, каждый до 5 МБ
+
+```ts
+import { readFile } from "node:fs/promises";
+
+await gc.sendDialogMessage({
+  dialogId: 48812,
+  commentText: "Счёт во вложении",
+  transport: [1],
+  userId: 903417,
+  attachedFiles: [{ filename: "Счёт №1024.pdf", content: await readFile("./invoice.pdf") }],
+});
+```
+
+Файл принимается байтами — `Buffer`, `Uint8Array` или `Blob`
+
+Что стоит знать:
+
+- **Расширение в `filename` обязательно** — GetCourse определяет тип файла только по нему, MIME-тип запроса он игнорирует
+- **Лимиты проверяются до отправки** — при шести файлах или файле больше 5 МБ пакет бросит `GetCourseValidationError`, не заливая файлы на сервер
+- **Без вложений запрос не меняется** — уходит прежний JSON
+- **Ссылки на вложения приходят с разных доменов** — часть файлов лежит на `fs.getcourse.ru`, часть на домене школы, причём вторые открываются только авторизованному пользователю. Разбирать URL по домену не стоит
 
 ---
 
 ### HelpDesk
 
-| Метод                            | Описание                   |
-| -------------------------------- | -------------------------- |
-| `helpdeskGetHistory(body)`       | Получить историю тикета    |
-| `helpdeskAddComment(body)`       | Добавить сообщение в тикет |
-| `helpdeskChangeDepartment(body)` | Изменить отдел тикета      |
-| `helpdeskCloseTicket(body)`      | Закрыть тикет              |
+| Метод                          | Описание                    |
+| ------------------------------ | --------------------------- |
+| `getTicketHistory(body)`       | Получить историю тикета     |
+| `sendTicketMessage(body)`      | Отправить сообщение в тикет |
+| `changeTicketDepartment(body)` | Изменить отдел тикета       |
+| `closeTicket(body)`            | Закрыть тикет               |
 
 ```ts
-await gc.helpdeskCloseTicket({
+await gc.closeTicket({
   ticketId: 123,
-  closedReason: 2, // клиент доволен
+  closedReason: 2,
   closedComment: "Вопрос решён",
 });
 ```
+
+HelpDesk работает по аналогии с обычными диалогами: те же транспорты, тот же формат истории. Причины закрытия — справочник `TicketCloseReason`
 
 ---
 
@@ -230,26 +399,18 @@ await gc.helpdeskCloseTicket({
 | Метод                            | Описание                      |
 | -------------------------------- | ----------------------------- |
 | `getLessonAnswers(lessonId?)`    | Получить ответы на урок       |
-| `addCommentToLessonAnswer(body)` | Добавить комментарий к ответу |
-| `changeStatusAnswers(body)`      | Изменить статус ответа        |
-
----
-
-### Заметки
-
-| Метод           | Описание                   |
-| --------------- | -------------------------- |
-| `addNote(body)` | Добавить заметку к диалогу |
+| `addLessonAnswerComment(body)`   | Добавить комментарий к ответу |
+| `changeLessonAnswerStatus(body)` | Изменить статус ответа        |
 
 ---
 
 ### Предложения
 
-| Метод                    | Описание                      |
-| ------------------------ | ----------------------------- |
-| `getOffers()`            | Получить все предложения      |
-| `getOfferById(offerId)`  | Получить предложение по ID    |
-| `getOffersTags(params?)` | Получить предложения с тегами |
+| Метод                        | Описание                      |
+| ---------------------------- | ----------------------------- |
+| `getOffers()`                | Получить все предложения      |
+| `getOfferById(offerId)`      | Получить предложение по ID    |
+| `getOffersWithTags(params?)` | Получить предложения с тегами |
 
 ---
 
@@ -267,11 +428,11 @@ await gc.helpdeskCloseTicket({
 | `getUserTrainings(params)`        | Получить тренинги                 |
 | `getUserSchedule(params)`         | Получить расписание               |
 | `getUserGoalRecords(params)`      | Получить записи целей             |
-| `getUserAnswers(params)`          | Получить ответы                   |
+| `getUserSurveyAnswers(params)`    | Получить ответы на анкеты         |
 | `getUserLessonAnswers(params)`    | Получить ответы на уроки          |
 | `getUserByTelegramChatId(chatId)` | Найти по Telegram Chat ID         |
 | `addUserBalance(body)`            | Добавить баланс                   |
-| `addCommentToUser(body)`          | Добавить комментарий пользователю |
+| `addUserComment(body)`            | Добавить комментарий пользователю |
 | `addUserGroups(body)`             | Добавить в группы                 |
 | `removeUserGroups(body)`          | Удалить из групп                  |
 | `setUserGroups(body)`             | Установить группы                 |
@@ -283,7 +444,7 @@ await gc.helpdeskCloseTicket({
 ```ts
 // Поиск по userId или email
 const user = await gc.getUserFields({ userId: 123 });
-const user2 = await gc.getUserFields({ email: "user@mail.ru" });
+const user2 = await gc.getUserFields({ email: "user@example.com" });
 
 // Получить баланс
 const balance = await gc.getUserBalance({ userId: 123, type: "virtual" });
@@ -297,7 +458,7 @@ await gc.addUserBalance({
 });
 
 // Добавить комментарий пользователю (userId — адресат, authorId — автор)
-await gc.addCommentToUser({
+await gc.addUserComment({
   userId: 123,
   authorId: 456,
   text: "Тестовый комментарий в ленту пользователя",
@@ -318,10 +479,10 @@ await gc.updateUserFields({
 
 | Метод                          | Описание                            |
 | ------------------------------ | ----------------------------------- |
-| `getAllWebinars()`             | Получить все вебинары               |
+| `getWebinars()`                | Получить все вебинары               |
 | `getWebinarsByIds(body)`       | Получить вебинары по ID             |
-| `addCommentToWebinar(body)`    | Добавить комментарий в чат вебинара |
-| `moderateWebinarComment(body)` | Модерация сообщения в чате вебинара |
+| `sendWebinarMessage(body)`     | Отправить сообщение в чат вебинара  |
+| `moderateWebinarMessage(body)` | Модерация сообщения в чате вебинара |
 | `moderateWebinarUser(body)`    | Модерация пользователя вебинара     |
 
 ---
@@ -401,7 +562,7 @@ const result = await gc.getExportResult(456789);
 
 ## Тестирование
 
-Тесты в `tests/api` интеграционные — работают с реальным проектом на GetCourse. Для запуска нужен файл `.env` с ключами API и тестовыми ID (пример в `.env.example`)
+Тесты в `tests/api` работают с реальным проектом на GetCourse. Для запуска нужен файл `.env` с ключами API и тестовыми ID (пример в `.env.example`)
 
 Тесты охватывают все методы
 
@@ -422,7 +583,7 @@ npm run test -- tests/api/user.test.ts -t "getUserFields"
 npm run test -- tests/api/webhooks/subscribe.test.ts
 npm run test -- tests/api/webhooks/unsubscribe.test.ts
 
-# Точечно, по координатам события — имена тестов в обоих файлах совпадают
+# Точечно, по названиям или номерам событий
 npm run test -- tests/api/webhooks/subscribe.test.ts -t "(1,1)"
 npm run test -- tests/api/webhooks/unsubscribe.test.ts -t "(1,1)"
 ```
