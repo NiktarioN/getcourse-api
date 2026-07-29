@@ -1,25 +1,25 @@
 import { describe, it } from 'vitest';
 
 import gc from '../helpers/client.ts';
-import { envNum } from '../helpers/env.ts';
+import envNum from '../helpers/env.ts';
 import expectTrue from '../helpers/expect-true.ts';
 
 const webinarId = envNum(process.env.TEST_WEBINAR_ID);
-const webinarCommentId = envNum(process.env.TEST_WEBINAR_COMMENT_ID);
+const webinarMessageId = envNum(process.env.TEST_WEBINAR_MESSAGE_ID);
 const userId = envNum(process.env.TEST_ADMIN_USER_ID);
 
 describe('webinar', () => {
-  it('getAllWebinars', async () => {
-    await expectTrue(gc.getAllWebinars());
+  it('getWebinars', async () => {
+    await expectTrue(gc.getWebinars());
   });
 
   it.skipIf(Number.isNaN(webinarId))('getWebinarsByIds', async () => {
     await expectTrue(gc.getWebinarsByIds({ ids: [webinarId] }));
   });
 
-  it.skipIf(Number.isNaN(webinarId) || Number.isNaN(userId))('addCommentToWebinar', async () => {
+  it.skipIf(Number.isNaN(webinarId) || Number.isNaN(userId))('sendWebinarMessage', async () => {
     await expectTrue(
-      gc.addCommentToWebinar({
+      gc.sendWebinarMessage({
         webinarId,
         moderatorId: userId,
         text: 'Тест',
@@ -27,13 +27,13 @@ describe('webinar', () => {
     );
   });
 
-  it.skipIf(Number.isNaN(webinarId) || Number.isNaN(webinarCommentId) || Number.isNaN(userId))(
-    'moderateWebinarComment',
+  it.skipIf(Number.isNaN(webinarId) || Number.isNaN(webinarMessageId) || Number.isNaN(userId))(
+    'moderateWebinarMessage',
     async () => {
       await expectTrue(
-        gc.moderateWebinarComment({
+        gc.moderateWebinarMessage({
           webinarId,
-          commentId: webinarCommentId,
+          commentId: webinarMessageId,
           action: 'delete',
           moderatorId: userId,
         }),

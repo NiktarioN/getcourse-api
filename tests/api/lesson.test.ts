@@ -1,7 +1,7 @@
 import { describe, it } from 'vitest';
 
 import gc from '../helpers/client.ts';
-import { envNum } from '../helpers/env.ts';
+import envNum from '../helpers/env.ts';
 import expectTrue from '../helpers/expect-true.ts';
 
 const lessonId = envNum(process.env.TEST_LESSON_ID);
@@ -14,10 +14,10 @@ describe('lesson', () => {
   });
 
   it.skipIf(Number.isNaN(lessonAnswerId) || Number.isNaN(userId))(
-    'addCommentToLessonAnswer',
+    'addLessonAnswerComment',
     async () => {
       await expectTrue(
-        gc.addCommentToLessonAnswer({
+        gc.addLessonAnswerComment({
           lessonAnswerId,
           text: 'Тест',
           userId,
@@ -26,9 +26,9 @@ describe('lesson', () => {
     },
   );
 
-  it.skipIf(Number.isNaN(lessonAnswerId))('changeStatusAnswers', async () => {
+  it.skipIf(Number.isNaN(lessonAnswerId))('changeLessonAnswerStatus', async () => {
     await expectTrue(
-      gc.changeStatusAnswers({
+      gc.changeLessonAnswerStatus({
         lessonAnswerId,
         status: 'new',
       }),

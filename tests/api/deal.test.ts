@@ -1,7 +1,7 @@
 import { describe, it } from 'vitest';
 
 import gc from '../helpers/client.ts';
-import { envNum } from '../helpers/env.ts';
+import envNum from '../helpers/env.ts';
 import expectResultTrue from '../helpers/expect-result-true.ts';
 import expectTrue from '../helpers/expect-true.ts';
 
@@ -16,8 +16,8 @@ describe('deal', () => {
     await expectTrue(gc.getDealCancelReasons());
   });
 
-  it('getDealsTags', async () => {
-    await expectTrue(gc.getDealsTags());
+  it('getDealsWithTags', async () => {
+    await expectTrue(gc.getDealsWithTags());
   });
 
   it.skipIf(Number.isNaN(dealId))('getDealFields', async () => {
@@ -51,9 +51,9 @@ describe('deal', () => {
     },
   );
 
-  it.skipIf(Number.isNaN(dealId) || Number.isNaN(userId))('addCommentToDeal', async () => {
+  it.skipIf(Number.isNaN(dealId) || Number.isNaN(userId))('addDealComment', async () => {
     await expectResultTrue(
-      gc.addCommentToDeal({
+      gc.addDealComment({
         dealId,
         userId: adminUserId,
         text: 'Тестовый комментарий',

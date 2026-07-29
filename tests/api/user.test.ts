@@ -1,7 +1,7 @@
 import { describe, it } from 'vitest';
 
 import gc from '../helpers/client.ts';
-import { envNum } from '../helpers/env.ts';
+import envNum from '../helpers/env.ts';
 import expectResultTrue from '../helpers/expect-result-true.ts';
 import expectTrue from '../helpers/expect-true.ts';
 
@@ -44,8 +44,8 @@ describe('user', () => {
     await expectTrue(gc.getUserLessonAnswers({ userId }));
   });
 
-  it.skipIf(Number.isNaN(userId))('getUserAnswers', async () => {
-    await expectTrue(gc.getUserAnswers({ userId }));
+  it.skipIf(Number.isNaN(userId))('getUserSurveyAnswers', async () => {
+    await expectTrue(gc.getUserSurveyAnswers({ userId }));
   });
 
   it.skipIf(Number.isNaN(userId))('getUserGoalRecords', async () => {
@@ -84,9 +84,9 @@ describe('user', () => {
     await expectTrue(gc.updateUserFields({ userId, comment: 'Тестовый комментарий' }));
   });
 
-  it.skipIf(Number.isNaN(userId) || Number.isNaN(adminUserId))('addCommentToUser', async () => {
+  it.skipIf(Number.isNaN(userId) || Number.isNaN(adminUserId))('addUserComment', async () => {
     await expectResultTrue(
-      gc.addCommentToUser({
+      gc.addUserComment({
         userId,
         authorId: adminUserId,
         text: 'Тестовый комментарий в пользователя',

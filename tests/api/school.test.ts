@@ -4,19 +4,19 @@ import gc from '../helpers/client.ts';
 import expectTrue from '../helpers/expect-true.ts';
 
 describe('school', () => {
-  it('getAllGroups', async () => {
-    await expectTrue(gc.getAllGroups());
+  it('getGroups', async () => {
+    await expectTrue(gc.getGroups());
   });
 
-  it('getAllPersonalManagers', async () => {
-    await expectTrue(gc.getAllPersonalManagers());
+  it('getPersonalManagers', async () => {
+    await expectTrue(gc.getPersonalManagers());
   });
 
   it('getTrainings', async () => {
     await expectTrue(gc.getTrainings());
   });
 
-  it('getAllDepartments', async () => {
-    await expectTrue(gc.getAllDepartments());
+  it('getDepartments', async () => {
+    await expectTrue(gc.getDepartments());
   });
 });
