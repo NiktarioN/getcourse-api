@@ -36,11 +36,14 @@
       }
     }
   },
+  "files": [
+    "dist"
+  ],
   "engines": {
-    "node": ">=18"
+    "node": ">=22"
   },
   "scripts": {
-    "postinstall": "cp pre-commit .git/hooks || true",
+    "prepare": "cp pre-commit .git/hooks || true",
     "build": "tsdown",
     "check:pack": "npm run build && publint && attw --pack .",
     "lint": "eslint . --max-warnings=0 && tsc -p tsconfig.app.json && tsc -p tsconfig.mjs.json",
