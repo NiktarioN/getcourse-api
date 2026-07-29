@@ -1,4 +1,9 @@
-import type { DateOnly, LegacyDealStatus, LegacyPaymentStatus, LegacyUserStatus } from './common.ts';
+import type {
+  DateOnly,
+  LegacyDealStatus,
+  LegacyPaymentStatus,
+  LegacyUserStatus,
+} from './common.ts';
 
 /** Кастомное поле аккаунта */
 export interface LegacyCustomField {

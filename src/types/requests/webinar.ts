@@ -6,9 +6,9 @@ export interface GetWebinarsByIdsRequest {
   ids: number[];
 }
 
-/** Добавить комментарий в чат вебинара */
-export interface AddCommentToWebinarRequest {
-  /** ID пользователя-модератора / автора комментария */
+/** Отправить сообщение в чат вебинара */
+export interface SendWebinarMessageRequest {
+  /** ID пользователя-модератора / автора сообщения */
   moderatorId: number;
   /** ID вебинара */
   webinarId: number;
@@ -25,20 +25,20 @@ export interface AddCommentToWebinarRequest {
 }
 
 /** Действие модерации сообщения в чате вебинара */
-export type WebinarCommentModerationAction =
+export type WebinarMessageModerationAction =
   | 'delete'
   | 'premoderation_accept'
   | 'premoderation_reject'
   | 'premoderation_reject_all';
 
 /** Модерация сообщения в чате вебинара */
-export interface ModerateWebinarChatMessageRequest {
+export interface ModerateWebinarMessageRequest {
   /** ID вебинара */
   webinarId: number;
   /** ID сообщения в чате вебинара */
   commentId: number;
   /** Действие модерации */
-  action: WebinarCommentModerationAction;
+  action: WebinarMessageModerationAction;
   /** ID пользователя-модератора */
   moderatorId: number;
 }

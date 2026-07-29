@@ -18,6 +18,21 @@ export type MessageUserType = 'Сотрудник' | 'Ученик';
 /** Направление сообщения относительно школы */
 export type MessageType = 'Входящее' | 'Исходящее';
 
+/** Файл, прикрепляемый к сообщению диалога или тикета */
+export interface MessageAttachment {
+  /** Имя файла с расширением — GetCourse определяет тип файла только по нему */
+  filename: string;
+  /** Содержимое файла */
+  content: Uint8Array | Blob;
+}
+
+/** Результат отправки сообщения — вместе с ID созданного комментария */
+export interface SentMessageResult {
+  result: boolean;
+  /** ID созданного комментария */
+  comment_id: number;
+}
+
 /** Сообщение из истории диалога или тикета HelpDesk */
 export interface DialogMessage {
   message_id: number;

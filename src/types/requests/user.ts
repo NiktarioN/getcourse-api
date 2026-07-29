@@ -4,7 +4,7 @@ import type { UserIdentifier } from '../common.ts';
 export type BalanceType = 'normal' | 'virtual' | 'points';
 
 /** Добавить комментарий к пользователю */
-export interface AddCommentToUserRequest extends UserIdentifier {
+export interface AddUserCommentRequest extends UserIdentifier {
   /** ID автора комментария */
   authorId: number;
   /** Текст комментария */
@@ -79,4 +79,18 @@ export interface CreateDiplomaRequest extends UserIdentifier {
   userName?: string;
   /** Разрешать дубликаты (по умолчанию: false) */
   allowDuplicates?: boolean;
+  /** Отправлять уведомление о выдаче диплома (по умолчанию: true) */
+  sendNotify?: boolean;
+}
+
+/** Получить баланс пользователя */
+export interface GetUserBalanceRequest extends UserIdentifier {
+  /** Тип баланса */
+  type?: BalanceType;
+}
+
+/** Получить покупки пользователя */
+export interface GetUserPurchasesRequest extends UserIdentifier {
+  /** ID продукта */
+  productId?: number;
 }

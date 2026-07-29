@@ -9,4 +9,7 @@ export default defineConfig({
   clean: true,
   platform: 'neutral',
   target: 'es2024',
+  outputOptions: {
+    exports: 'named',
+  },
 });

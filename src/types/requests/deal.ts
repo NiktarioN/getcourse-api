@@ -1,7 +1,7 @@
 import type { DealStatus } from '../models/deal.ts';
 
 /** Добавить комментарий к заказу */
-export interface AddCommentToDealRequest {
+export interface AddDealCommentRequest {
   /** ID заказа */
   dealId: number;
   /** ID пользователя */

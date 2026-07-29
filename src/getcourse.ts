@@ -4,6 +4,7 @@ import ConsoleLogger from './helpers/logger.ts';
 import HttpTransport from './helpers/transport.ts';
 
 import type {
+  ActionResult,
   ApiResponse,
   GetCourseConfig,
   PaginationParams,
@@ -32,11 +33,13 @@ import type {
   UserCustomField,
 } from './types/models/custom-field.ts';
 import type { Deal, DealCancelReason, DealComment, DealTag } from './types/models/deal.ts';
-import type { DialogDepartment, DialogMessage } from './types/models/dialog.ts';
+import type { DialogDepartment, DialogMessage, SentMessageResult } from './types/models/dialog.ts';
 import type { LessonAnswer, LessonAnswerComment } from './types/models/lesson.ts';
 import type { Offer, OfferTag } from './types/models/offer.ts';
+import type { SurveyAnswer } from './types/models/survey.ts';
 import type { Training } from './types/models/training.ts';
 import type {
+  CreatedDiploma,
   Group,
   User,
   UserBalance,
@@ -46,36 +49,38 @@ import type {
   UserSchedule,
 } from './types/models/user.ts';
 import type { Webinar } from './types/models/webinar.ts';
+import type { AddCallCommentRequest, AddCallTranscriptionRequest } from './types/requests/call.ts';
 import type {
-  AddCommentToDealRequest,
+  AddDealCommentRequest,
   AddDealPositionsRequest,
   RemoveDealPositionsRequest,
   UpdateDealCustomFieldsRequest,
   UpdateDealFieldsRequest,
 } from './types/requests/deal.ts';
 import type {
-  AddCommentToDialogRequest,
-  AddNoteRequest,
-  ChangeDepartmentRequest,
+  AddDialogNoteRequest,
+  ChangeDialogDepartmentRequest,
   CloseDialogRequest,
   GetDialogHistoryRequest,
+  SendDialogMessageRequest,
 } from './types/requests/dialog.ts';
 import type {
-  HelpdeskAddCommentRequest,
-  HelpdeskChangeDepartmentRequest,
-  HelpdeskCloseTicketRequest,
-  HelpdeskGetHistoryRequest,
+  ChangeTicketDepartmentRequest,
+  CloseTicketRequest,
+  GetTicketHistoryRequest,
+  SendTicketMessageRequest,
 } from './types/requests/helpdesk.ts';
 import type {
-  AddCommentToLessonAnswerRequest,
-  ChangeStatusAnswersRequest,
+  AddLessonAnswerCommentRequest,
+  ChangeLessonAnswerStatusRequest,
 } from './types/requests/lesson.ts';
 import type {
-  AddCommentToUserRequest,
   AddUserBalanceRequest,
+  AddUserCommentRequest,
   AddUserGroupsRequest,
-  BalanceType,
   CreateDiplomaRequest,
+  GetUserBalanceRequest,
+  GetUserPurchasesRequest,
   RemoveUserGroupsRequest,
   SetPersonalManagerRequest,
   SetUserGroupsRequest,
@@ -88,10 +93,10 @@ import type {
   WebhookSubscription,
 } from './types/requests/webhook.ts';
 import type {
-  AddCommentToWebinarRequest,
   GetWebinarsByIdsRequest,
-  ModerateWebinarChatMessageRequest,
+  ModerateWebinarMessageRequest,
   ModerateWebinarUserRequest,
+  SendWebinarMessageRequest,
 } from './types/requests/webinar.ts';
 
 /**
@@ -169,12 +174,12 @@ export default class GetCourse {
   // ─── School (common) ────────────────────────────────────────────────────────
 
   /** Получить все группы пользователей */
-  async getAllGroups(): Promise<ApiResponse<Group[]>> {
+  async getGroups(): Promise<ApiResponse<Group[]>> {
     return this.transport.get('common/get-groups');
   }
 
   /** Получить всех персональных менеджеров */
-  async getAllPersonalManagers(): Promise<ApiResponse<User[]>> {
+  async getPersonalManagers(): Promise<ApiResponse<User[]>> {
     return this.transport.get('common/get-personal-managers');
   }
 
@@ -184,14 +189,36 @@ export default class GetCourse {
   }
 
   /** Получить все отделы */
-  async getAllDepartments(): Promise<ApiResponse<DialogDepartment[]>> {
+  async getDepartments(): Promise<ApiResponse<DialogDepartment[]>> {
     return this.transport.get('common/get-departments');
+  }
+
+  // ─── Call (звонки) ──────────────────────────────────────────────────────────
+
+  /**
+   * Добавить комментарий к звонку — попадает в поле «Описание»
+   *
+   * Повторный вызов перезаписывает значение
+   */
+  async addCallComment(body: AddCallCommentRequest): Promise<ApiResponse<ActionResult>> {
+    return this.transport.post('call/add-comment', body);
+  }
+
+  /**
+   * Добавить транскрибацию к звонку
+   *
+   * Повторный вызов перезаписывает значение
+   */
+  async addCallTranscription(
+    body: AddCallTranscriptionRequest,
+  ): Promise<ApiResponse<ActionResult>> {
+    return this.transport.post('call/add-transcription', body);
   }
 
   // ─── Deal (заказы) ──────────────────────────────────────────────────────────
 
   /** Добавить комментарий к заказу */
-  async addCommentToDeal(body: AddCommentToDealRequest): Promise<ApiResponse<{ result: boolean }>> {
+  async addDealComment(body: AddDealCommentRequest): Promise<ApiResponse<ActionResult>> {
     return this.transport.post('deal/add-comment', body);
   }
 
@@ -215,7 +242,7 @@ export default class GetCourse {
     return this.transport.get('deal/get-fields', { dealId });
   }
 
-  /** Получить кастомные поля заказа */
+  /** Получить дополнительные поля заказа */
   async getDealCustomFields(dealId: number): Promise<ApiResponse<DealCustomField[]>> {
     return this.transport.get('deal/get-custom-fields', { dealId });
   }
@@ -243,26 +270,33 @@ export default class GetCourse {
   }
 
   /** Получить заказы с тегами (с пагинацией) */
-  async getDealsTags(params?: PaginationParams): Promise<ApiResponse<DealTag[]>> {
+  async getDealsWithTags(params?: PaginationParams): Promise<ApiResponse<DealTag[]>> {
     return this.transport.get('deal/get-deals-tags', params);
   }
 
   // ─── Dialog (диалоги) ───────────────────────────────────────────────────────
 
-  /** Добавить комментарий в диалог */
-  async addCommentToDialog(
-    body: AddCommentToDialogRequest,
-  ): Promise<ApiResponse<{ result: boolean; comment_id: number }>> {
-    return this.transport.post('dialog/add-comment', body);
+  /** Отправить сообщение в диалог */
+  async sendDialogMessage(body: SendDialogMessageRequest): Promise<ApiResponse<SentMessageResult>> {
+    const { attachedFiles, ...payload } = body;
+
+    return this.transport.postWithAttachments('dialog/add-comment', payload, attachedFiles);
+  }
+
+  /** Добавить заметку к диалогу */
+  async addDialogNote(body: AddDialogNoteRequest): Promise<ApiResponse<[]>> {
+    return this.transport.post('note/add', body);
   }
 
   /** Изменить отдел диалога */
-  async changeDepartment(body: ChangeDepartmentRequest): Promise<ApiResponse<{ result: boolean }>> {
+  async changeDialogDepartment(
+    body: ChangeDialogDepartmentRequest,
+  ): Promise<ApiResponse<ActionResult>> {
     return this.transport.post('dialog/change-department', body);
   }
 
   /** Закрыть диалог */
-  async closeDialog(body: CloseDialogRequest): Promise<ApiResponse<{ result: boolean }>> {
+  async closeDialog(body: CloseDialogRequest): Promise<ApiResponse<ActionResult>> {
     return this.transport.post('dialog/close', body);
   }
 
@@ -273,43 +307,43 @@ export default class GetCourse {
 
   // ─── HelpDesk (тикеты) ──────────────────────────────────────────────────────
 
-  /** Добавить сообщение в тикет от имени сотрудника */
-  async helpdeskAddComment(
-    body: HelpdeskAddCommentRequest,
-  ): Promise<ApiResponse<{ result: boolean; comment_id: number }>> {
-    return this.transport.post('helpdesk/add-comment', body);
+  /** Отправить сообщение в тикет */
+  async sendTicketMessage(body: SendTicketMessageRequest): Promise<ApiResponse<SentMessageResult>> {
+    const { attachedFiles, ...payload } = body;
+
+    return this.transport.postWithAttachments('helpdesk/add-comment', payload, attachedFiles);
   }
 
   /** Изменить отдел тикета */
-  async helpdeskChangeDepartment(
-    body: HelpdeskChangeDepartmentRequest,
-  ): Promise<ApiResponse<{ result: boolean }>> {
+  async changeTicketDepartment(
+    body: ChangeTicketDepartmentRequest,
+  ): Promise<ApiResponse<ActionResult>> {
     return this.transport.post('helpdesk/change-department', body);
   }
 
   /** Закрыть тикет */
-  async helpdeskCloseTicket(
-    body: HelpdeskCloseTicketRequest,
-  ): Promise<ApiResponse<{ result: boolean }>> {
+  async closeTicket(body: CloseTicketRequest): Promise<ApiResponse<ActionResult>> {
     return this.transport.post('helpdesk/close', body);
   }
 
   /** Получить историю переписки тикета */
-  async helpdeskGetHistory(body: HelpdeskGetHistoryRequest): Promise<ApiResponse<DialogMessage[]>> {
+  async getTicketHistory(body: GetTicketHistoryRequest): Promise<ApiResponse<DialogMessage[]>> {
     return this.transport.get('helpdesk/get-history', body);
   }
 
   // ─── Lesson (уроки) ─────────────────────────────────────────────────────────
 
   /** Добавить комментарий к ответу на урок */
-  async addCommentToLessonAnswer(
-    body: AddCommentToLessonAnswerRequest,
+  async addLessonAnswerComment(
+    body: AddLessonAnswerCommentRequest,
   ): Promise<ApiResponse<LessonAnswerComment>> {
     return this.transport.post('lesson/add-comment-to-lesson-answer', body);
   }
 
   /** Изменить статус ответа на урок */
-  async changeStatusAnswers(body: ChangeStatusAnswersRequest): Promise<ApiResponse<LessonAnswer>> {
+  async changeLessonAnswerStatus(
+    body: ChangeLessonAnswerStatusRequest,
+  ): Promise<ApiResponse<LessonAnswer>> {
     return this.transport.post('lesson/change-status-answers', body);
   }
 
@@ -319,13 +353,6 @@ export default class GetCourse {
       'lesson/get-answers',
       lessonId === undefined ? undefined : { lessonId },
     );
-  }
-
-  // ─── Note (заметки) ─────────────────────────────────────────────────────────
-
-  /** Добавить заметку к диалогу */
-  async addNote(body: AddNoteRequest): Promise<ApiResponse<[]>> {
-    return this.transport.post('note/add', body);
   }
 
   // ─── Offer (предложения) ────────────────────────────────────────────────────
@@ -341,7 +368,7 @@ export default class GetCourse {
   }
 
   /** Получить офферы с тегами (с пагинацией) */
-  async getOffersTags(params?: PaginationParams): Promise<ApiResponse<OfferTag[]>> {
+  async getOffersWithTags(params?: PaginationParams): Promise<ApiResponse<OfferTag[]>> {
     return this.transport.get('offer/get-offers-tags', params);
   }
 
@@ -352,8 +379,8 @@ export default class GetCourse {
     return this.transport.post('user/add-balance', body);
   }
 
-  /** Добавить комментарий к пользователю */
-  async addCommentToUser(body: AddCommentToUserRequest): Promise<ApiResponse<{ result: boolean }>> {
+  /** Добавить комментарий в ленту пользователя */
+  async addUserComment(body: AddUserCommentRequest): Promise<ApiResponse<ActionResult>> {
     return this.transport.post('user/add-comment', body);
   }
 
@@ -372,12 +399,12 @@ export default class GetCourse {
     return this.transport.post('user/set-groups', body);
   }
 
-  /** Установить персонального менеджера */
+  /** Закрепить персонального менеджера */
   async setPersonalManager(body: SetPersonalManagerRequest): Promise<ApiResponse<[]>> {
     return this.transport.post('user/set-personal-manager', body);
   }
 
-  /** Обновить кастомные поля пользователя */
+  /** Обновить дополнительные поля пользователя */
   async updateUserCustomFields(
     body: UpdateUserCustomFieldsRequest,
   ): Promise<ApiResponse<UpdatedCustomField[]>> {
@@ -390,14 +417,12 @@ export default class GetCourse {
   }
 
   /** Создать диплом пользователю */
-  async createDiploma(body: CreateDiplomaRequest): Promise<ApiResponse<{ id: number }>> {
+  async createDiploma(body: CreateDiplomaRequest): Promise<ApiResponse<CreatedDiploma>> {
     return this.transport.post('user/create-diploma', body);
   }
 
   /** Получить баланс пользователя */
-  async getUserBalance(
-    params: UserIdentifier & { type?: BalanceType },
-  ): Promise<ApiResponse<UserBalance[]>> {
+  async getUserBalance(params: GetUserBalanceRequest): Promise<ApiResponse<UserBalance[]>> {
     return this.transport.get('user/get-balance', params);
   }
 
@@ -406,8 +431,8 @@ export default class GetCourse {
     return this.transport.get('user/get-lesson-answers', params);
   }
 
-  /** Получить ответы пользователя */
-  async getUserAnswers(params: UserIdentifier): Promise<ApiResponse<LessonAnswer[]>> {
+  /** Получить ответы пользователя на анкеты */
+  async getUserSurveyAnswers(params: UserIdentifier): Promise<ApiResponse<SurveyAnswer[]>> {
     return this.transport.get('user/get-answers', params);
   }
 
@@ -416,7 +441,7 @@ export default class GetCourse {
     return this.transport.get('user/get-user-by-telegram-chat-id', { chatId });
   }
 
-  /** Получить кастомные поля пользователя */
+  /** Получить дополнительные поля пользователя */
   async getUserCustomFields(
     params: UserIdentifier,
   ): Promise<ApiResponse<Record<string, UserCustomField>>> {
@@ -449,9 +474,7 @@ export default class GetCourse {
   }
 
   /** Получить покупки пользователя */
-  async getUserPurchases(
-    params: UserIdentifier & { productId?: number },
-  ): Promise<ApiResponse<UserPurchase[]>> {
+  async getUserPurchases(params: GetUserPurchasesRequest): Promise<ApiResponse<UserPurchase[]>> {
     return this.transport.get('user/get-purchases', params);
   }
 
@@ -468,7 +491,7 @@ export default class GetCourse {
   // ─── Webinar (вебинары) ─────────────────────────────────────────────────────
 
   /** Получить все вебинары */
-  async getAllWebinars(): Promise<ApiResponse<Webinar[]>> {
+  async getWebinars(): Promise<ApiResponse<Webinar[]>> {
     return this.transport.get('webinar/get-all-webinars');
   }
 
@@ -477,22 +500,20 @@ export default class GetCourse {
     return this.transport.post('webinar/get-webinars-by-ids', body);
   }
 
-  /** Добавить комментарий в чат вебинара */
-  async addCommentToWebinar(body: AddCommentToWebinarRequest): Promise<ApiResponse<[]>> {
+  /** Отправить сообщение в чат вебинара */
+  async sendWebinarMessage(body: SendWebinarMessageRequest): Promise<ApiResponse<[]>> {
     return this.transport.post('webinar/add-comment', body);
   }
 
   /** Модерация сообщения в чате вебинара */
-  async moderateWebinarComment(
-    body: ModerateWebinarChatMessageRequest,
+  async moderateWebinarMessage(
+    body: ModerateWebinarMessageRequest,
   ): Promise<ApiResponse<Webinar[]>> {
     return this.transport.post('webinar/moderation-comment', body);
   }
 
   /** Модерация пользователя вебинара */
-  async moderateWebinarUser(
-    body: ModerateWebinarUserRequest,
-  ): Promise<ApiResponse<{ result: boolean }>> {
+  async moderateWebinarUser(body: ModerateWebinarUserRequest): Promise<ApiResponse<ActionResult>> {
     return this.transport.post('webinar/moderation-user', body);
   }
 
@@ -589,7 +610,7 @@ export default class GetCourse {
   }
 
   /**
-   * Получить кастомные поля аккаунта (Legacy API)
+   * Получить дополнительные поля аккаунта (Legacy API)
    *
    * Возвращает справочник дополнительных полей пользователей и заказов
    */
@@ -600,7 +621,7 @@ export default class GetCourse {
   /**
    * Получить результат экспорта по ID (Legacy API)
    *
-   * Для ручного контроля поллинга — если не нужен автоматический.
+   * Для ручного контроля поллинга — если не нужен автоматический
    * Полезно если предыдущий запрос упал по таймауту, а экспорт на сервере продолжается
    */
   async getExportResult(exportId: number): Promise<ApiResponse<ExportedData>> {

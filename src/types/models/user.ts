@@ -23,6 +23,11 @@ export interface UserDiploma {
   title: string;
 }
 
+/** Результат создания диплома */
+export interface CreatedDiploma {
+  id: number;
+}
+
 /** Группа в которой находится пользователь */
 export interface Group {
   id: number;
