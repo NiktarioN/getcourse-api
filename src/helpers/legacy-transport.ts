@@ -1,4 +1,5 @@
 import axios from 'axios';
+
 import GetCourseApiError from './errors/api-error.ts';
 import GetCourseNetworkError from './errors/network-error.ts';
 import ConsoleLogger from './logger.ts';
@@ -11,7 +12,7 @@ import type {
   LegacyExportApiResponse,
   LegacyImportApiResponse,
   LegacyImportResult,
-} from '../types/legacy.ts';
+} from '../types/legacy/common.ts';
 
 const DEFAULT_TIMEOUT = 15_000;
 

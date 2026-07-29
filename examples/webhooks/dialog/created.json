@@ -1,0 +1,63 @@
+[
+  {
+    "message": "Здравствуйте! Не приходит доступ к курсу после оплаты, помогите пожалуйста",
+    "event_id": 1,
+    "dialog_id": 337204815,
+    "transport": 0,
+    "user_data": {
+      "id": 512478330,
+      "name": "Тестовый пользователь",
+      "email": "test@example.com"
+    },
+    "created_at": "2026-01-15 09:00:00",
+    "department": {
+      "id": 214905,
+      "title": "Общая поддержка"
+    },
+    "message_id": 1230422057,
+    "attached_files": [],
+    "personal_manager_id": null
+  },
+  {
+    "message": "Добрый день, подскажите когда стартует поток?",
+    "event_id": 1,
+    "dialog_id": 337315062,
+    "transport": 7,
+    "user_data": {
+      "id": 512903471,
+      "name": "Второй тестовый пользователь",
+      "email": "test2@example.com"
+    },
+    "created_at": "2026-01-15 09:41:18",
+    "department": {
+      "id": 214905,
+      "title": "Общая поддержка"
+    },
+    "message_id": 1230419117,
+    "attached_files": [],
+    "personal_manager_id": 498215647
+  },
+  {
+    "message": "Здравствуйте! Прошу вернуть оплату за курс, подробности во вложении",
+    "event_id": 1,
+    "dialog_id": 337482930,
+    "transport": 1,
+    "user_data": {
+      "id": 513264095,
+      "name": "Третий тестовый пользователь",
+      "email": "test3@example.com"
+    },
+    "created_at": "2026-01-15 10:12:04",
+    "department": {
+      "id": 214905,
+      "title": "Общая поддержка"
+    },
+    "message_id": 1230421721,
+    "attached_files": [
+      {
+        "url": "https://account.getcourse.ru/pl/fileservice/user/file/download/h/4f1c8a2be97d0356a1e4b7c8d92f0a13.eml"
+      }
+    ],
+    "personal_manager_id": null
+  }
+]

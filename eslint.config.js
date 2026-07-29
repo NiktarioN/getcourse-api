@@ -57,6 +57,7 @@ const configNaming = defineConfig([
       ],
       'check-file/no-index': 'error',
     },
+    ignores: ['src/index.ts'],
   },
 ]);
 
@@ -77,6 +78,7 @@ const configStylistic = defineConfig([
             'builtin',
             'external',
             'subpath',
+            { newlinesBetween: 1 },
             'internal',
             'index',
             'sibling',
@@ -96,6 +98,10 @@ const configStylistic = defineConfig([
             'type-import',
           ],
         },
+      ],
+      'perfectionist/sort-named-imports': [
+        'warn',
+        { type: 'alphabetical', order: 'asc', ignoreAlias: true },
       ],
       '@stylistic/padding-line-between-statements': [
         'warn',

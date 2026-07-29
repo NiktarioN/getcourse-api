@@ -1,0 +1,218 @@
+[
+  {
+    "ts": "2026-01-15T09:00:12Z",
+    "deal": {
+      "id": "871035642",
+      "cost": 14900,
+      "number": 11892043,
+      "status": "payment_waiting",
+      "isPayed": 0,
+      "currency": "RUB",
+      "offerIds": [8571204],
+      "createdAt": "2026-01-15T09:00:00Z",
+      "payedValue": 0,
+      "clientDealNumber": 0
+    },
+    "ts64": 1768467612,
+    "user": {
+      "id": "384201:512478330",
+      "cuid": null,
+      "gcId": 512478330,
+      "type": "Real",
+      "email": "test@example.com"
+    },
+    "eventType": "getcourse/dealStatusChanged",
+    "gcAccountId": 384201,
+    "gcSessionId": 9814527360,
+    "gcVisitorId": null
+  },
+  {
+    "ts": "2026-01-15T09:02:31Z",
+    "deal": {
+      "id": "871035642",
+      "cost": 14900,
+      "number": 11892043,
+      "status": "in_work",
+      "isPayed": 0,
+      "currency": "RUB",
+      "offerIds": [8571204],
+      "createdAt": "2026-01-15T09:00:00Z",
+      "payedValue": 0,
+      "clientDealNumber": 0
+    },
+    "ts64": 1768467751,
+    "user": {
+      "id": "384201:512478330",
+      "cuid": null,
+      "gcId": 512478330,
+      "type": "Real",
+      "email": "test@example.com"
+    },
+    "eventType": "getcourse/dealStatusChanged",
+    "gcAccountId": 384201,
+    "gcSessionId": 9814527360,
+    "gcVisitorId": 9402118745
+  },
+  {
+    "ts": "2026-01-15T10:11:05Z",
+    "deal": {
+      "id": "871248093",
+      "cost": 4900,
+      "number": 11903754,
+      "status": "part_payed",
+      "isPayed": 0,
+      "currency": "RUB",
+      "offerIds": [8604371],
+      "createdAt": "2026-01-15T09:47:31Z",
+      "payedValue": 1200,
+      "clientDealNumber": 0
+    },
+    "ts64": 1768471865,
+    "user": {
+      "id": "384201:512903471",
+      "cuid": null,
+      "gcId": 512903471,
+      "type": "Real",
+      "email": "test2@example.com"
+    },
+    "eventType": "getcourse/dealStatusChanged",
+    "gcAccountId": 384201,
+    "gcSessionId": 9820634917,
+    "gcVisitorId": 9402118745
+  },
+  {
+    "ts": "2026-01-15T10:14:08Z",
+    "deal": {
+      "id": "871248093",
+      "cost": 4900,
+      "number": 11903754,
+      "status": "payed",
+      "isPayed": true,
+      "currency": "RUB",
+      "offerIds": [8604371],
+      "createdAt": "2026-01-15T09:47:31Z",
+      "payedValue": 1181.16,
+      "clientDealNumber": 3
+    },
+    "ts64": 1768472048,
+    "user": {
+      "id": "384201:512903471",
+      "cuid": null,
+      "gcId": 512903471,
+      "type": "Real",
+      "email": "test2@example.com"
+    },
+    "eventType": "getcourse/dealStatusChanged",
+    "gcAccountId": 384201,
+    "gcSessionId": 9820634917,
+    "gcVisitorId": 9402118745
+  },
+  {
+    "ts": "2026-01-15T11:08:44Z",
+    "deal": {
+      "id": "871456203",
+      "cost": 0,
+      "number": 11938274,
+      "status": "new",
+      "isPayed": 0,
+      "currency": "USD",
+      "offerIds": [5694830],
+      "createdAt": "2026-01-15T11:08:44Z",
+      "payedValue": 0,
+      "clientDealNumber": 0
+    },
+    "ts64": 1768475324,
+    "user": {
+      "id": "384201:514023918",
+      "cuid": null,
+      "gcId": 514023918,
+      "type": "Real",
+      "email": "test5@example.com"
+    },
+    "eventType": "getcourse/dealStatusChanged",
+    "gcAccountId": 384201,
+    "gcSessionId": 9840216783,
+    "gcVisitorId": 9418305277
+  },
+  {
+    "ts": "2026-01-15T13:41:16Z",
+    "deal": {
+      "id": "871412086",
+      "cost": 0,
+      "number": 11924530,
+      "status": "false",
+      "isPayed": 0,
+      "currency": "RUB",
+      "offerIds": [8545612],
+      "createdAt": "2026-01-15T10:25:16Z",
+      "payedValue": 0,
+      "clientDealNumber": 0
+    },
+    "ts64": 1768484476,
+    "user": {
+      "id": "384201:513264095",
+      "cuid": null,
+      "gcId": 513264095,
+      "type": "Real",
+      "email": "test3@example.com"
+    },
+    "eventType": "getcourse/dealStatusChanged",
+    "gcAccountId": 384201,
+    "gcSessionId": 9831092468,
+    "gcVisitorId": 9412378404
+  },
+  {
+    "ts": "2026-01-15T15:22:09Z",
+    "deal": {
+      "id": "871304851",
+      "cost": 0,
+      "number": 11876409,
+      "status": "cancelled",
+      "isPayed": 0,
+      "currency": "RUB",
+      "offerIds": [8498375],
+      "createdAt": "2026-01-15T14:58:31Z",
+      "payedValue": 0,
+      "clientDealNumber": 0
+    },
+    "ts64": 1768490529,
+    "user": {
+      "id": "384201:514936207",
+      "cuid": null,
+      "gcId": 514936207,
+      "type": "Real",
+      "email": "test7@example.com"
+    },
+    "eventType": "getcourse/dealStatusChanged",
+    "gcAccountId": 384201,
+    "gcSessionId": null,
+    "gcVisitorId": null
+  },
+  {
+    "ts": "2026-01-15T16:05:53Z",
+    "deal": {
+      "id": "871035642",
+      "cost": 14900,
+      "number": 11892043,
+      "status": "waiting_for_return",
+      "isPayed": true,
+      "currency": "RUB",
+      "offerIds": [8571204],
+      "createdAt": "2026-01-15T09:00:00Z",
+      "payedValue": 14900,
+      "clientDealNumber": 1
+    },
+    "ts64": 1768493153,
+    "user": {
+      "id": "384201:512478330",
+      "cuid": null,
+      "gcId": 512478330,
+      "type": "Real",
+      "email": "test@example.com"
+    },
+    "eventType": "getcourse/dealStatusChanged",
+    "gcAccountId": 384201,
+    "gcSessionId": 9814527360,
+    "gcVisitorId": 9402118745
+  }
+]

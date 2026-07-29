@@ -1,7 +1,7 @@
 /**
  * Базовый ответ от API GetCourse
  */
-export interface ResultResponse {
+export interface BaseResultResponse {
   status: boolean;
   message: string;
   code: number;
@@ -9,9 +9,21 @@ export interface ResultResponse {
 }
 
 /**
+ * Отдельный вид ответа от API GetCourse
+ */
+export interface SuccessResultResponse {
+  success: string;
+}
+
+/**
+ * Результат выполнения запроса
+ */
+export type ResultResponse = Partial<BaseResultResponse & SuccessResultResponse>;
+
+/**
  * Типизированный ответ с данными
  */
-export interface ApiResponse<T> extends ResultResponse {
+export interface ApiResponse<T> extends BaseResultResponse {
   data: T;
 }
 
@@ -58,3 +70,17 @@ export interface GetCourseConfig {
   /** Кастомный логгер (совместим с winston, pino и т.д.) */
   logger?: Logger;
 }
+
+/**
+ * Результат действия — GetCourse подтверждает выполнение флагом result
+ */
+export interface ActionResult {
+  result: boolean;
+}
+
+/**
+ * Причина ошибки валидации — набор полей зависит от кода
+ */
+export type ValidationErrorDetails =
+  | { code: 'attachments_limit'; limit: number; received: number }
+  | { code: 'attachment_size'; limit: number; filename: string; size: number };

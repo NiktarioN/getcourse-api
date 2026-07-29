@@ -1,6 +1,6 @@
 {
   "name": "getcourse-api",
-  "version": "1.2.0",
+  "version": "2.0.0",
   "description": "TypeScript SDK для GetCourse API",
   "keywords": [
     "getcourse",
@@ -17,7 +17,7 @@
   "homepage": "https://github.com/NiktarioN/getcourse-api",
   "repository": {
     "type": "git",
-    "url": "https://github.com/NiktarioN/getcourse-api.git"
+    "url": "git+https://github.com/NiktarioN/getcourse-api.git"
   },
   "bugs": {
     "url": "https://github.com/NiktarioN/getcourse-api/issues"
@@ -36,19 +36,26 @@
       }
     }
   },
+  "files": [
+    "dist"
+  ],
   "engines": {
-    "node": ">=18"
+    "node": ">=22"
   },
   "scripts": {
+    "prepare": "cp pre-commit .git/hooks || true",
     "build": "tsdown",
+    "check:pack": "npm run build && publint && attw --pack .",
     "lint": "eslint . --max-warnings=0 && tsc -p tsconfig.app.json && tsc -p tsconfig.mjs.json",
+    "lint:fix": "eslint . --fix",
     "test": "vitest run",
-    "test:export": "vitest run tests/legacy-export.test.ts"
+    "test:export": "vitest run tests/api/legacy-export.test.ts"
   },
   "dependencies": {
     "axios": "^1.14.0"
   },
   "devDependencies": {
+    "@arethetypeswrong/cli": "^0.18.5",
     "@eslint/js": "^9.39.2",
     "@stylistic/eslint-plugin": "^5.10.0",
     "@types/node": "^25.5.0",
@@ -58,8 +65,9 @@
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-check-file": "^3.3.1",
     "eslint-plugin-perfectionist": "^5.7.0",
-    "lint-staged": "^16.4.0",
+    "lint-staged": "^17.2.0",
     "prettier": "^3.8.1",
+    "publint": "^0.3.22",
     "tsdown": "^0.21.7",
     "typescript": "^6.0.2",
     "typescript-eslint": "^8.58.0",

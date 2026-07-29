@@ -1,0 +1,73 @@
+[
+  {
+    "message": "Прикладываю скриншоты ошибки",
+    "event_id": 3,
+    "dialog_id": 337204815,
+    "transport": 0,
+    "user_data": {
+      "id": 512478330,
+      "name": "Тестовый пользователь",
+      "email": "test@example.com"
+    },
+    "created_at": "2026-01-15 09:12:47",
+    "department": {
+      "id": 214905,
+      "title": "Общая поддержка"
+    },
+    "message_id": 1230422059,
+    "attached_files": [
+      {
+        "url": "https://fs.getcourse.ru/fileservice/file/download/a/384201/sc/80/h/2b7d419e6c05af38d1e7c94a6b03f512.jpg"
+      },
+      {
+        "url": "https://fs.getcourse.ru/fileservice/file/download/a/384201/sc/215/h/7e0a3c85d1b64f29a03e58d7c1465b90.jpg"
+      },
+      {
+        "url": "https://fs.getcourse.ru/fileservice/file/download/a/384201/sc/255/h/9c14b8f7e2d05a63b48f1c907d2e6a34.jpg"
+      }
+    ],
+    "personal_manager_id": 498215647
+  },
+  {
+    "message": "Спасибо, всё получилось!",
+    "event_id": 3,
+    "dialog_id": 337315062,
+    "transport": 13,
+    "user_data": {
+      "id": 512903471,
+      "name": "Второй тестовый пользователь",
+      "email": "test2@example.com"
+    },
+    "created_at": "2026-01-15 09:58:26",
+    "department": {
+      "id": 214905,
+      "title": "Общая поддержка"
+    },
+    "message_id": 1230419119,
+    "attached_files": [],
+    "personal_manager_id": 498215647
+  },
+  {
+    "message": "",
+    "event_id": 3,
+    "dialog_id": 337482930,
+    "transport": 6,
+    "user_data": {
+      "id": 513264095,
+      "name": "Третий тестовый пользователь",
+      "email": "test3@example.com"
+    },
+    "created_at": "2026-01-15 10:34:09",
+    "department": {
+      "id": 214905,
+      "title": "Общая поддержка"
+    },
+    "message_id": 1230421723,
+    "attached_files": [
+      {
+        "url": "https://fs.getcourse.ru/fileservice/file/download/a/384201/sc/142/h/0d5a37c81e94b26f70c3a815d9e4b207.jpg"
+      }
+    ],
+    "personal_manager_id": 498215647
+  }
+]

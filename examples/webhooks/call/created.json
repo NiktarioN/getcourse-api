@@ -1,0 +1,85 @@
+[
+  {
+    "id": 214397651,
+    "atc": {
+      "to": "70000000000",
+      "date": "2026-01-15 13:41:16",
+      "atc_id": 13507,
+      "caller": "111",
+      "gateway": "Carousel_OnLinePBX",
+      "duration": {
+        "billsec": 57,
+        "seconds": 69
+      },
+      "file_link": "http://fs.getcourse.ru/fileservice/file/download/a/384201/sc/240/h/8c05e2fa17b943d607e1c98b25a4f730.wav",
+      "caller_name": "111",
+      "hangup_cause": "RECOVERY_ON_TIMER_EXPIRE"
+    },
+    "type": "call",
+    "title": null,
+    "comment": null,
+    "context": null,
+    "user_id": 512478330,
+    "direction": "outcome",
+    "created_at": "2026-01-15 13:41:16",
+    "created_by": "atc",
+    "description": "",
+    "contact_time": "2026-01-15 13:41:16",
+    "failed_reason": null,
+    "finish_status": "contacted",
+    "created_user_id": null,
+    "manager_user_id": 498215647
+  },
+  {
+    "id": 214408372,
+    "atc": {
+      "to": "70000000001",
+      "date": "2026-01-15 14:02:53",
+      "atc_id": 13507,
+      "caller": "112",
+      "gateway": "",
+      "duration": {
+        "billsec": 0,
+        "seconds": 14
+      },
+      "file_link": null,
+      "caller_name": "112",
+      "hangup_cause": "NORMAL_CLEARING"
+    },
+    "type": "call",
+    "title": null,
+    "comment": null,
+    "context": null,
+    "user_id": 512903471,
+    "direction": "income",
+    "created_at": "2026-01-15 14:02:53",
+    "created_by": "atc",
+    "description": "",
+    "contact_time": "2026-01-15 14:02:53",
+    "failed_reason": null,
+    "finish_status": "failed",
+    "created_user_id": null,
+    "manager_user_id": 498215647
+  },
+  {
+    "id": 214415098,
+    "atc": null,
+    "type": "call",
+    "title": "",
+    "comment": null,
+    "context": {
+      "id": 871390517,
+      "type": "Deal"
+    },
+    "user_id": 513264095,
+    "direction": "outcome",
+    "created_at": "2026-01-15 14:35:07",
+    "created_by": "user",
+    "description": null,
+    "contact_time": "2026-01-15 14:30:00",
+    "failed_reason": "no_answer",
+    "finish_status": "failed",
+    "created_user_id": null,
+    "manager_user_id": 498215647
+  }
+]

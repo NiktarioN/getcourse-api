@@ -1,0 +1,71 @@
+[
+  {
+    "ts": "2026-01-15T12:24:07Z",
+    "ts64": 1768479847,
+    "comment": {
+      "id": "418702935",
+      "answer_id": 501283094,
+      "user_id": 498215647,
+      "owner_id": 512478330,
+      "owner_type_id": 1,
+      "comment_text": "Задание принято, отличная работа!",
+      "created_at": "2026-01-15T12:24:07Z",
+      "files": "{\"files\":[]}",
+      "lesson_data": {
+        "lesson_id": 334892017,
+        "lesson_name": "1.1 Вводный урок",
+        "lesson_teacher_id": null,
+        "training_id": 911254806,
+        "training_name": "Базовый курс"
+      }
+    },
+    "eventType": "getcourse/answerCommentCreated",
+    "gcAccountId": 384201
+  },
+  {
+    "ts": "2026-01-15T13:11:52Z",
+    "ts64": 1768482712,
+    "comment": {
+      "id": "418815460",
+      "answer_id": 501394728,
+      "user_id": 498215647,
+      "owner_id": 512903471,
+      "owner_type_id": 1,
+      "comment_text": "Посмотрите разбор во вложении",
+      "created_at": "2026-01-15T13:11:52Z",
+      "files": "{\"files\":[{\"hash\":\"5d3b81f0e47a92c6081fb35d7e214c9a\",\"uploaded_at\":1768482700,\"user_id\":498215647,\"can_download\":true,\"interactive\":false,\"title\":null,\"description\":null,\"is_watermark\":false,\"is_new_player\":false,\"attach_type\":null}]}",
+      "lesson_data": {
+        "lesson_id": 334892017,
+        "lesson_name": "1.1 Вводный урок",
+        "lesson_teacher_id": null,
+        "training_id": 911254806,
+        "training_name": "Базовый курс"
+      }
+    },
+    "eventType": "getcourse/answerCommentCreated",
+    "gcAccountId": 384201
+  },
+  {
+    "ts": "2026-01-15T14:05:31Z",
+    "ts64": 1768485931,
+    "comment": {
+      "id": "418960173",
+      "answer_id": 501460382,
+      "user_id": 498215647,
+      "owner_id": 513264095,
+      "owner_type_id": 1,
+      "comment_text": "Нужно доработать второй пункт, жду исправленный вариант",
+      "created_at": "2026-01-15T14:05:31Z",
+      "files": "{\"files\":[]}",
+      "lesson_data": {
+        "lesson_id": 334892017,
+        "lesson_name": "1.1 Вводный урок",
+        "lesson_teacher_id": null,
+        "training_id": 911254806,
+        "training_name": "Базовый курс"
+      }
+    },
+    "eventType": "getcourse/answerCommentCreated",
+    "gcAccountId": 384201
+  }
+]

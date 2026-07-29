@@ -1,0 +1,102 @@
+[
+  {
+    "ts": "2026-01-15T11:36:58Z",
+    "ts64": 1768477018,
+    "answer": {
+      "id": "'501283094'",
+      "text": "Выполнил задание, прикладываю ответ на вопрос из урока",
+      "type": "mission_answer",
+      "status": "new",
+      "deleted": 0,
+      "user_id": 512478330,
+      "lesson_id": 334892017,
+      "created_at": "2026-01-15T11:36:58Z",
+      "deleted_at": null,
+      "lesson_name": "1.1 Вводный урок",
+      "questionary": [],
+      "training_id": 911254806,
+      "training_name": "Базовый курс",
+      "additional_fields": [],
+      "lesson_teacher_id": null
+    },
+    "eventType": "getcourse/lessonAnswerCreated",
+    "gcAccountId": 384201
+  },
+  {
+    "ts": "2026-01-15T12:18:05Z",
+    "ts64": 1768479485,
+    "answer": {
+      "id": "'501394728'",
+      "text": "Прошёл тест по материалам урока",
+      "type": "mission_answer",
+      "status": "new",
+      "deleted": 0,
+      "user_id": 512903471,
+      "lesson_id": 334892017,
+      "created_at": "2026-01-15T12:18:05Z",
+      "deleted_at": null,
+      "lesson_name": "1.1 Вводный урок",
+      "questionary": {
+        "status": "complete",
+        "points_sum": 8,
+        "answers_count": 10,
+        "questions_count": 10,
+        "right_answers_count": 8
+      },
+      "training_id": 911254806,
+      "training_name": "Базовый курс",
+      "additional_fields": [],
+      "lesson_teacher_id": null
+    },
+    "eventType": "getcourse/lessonAnswerCreated",
+    "gcAccountId": 384201
+  },
+  {
+    "ts": "2026-01-15T13:02:44Z",
+    "ts64": 1768482164,
+    "answer": {
+      "id": "'501460382'",
+      "text": "Ответ на задание с дополнительными полями",
+      "type": "mission_answer",
+      "status": "accepted",
+      "deleted": 0,
+      "user_id": 513264095,
+      "lesson_id": 334892017,
+      "created_at": "2026-01-15T13:02:44Z",
+      "deleted_at": null,
+      "lesson_name": "1.1 Вводный урок",
+      "questionary": [],
+      "training_id": 911254806,
+      "training_name": "Базовый курс",
+      "additional_fields": [
+        {
+          "id": 730154,
+          "title": "Ваш город",
+          "type": "string",
+          "required": true,
+          "hidden": false,
+          "value": "Москва"
+        },
+        {
+          "id": 730162,
+          "title": "Комментарий",
+          "type": "text",
+          "required": "1",
+          "hidden": false,
+          "value": null
+        },
+        {
+          "id": 730178,
+          "title": "Согласие с условиями",
+          "type": "checkbox",
+          "required": false,
+          "hidden": false,
+          "value": 1
+        }
+      ],
+      "lesson_teacher_id": null
+    },
+    "eventType": "getcourse/lessonAnswerCreated",
+    "gcAccountId": 384201
+  }
+]

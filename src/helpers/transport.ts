@@ -1,11 +1,14 @@
 import axios, { AxiosError } from 'axios';
+
+import { assertAttachments, buildAttachmentsForm } from './attachments.ts';
 import GetCourseApiError from './errors/api-error.ts';
 import GetCourseNetworkError from './errors/network-error.ts';
 import ConsoleLogger from './logger.ts';
 import { isPresent } from './utils.ts';
 
 import type { AxiosInstance } from 'axios';
-import type { ApiResponse, Logger } from '../types/common.ts';
+import type { ApiResponse, Logger, ResultResponse } from '../types/common.ts';
+import type { MessageAttachment } from '../types/models/dialog.ts';
 
 const DEFAULT_TIMEOUT = 15_000;
 
@@ -39,10 +42,10 @@ export default class HttpTransport {
    * GET-запрос к API
    */
   async get<T>(path: string, params?: object): Promise<ApiResponse<T>> {
-    return this.execute<T>('GET', path, async () =>
-      this.client.get<ApiResponse<T>>(path, {
-        params: params === undefined ? undefined : HttpTransport.filterParams(params),
-      }),
+    const query = params === undefined ? undefined : HttpTransport.filterParams(params);
+
+    return this.execute<ApiResponse<T>>('GET', path, async () =>
+      this.client.get<ApiResponse<T>>(path, { params: query }),
     );
   }
 
@@ -50,11 +53,52 @@ export default class HttpTransport {
    * POST-запрос к API с JSON телом
    */
   async post<T>(path: string, body?: unknown): Promise<ApiResponse<T>> {
-    return this.execute<T>(
+    return this.execute<ApiResponse<T>>(
       'POST',
       path,
       async () => this.client.post<ApiResponse<T>>(path, body),
       body === undefined ? undefined : { body },
+    );
+  }
+
+  /**
+   * POST-запрос к API с нестандартным телом ответа
+   *
+   * В отличие от post(), возвращает тело ответа как есть, а не ApiResponse<T>
+   */
+  async postRaw<R>(path: string, body?: unknown): Promise<R> {
+    return this.execute<R>(
+      'POST',
+      path,
+      async () => this.client.post<R>(path, body),
+      body === undefined ? undefined : { body },
+    );
+  }
+
+  /**
+   * POST-запрос с файлами
+   *
+   * Без файлов уходит обычный JSON — у существующих вызовов формат не меняется
+   */
+  async postWithAttachments<T>(
+    path: string,
+    payload: object,
+    files?: MessageAttachment[],
+  ): Promise<ApiResponse<T>> {
+    if (files === undefined || files.length === 0) {
+      return this.post<T>(path, payload);
+    }
+
+    assertAttachments(files);
+
+    const requestBody = buildAttachmentsForm(payload, files);
+    const filenames = files.map((file) => file.filename);
+
+    return this.execute<ApiResponse<T>>(
+      'POST',
+      path,
+      async () => this.client.post<ApiResponse<T>>(path, requestBody),
+      { body: payload, files: filenames },
     );
   }
 
@@ -74,32 +118,44 @@ export default class HttpTransport {
   }
 
   /**
+   * Обработка результатов запроса
+   */
+  private static readResult(body: unknown): ResultResponse {
+    if (typeof body !== 'object' || body === null) {
+      return {};
+    }
+
+    return body as ResultResponse;
+  }
+
+  /**
    * Выполняет HTTP-запрос к API: логирует вызов, парсит ответ и нормализует ошибки
    */
-  private async execute<T>(
+  private async execute<R>(
     method: string,
     path: string,
-    request: () => Promise<{ data: ApiResponse<T> }>,
+    request: () => Promise<{ data: R }>,
     logContext?: Record<string, unknown>,
-  ): Promise<ApiResponse<T>> {
+  ): Promise<R> {
     this.logger.debug(`${method} ${path}`, logContext);
 
     const startAt = Date.now();
 
     try {
       const { data } = await request();
+      const result = HttpTransport.readResult(data);
+      const isSuccess = result.status === true || result.success === 'OK';
 
-      // API может вернуть HTTP 200, но status: false в теле
-      if (!data.status) {
-        const message = data.message ?? 'Ошибка API';
-        const errors = Array.isArray(data.errors) ? data.errors : [];
+      if (!isSuccess) {
+        const message = result.message ?? 'Ошибка API';
+        const errors = Array.isArray(result.errors) ? result.errors : [];
 
         this.logger.error(`API вернул status: false — ${message}`, { errors });
 
         throw new GetCourseApiError({
           message,
           statusCode: 200,
-          apiCode: data.code ?? 0,
+          apiCode: result.code ?? 0,
           errors,
         });
       }

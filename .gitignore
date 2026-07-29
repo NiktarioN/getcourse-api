@@ -21,3 +21,6 @@ CLAUDE.MD
 # OS
 .DS_Store
 Thumbs.db
+
+# OTHER
+examples/raw

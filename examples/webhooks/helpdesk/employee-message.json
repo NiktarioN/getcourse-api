@@ -1,0 +1,63 @@
+[
+  {
+    "message": "Спасибо, вижу проблему. Доступ открыл, попробуйте зайти снова",
+    "event_id": 3,
+    "dialog_id": 2841096,
+    "transport": 0,
+    "user_data": {
+      "id": 498215647,
+      "name": "Тестовый менеджер",
+      "email": "manager@example.com"
+    },
+    "created_at": "2026-01-15 12:24:07",
+    "department": {
+      "id": 214905,
+      "title": "Общая поддержка"
+    },
+    "message_id": 1230423256,
+    "attached_files": [],
+    "personal_manager_id": 498215647
+  },
+  {
+    "message": "Отправил письмо повторно, проверьте пожалуйста. Инструкция во вложении",
+    "event_id": 3,
+    "dialog_id": 2843517,
+    "transport": 0,
+    "user_data": {
+      "id": 498215647,
+      "name": "Тестовый менеджер",
+      "email": "manager@example.com"
+    },
+    "created_at": "2026-01-15 12:51:36",
+    "department": {
+      "id": 214905,
+      "title": "Общая поддержка"
+    },
+    "message_id": 1230419266,
+    "attached_files": [
+      {
+        "url": "https://fs.getcourse.ru/fileservice/file/download/a/384201/sc/184/h/b52f8071ae3c96d420f7e18a53c6b09b.jpg"
+      }
+    ],
+    "personal_manager_id": null
+  },
+  {
+    "message": "Курс добавили вручную, он уже доступен в кабинете",
+    "event_id": 3,
+    "dialog_id": 2846204,
+    "transport": 0,
+    "user_data": {
+      "id": 498215647,
+      "name": "Тестовый менеджер",
+      "email": "manager@example.com"
+    },
+    "created_at": "2026-01-15 13:29:58",
+    "department": {
+      "id": 214905,
+      "title": "Общая поддержка"
+    },
+    "message_id": 1230424117,
+    "attached_files": [],
+    "personal_manager_id": 498215647
+  }
+]
