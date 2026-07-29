@@ -70,3 +70,17 @@ export interface GetCourseConfig {
   /** Кастомный логгер (совместим с winston, pino и т.д.) */
   logger?: Logger;
 }
+
+/**
+ * Результат действия — GetCourse подтверждает выполнение флагом result
+ */
+export interface ActionResult {
+  result: boolean;
+}
+
+/**
+ * Причина ошибки валидации — набор полей зависит от кода
+ */
+export type ValidationErrorDetails =
+  | { code: 'attachments_limit'; limit: number; received: number }
+  | { code: 'attachment_size'; limit: number; filename: string; size: number };

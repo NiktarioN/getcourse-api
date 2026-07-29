@@ -1,5 +1,6 @@
 import axios, { AxiosError } from 'axios';
 
+import { assertAttachments, buildAttachmentsForm } from './attachments.ts';
 import GetCourseApiError from './errors/api-error.ts';
 import GetCourseNetworkError from './errors/network-error.ts';
 import ConsoleLogger from './logger.ts';
@@ -7,6 +8,7 @@ import { isPresent } from './utils.ts';
 
 import type { AxiosInstance } from 'axios';
 import type { ApiResponse, Logger, ResultResponse } from '../types/common.ts';
+import type { MessageAttachment } from '../types/models/dialog.ts';
 
 const DEFAULT_TIMEOUT = 15_000;
 
@@ -40,10 +42,10 @@ export default class HttpTransport {
    * GET-запрос к API
    */
   async get<T>(path: string, params?: object): Promise<ApiResponse<T>> {
+    const query = params === undefined ? undefined : HttpTransport.filterParams(params);
+
     return this.execute<ApiResponse<T>>('GET', path, async () =>
-      this.client.get<ApiResponse<T>>(path, {
-        params: params === undefined ? undefined : HttpTransport.filterParams(params),
-      }),
+      this.client.get<ApiResponse<T>>(path, { params: query }),
     );
   }
 
@@ -70,6 +72,33 @@ export default class HttpTransport {
       path,
       async () => this.client.post<R>(path, body),
       body === undefined ? undefined : { body },
+    );
+  }
+
+  /**
+   * POST-запрос с файлами
+   *
+   * Без файлов уходит обычный JSON — у существующих вызовов формат не меняется
+   */
+  async postWithAttachments<T>(
+    path: string,
+    payload: object,
+    files?: MessageAttachment[],
+  ): Promise<ApiResponse<T>> {
+    if (files === undefined || files.length === 0) {
+      return this.post<T>(path, payload);
+    }
+
+    assertAttachments(files);
+
+    const requestBody = buildAttachmentsForm(payload, files);
+    const filenames = files.map((file) => file.filename);
+
+    return this.execute<ApiResponse<T>>(
+      'POST',
+      path,
+      async () => this.client.post<ApiResponse<T>>(path, requestBody),
+      { body: payload, files: filenames },
     );
   }
 

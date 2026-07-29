@@ -1,19 +1,21 @@
-import type { MessageTransport } from '../models/dialog.ts';
+import type { MessageAttachment, MessageTransport } from '../models/dialog.ts';
 
-/** Добавить комментарий в диалог */
-export interface AddCommentToDialogRequest {
+/** Отправить сообщение в диалог от имени сотрудника */
+export interface SendDialogMessageRequest {
   /** ID диалога */
   dialogId: number;
-  /** Текст комментария */
+  /** Текст сообщения */
   commentText: string;
   /** Транспорты для отправки */
   transport: MessageTransport[];
   /** ID сотрудника/администратора */
   userId: number;
+  /** Файлы к сообщению — не больше 5, каждый до 5 МБ */
+  attachedFiles?: MessageAttachment[];
 }
 
 /** Изменить отдел диалога */
-export interface ChangeDepartmentRequest {
+export interface ChangeDialogDepartmentRequest {
   /** ID диалога */
   dialogId: number;
   /** ID нового отдела */
@@ -35,7 +37,7 @@ export interface GetDialogHistoryRequest {
 }
 
 /** Добавить заметку к диалогу */
-export interface AddNoteRequest {
+export interface AddDialogNoteRequest {
   /** ID диалога */
   dialogId: number;
   /** Текст заметки */
