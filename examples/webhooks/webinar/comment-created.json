@@ -1,0 +1,68 @@
+[
+  {
+    "ts": "2026-01-15T12:24:07Z",
+    "ts64": 1768479847,
+    "user": {
+      "id": "384201:512478330",
+      "gcId": 512478330,
+      "type": 1,
+      "email": "test@example.com"
+    },
+    "comment": {
+      "id": "379541208",
+      "text": "Добрый день! Подскажите, будет ли запись вебинара?",
+      "createdAt": "2026-01-15T12:24:07Z",
+      "user_to_id": null,
+      "visibility": 1,
+      "webinar_id": 3271845,
+      "user_to_type": null,
+      "webinar_launch_number": 268517940
+    },
+    "eventType": "getcourse/webinarCommentCreated",
+    "gcAccountId": 384201
+  },
+  {
+    "ts": "2026-01-15T12:31:45Z",
+    "ts64": 1768480305,
+    "user": {
+      "id": "384201:512903471",
+      "gcId": 512903471,
+      "type": 1,
+      "email": "test2@example.com"
+    },
+    "comment": {
+      "id": "379612874",
+      "text": "Комментарий скрыт модератором",
+      "createdAt": "2026-01-15T12:31:45Z",
+      "user_to_id": null,
+      "visibility": 2,
+      "webinar_id": 3271845,
+      "user_to_type": null,
+      "webinar_launch_number": 0
+    },
+    "eventType": "getcourse/webinarCommentCreated",
+    "gcAccountId": 384201
+  },
+  {
+    "ts": "2026-01-15T12:47:19Z",
+    "ts64": 1768481239,
+    "user": {
+      "id": "384201:513264095",
+      "gcId": 513264095,
+      "type": 1,
+      "email": "test3@example.com"
+    },
+    "comment": {
+      "id": "379703961",
+      "text": "Спасибо за эфир, было полезно",
+      "createdAt": "2026-01-15T12:47:19Z",
+      "user_to_id": null,
+      "visibility": 3,
+      "webinar_id": 3271845,
+      "user_to_type": null,
+      "webinar_launch_number": 268517940
+    },
+    "eventType": "getcourse/webinarCommentCreated",
+    "gcAccountId": 384201
+  }
+]

@@ -1,0 +1,70 @@
+[
+  {
+    "message": "Прикладываю скриншот того, что вижу",
+    "event_id": 2,
+    "dialog_id": 2841096,
+    "transport": 0,
+    "user_data": {
+      "id": 512478330,
+      "name": "Тестовый пользователь",
+      "email": "test@example.com"
+    },
+    "created_at": "2026-01-15 11:36:58",
+    "department": {
+      "id": 214905,
+      "title": "Общая поддержка"
+    },
+    "message_id": 1230423255,
+    "attached_files": [
+      {
+        "url": "https://fs.getcourse.ru/fileservice/file/download/a/384201/sc/136/h/6a3f27c091db845e2f0c93b71a5d4e68.jpg"
+      }
+    ],
+    "personal_manager_id": null
+  },
+  {
+    "message": "Проверил папку спам, письма нет",
+    "event_id": 2,
+    "dialog_id": 2843517,
+    "transport": 11,
+    "user_data": {
+      "id": 512903471,
+      "name": "Второй тестовый пользователь",
+      "email": "test2@example.com"
+    },
+    "created_at": "2026-01-15 12:15:22",
+    "department": {
+      "id": 214905,
+      "title": "Общая поддержка"
+    },
+    "message_id": 1230419265,
+    "attached_files": [],
+    "personal_manager_id": null
+  },
+  {
+    "message": "Оплата прошла, чек прикладываю",
+    "event_id": 2,
+    "dialog_id": 2846204,
+    "transport": 0,
+    "user_data": {
+      "id": 513264095,
+      "name": "Третий тестовый пользователь",
+      "email": "test3@example.com"
+    },
+    "created_at": "2026-01-15 13:04:41",
+    "department": {
+      "id": 214905,
+      "title": "Общая поддержка"
+    },
+    "message_id": 1230424116,
+    "attached_files": [
+      {
+        "url": "https://fs.getcourse.ru/fileservice/file/download/a/384201/sc/198/h/c4e07b2a95f318d6e0b74a2c81f5390d.jpg"
+      },
+      {
+        "url": "https://fs.getcourse.ru/fileservice/file/download/a/384201/sc/203/h/1f86d3095c7ba24e08d5f19c63e07a4b.jpg"
+      }
+    ],
+    "personal_manager_id": 498215647
+  }
+]

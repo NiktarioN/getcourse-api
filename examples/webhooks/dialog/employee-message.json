@@ -1,0 +1,59 @@
+[
+  {
+    "message": "Добрый день! Доступ восстановил, проверьте пожалуйста",
+    "event_id": 4,
+    "dialog_id": 337204815,
+    "transport": null,
+    "user_data": {
+      "id": 498215647,
+      "name": "Тестовый менеджер",
+      "email": "manager@example.com"
+    },
+    "created_at": "2026-01-15 10:03:29",
+    "department": {
+      "id": 214905,
+      "title": "Общая поддержка"
+    },
+    "message_id": 1230422060,
+    "attached_files": [],
+    "personal_manager_id": 498215647
+  },
+  {
+    "message": "Здравствуйте! Поток стартует 20 января, письмо с доступом придёт накануне",
+    "event_id": 4,
+    "dialog_id": 337315062,
+    "transport": null,
+    "user_data": {
+      "id": 498215647,
+      "name": "Тестовый менеджер",
+      "email": "manager@example.com"
+    },
+    "created_at": "2026-01-15 10:44:51",
+    "department": {
+      "id": 214905,
+      "title": "Общая поддержка"
+    },
+    "message_id": 1230419120,
+    "attached_files": [],
+    "personal_manager_id": 498215647
+  },
+  {
+    "message": "Заявку на возврат приняли, ответим в течение трёх рабочих дней",
+    "event_id": 4,
+    "dialog_id": 337482930,
+    "transport": null,
+    "user_data": {
+      "id": 498215647,
+      "name": "Тестовый менеджер",
+      "email": "manager@example.com"
+    },
+    "created_at": "2026-01-15 11:19:33",
+    "department": {
+      "id": 214905,
+      "title": "Общая поддержка"
+    },
+    "message_id": 1230421724,
+    "attached_files": [],
+    "personal_manager_id": null
+  }
+]
