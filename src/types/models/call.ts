@@ -41,6 +41,7 @@ export interface ContactActivity {
   finish_status: CallFinishStatus;
   failed_reason: CallFailedReason | null;
   type: 'call';
+  /** Поле «Описание» — его пишет addCallComment */
   description: string | null;
   direction: CallDirection;
   contact_time: string;
@@ -52,5 +53,6 @@ export interface ContactActivity {
   updated_user_id: number | null;
   created_by: CallCreatedBy;
   phone_calls: PhoneCall[];
+  /** Поле «Транскрибация» — её пишет addCallTranscription */
   comment: string | null;
 }
