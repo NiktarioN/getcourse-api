@@ -8,25 +8,29 @@ import expectTrue from '../helpers/expect-true.ts';
 const dialogId = envNum(process.env.TEST_DIALOG_ID);
 const userId = envNum(process.env.TEST_ADMIN_USER_ID);
 const departmentId = envNum(process.env.TEST_DEPARTMENT_ID);
+const recipientId = envNum(process.env.TEST_USER_ID);
 
 describe('dialog', () => {
   it.skipIf(Number.isNaN(dialogId))('getDialogHistory', async () => {
     await expectTrue(gc.getDialogHistory({ dialogId }));
   });
 
-  it.skipIf(Number.isNaN(dialogId) || Number.isNaN(userId))('sendDialogMessage', async () => {
-    await expectResultTrue(
-      gc.sendDialogMessage({
-        dialogId,
-        commentText: 'Тестовый ответ в диалоге',
-        transport: [0],
-        userId,
-      }),
-    );
-  });
+  it.skipIf(Number.isNaN(dialogId) || Number.isNaN(userId))(
+    'sendDialogMessage: только сообщение',
+    async () => {
+      await expectResultTrue(
+        gc.sendDialogMessage({
+          dialogId,
+          commentText: 'Тестовый ответ в диалоге',
+          transport: [0],
+          userId,
+        }),
+      );
+    },
+  );
 
   it.skipIf(Number.isNaN(dialogId) || Number.isNaN(userId))(
-    'sendDialogMessage с вложением',
+    'sendDialogMessage: сообщение с вложением',
     async () => {
       const before = await gc.getDialogHistory({ dialogId, limit: 50 });
       const known = new Set(before.data.map((message) => message.message_id));
@@ -52,6 +56,17 @@ describe('dialog', () => {
       expect(fresh.flatMap((message) => message.attached_files ?? [])).toHaveLength(1);
     },
   );
+
+  it.skipIf(Number.isNaN(recipientId) || Number.isNaN(userId))('startDialog', async () => {
+    await expectResultTrue(
+      gc.startDialog({
+        recipientId,
+        commentText: 'Тестовое сообщение первым',
+        transport: [0],
+        userId,
+      }),
+    );
+  });
 
   it.skipIf(Number.isNaN(dialogId))('addDialogNote', async () => {
     await expectTrue(gc.addDialogNote({ dialogId, text: 'Тестовая заметка в диалоге' }));

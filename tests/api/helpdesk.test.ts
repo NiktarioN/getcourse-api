@@ -14,19 +14,22 @@ describe('helpdesk', () => {
     await expectTrue(gc.getTicketHistory({ ticketId }));
   });
 
-  it.skipIf(Number.isNaN(ticketId) || Number.isNaN(userId))('sendTicketMessage', async () => {
-    await expectResultTrue(
-      gc.sendTicketMessage({
-        ticketId,
-        commentText: 'Тестовый ответ в тикете',
-        transport: [0],
-        userId,
-      }),
-    );
-  });
+  it.skipIf(Number.isNaN(ticketId) || Number.isNaN(userId))(
+    'sendTicketMessage: только сообщение',
+    async () => {
+      await expectResultTrue(
+        gc.sendTicketMessage({
+          ticketId,
+          commentText: 'Тестовый ответ в тикете',
+          transport: [0],
+          userId,
+        }),
+      );
+    },
+  );
 
   it.skipIf(Number.isNaN(ticketId) || Number.isNaN(userId))(
-    'sendTicketMessage с вложением',
+    'sendTicketMessage: сообщение с вложением',
     async () => {
       const before = await gc.getTicketHistory({ ticketId, limit: 50 });
       const known = new Set(before.data.map((message) => message.message_id));
@@ -71,6 +74,16 @@ describe('helpdesk', () => {
         ticketId,
         closedReason: 4,
         closedComment: 'Тестовое закрытие',
+      }),
+    );
+  });
+
+  it.skipIf(Number.isNaN(ticketId) || Number.isNaN(userId))('addTicketNote', async () => {
+    await expectResultTrue(
+      gc.addTicketNote({
+        ticketId,
+        text: 'Тестовая заметка в тикете',
+        userId,
       }),
     );
   });

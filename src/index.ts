@@ -59,6 +59,8 @@ export type * from './types/requests/helpdesk.ts';
 
 export type * from './types/requests/lesson.ts';
 
+export type * from './types/requests/survey.ts';
+
 export type * from './types/requests/user.ts';
 
 export type * from './types/requests/webhook.ts';

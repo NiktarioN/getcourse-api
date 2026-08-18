@@ -1,9 +1,7 @@
 import type { MessageAttachment, MessageTransport } from '../models/dialog.ts';
 
-/** Отправить сообщение в диалог от имени сотрудника */
-export interface SendDialogMessageRequest {
-  /** ID диалога */
-  dialogId: number;
+/** Общие поля сообщения в диалог */
+interface DialogMessageBase {
   /** Текст сообщения */
   commentText: string;
   /** Транспорты для отправки */
@@ -12,6 +10,18 @@ export interface SendDialogMessageRequest {
   userId: number;
   /** Файлы к сообщению — не больше 5, каждый до 5 МБ */
   attachedFiles?: MessageAttachment[];
+}
+
+/** Отправить сообщение в диалог от имени сотрудника */
+export interface SendDialogMessageRequest extends DialogMessageBase {
+  /** ID диалога */
+  dialogId: number;
+}
+
+/** Начать диалог с учеником от имени сотрудника */
+export interface StartDialogRequest extends DialogMessageBase {
+  /** ID ученика */
+  recipientId: number;
 }
 
 /** Изменить отдел диалога */

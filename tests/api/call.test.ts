@@ -28,7 +28,7 @@ describe('call', () => {
   });
 
   it.skipIf(Number.isNaN(callId) || Number.isNaN(dealId))(
-    'addCallTranscription — HTML-разметка',
+    'addCallTranscription: HTML-разметка',
     async () => {
       // Абзацы идут тегами (<p>текст</p>, <br>, <br />), \n в интерфейсе схлопывается в пробел
       const text = [
@@ -50,7 +50,7 @@ describe('call', () => {
   );
 
   it.skipIf(Number.isNaN(callId) || Number.isNaN(dealId))(
-    'addCallTranscription — длинный текст',
+    'addCallTranscription: длинный текст',
     async () => {
       // 30 реплик ≈ 2300 символов — вдвое с лишним ниже предела поля
       const text = Array.from(

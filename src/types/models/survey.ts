@@ -12,7 +12,7 @@ interface SurveyFieldSettingsBase {
 
 /** Общая часть поля анкеты */
 interface SurveyFieldBase {
-  /** Он же ключ в `SurveyAnswer.values`, но там строкой */
+  /** Он же ключ в `UserSurveyAnswer.values`, но там строкой */
   id: number;
   label: string;
   required: boolean;
@@ -143,7 +143,7 @@ export interface Survey {
 }
 
 /** Ответ пользователя на анкету */
-export interface SurveyAnswer {
+export interface UserSurveyAnswer {
   id: number;
   /** Дата отправки в формате "2026-01-15 09:34:01" */
   created_at: string;
@@ -160,4 +160,30 @@ export interface SurveyAnswer {
    * `file` — HTML со ссылкой на загруженный файл
    */
   values: Record<string, string | undefined>;
+}
+
+/**
+ * Ответ одного пользователя на анкету
+ *
+ * Плоский, без вложенной модели анкеты — её отдаёт `UserSurveyAnswer`
+ */
+export interface SurveyAnswer {
+  id: number;
+  /** Дата отправки в формате "2026-01-15 09:34:01" */
+  created_at: string;
+  user_name: string;
+  email: string;
+  /** Ответы: ключ — ID вопроса строкой */
+  answers: Record<string, string | undefined>;
+}
+
+/** Ответы анкеты */
+export interface SurveyAnswers {
+  /** Вопросы: ключ — ID вопроса строкой, значение — текст вопроса */
+  questions: Record<string, string>;
+  answers: SurveyAnswer[];
+  /** Общее количество ответов в анкете */
+  total_count: number;
+  limit: number;
+  offset: number;
 }

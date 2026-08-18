@@ -20,8 +20,8 @@ describe('deal', () => {
     await expectTrue(gc.getDealsWithTags());
   });
 
-  it.skipIf(Number.isNaN(dealId))('getDealFields', async () => {
-    await expectTrue(gc.getDealFields(dealId));
+  it.skipIf(Number.isNaN(dealId))('getDealInfo', async () => {
+    await expectTrue(gc.getDealInfo(dealId));
   });
 
   it.skipIf(Number.isNaN(dealId))('getDealCustomFields', async () => {
@@ -36,8 +36,8 @@ describe('deal', () => {
     await expectTrue(gc.getDealCalls(dealId));
   });
 
-  it.skipIf(Number.isNaN(dealId))('updateDealFields', async () => {
-    await expectTrue(gc.updateDealFields({ dealId }));
+  it.skipIf(Number.isNaN(dealId))('updateDealInfo', async () => {
+    await expectTrue(gc.updateDealInfo({ dealId }));
   });
 
   it.skipIf(Number.isNaN(dealId) || Number.isNaN(offerId))('addDealPositions', async () => {

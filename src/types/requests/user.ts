@@ -1,4 +1,5 @@
-import type { UserIdentifier } from '../common.ts';
+import type { PaginationParams, UserIdentifier } from '../common.ts';
+import type { MessengerType } from '../dictionaries.ts';
 
 /** Тип баланса */
 export type BalanceType = 'normal' | 'virtual' | 'points';
@@ -54,8 +55,8 @@ export interface UpdateUserCustomFieldsRequest extends UserIdentifier {
 /** Пол пользователя */
 export type UserGender = 'male' | 'female';
 
-/** Обновить поля пользователя */
-export interface UpdateUserFieldsRequest extends UserIdentifier {
+/** Обновить информацию по пользователю */
+export interface UpdateUserInfoRequest extends UserIdentifier {
   gender?: UserGender | null;
   country?: string | null;
   city?: string | null;
@@ -94,3 +95,17 @@ export interface GetUserPurchasesRequest extends UserIdentifier {
   /** ID продукта */
   productId?: number;
 }
+
+/** Получить диалоги пользователя */
+export type GetUserDialogsRequest = UserIdentifier & PaginationParams;
+
+/** Найти пользователя по chat ID мессенджера */
+export interface GetUserByChatIdRequest {
+  /** Тип мессенджера */
+  messengerType: MessengerType;
+  /** ID чата в мессенджере */
+  chatId: number;
+}
+
+/** Получить информацию по пользователю — по ID, email или телефону */
+export type GetUserInfoRequest = UserIdentifier & { phone?: string };

@@ -13,8 +13,8 @@ export interface Offer {
   params: Record<string, unknown>;
 }
 
-/** Тег оффера */
-export interface OfferTag {
+/** Имена тегов оффера */
+export interface OfferTagNames {
   offerId: number;
   tags: string[];
 }

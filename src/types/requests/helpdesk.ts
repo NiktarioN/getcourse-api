@@ -46,3 +46,13 @@ export interface GetTicketHistoryRequest {
   /** Количество сообщений (не более 1000, по умолчанию: 100) */
   limit?: number;
 }
+
+/** Добавить заметку к тикету HelpDesk */
+export interface AddTicketNoteRequest {
+  /** ID тикета */
+  ticketId: number;
+  /** Текст заметки */
+  text: string;
+  /** ID сотрудника/администратора */
+  userId: number;
+}

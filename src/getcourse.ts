@@ -32,11 +32,24 @@ import type {
   UpdatedCustomField,
   UserCustomField,
 } from './types/models/custom-field.ts';
-import type { Deal, DealCancelReason, DealComment, DealTag } from './types/models/deal.ts';
-import type { DialogDepartment, DialogMessage, SentMessageResult } from './types/models/dialog.ts';
+import type {
+  Deal,
+  DealCancelReason,
+  DealComment,
+  DealTagNames,
+  DealWithTags,
+} from './types/models/deal.ts';
+import type {
+  AddedNoteResult,
+  DialogDepartment,
+  DialogMessage,
+  SentDialogMessageResult,
+  SentTicketMessageResult,
+  UserDialog,
+} from './types/models/dialog.ts';
 import type { LessonAnswer, LessonAnswerComment } from './types/models/lesson.ts';
-import type { Offer, OfferTag } from './types/models/offer.ts';
-import type { SurveyAnswer } from './types/models/survey.ts';
+import type { Offer, OfferTagNames } from './types/models/offer.ts';
+import type { SurveyAnswers, UserSurveyAnswer } from './types/models/survey.ts';
 import type { Training } from './types/models/training.ts';
 import type {
   CreatedDiploma,
@@ -55,7 +68,7 @@ import type {
   AddDealPositionsRequest,
   RemoveDealPositionsRequest,
   UpdateDealCustomFieldsRequest,
-  UpdateDealFieldsRequest,
+  UpdateDealInfoRequest,
 } from './types/requests/deal.ts';
 import type {
   AddDialogNoteRequest,
@@ -63,8 +76,10 @@ import type {
   CloseDialogRequest,
   GetDialogHistoryRequest,
   SendDialogMessageRequest,
+  StartDialogRequest,
 } from './types/requests/dialog.ts';
 import type {
+  AddTicketNoteRequest,
   ChangeTicketDepartmentRequest,
   CloseTicketRequest,
   GetTicketHistoryRequest,
@@ -74,18 +89,22 @@ import type {
   AddLessonAnswerCommentRequest,
   ChangeLessonAnswerStatusRequest,
 } from './types/requests/lesson.ts';
+import type { GetSurveyAnswersRequest } from './types/requests/survey.ts';
 import type {
   AddUserBalanceRequest,
   AddUserCommentRequest,
   AddUserGroupsRequest,
   CreateDiplomaRequest,
   GetUserBalanceRequest,
+  GetUserByChatIdRequest,
+  GetUserDialogsRequest,
+  GetUserInfoRequest,
   GetUserPurchasesRequest,
   RemoveUserGroupsRequest,
   SetPersonalManagerRequest,
   SetUserGroupsRequest,
   UpdateUserCustomFieldsRequest,
-  UpdateUserFieldsRequest,
+  UpdateUserInfoRequest,
 } from './types/requests/user.ts';
 import type {
   SubscribeWebhookRequest,
@@ -112,8 +131,8 @@ import type {
  *   domain: 'test.getcourse.ru',
  * });
  *
- * const deal = await getcourse.getDealFields(12345);
- * const user = await getcourse.getUserFields({ userId: 123 });
+ * const deal = await getcourse.getDealInfo(12345);
+ * const user = await getcourse.getUserInfo({ userId: 123 });
  * ```
  */
 export default class GetCourse {
@@ -147,7 +166,7 @@ export default class GetCourse {
     );
   }
 
-  // ─── Webhooks ───────────────────────────────────────────────────────────────
+  // ─── Webhooks (вебхуки) ───────────────────────────────────────────────────────────────
 
   /**
    * Подписать URI на событие (вебхук)
@@ -171,7 +190,7 @@ export default class GetCourse {
     return this.transport.postRaw<SubscribeWebhookResponse>('set-uri', { ...event, subscribe: 0 });
   }
 
-  // ─── School (common) ────────────────────────────────────────────────────────
+  // ─── Common (общее) ────────────────────────────────────────────────────────
 
   /** Получить все группы пользователей */
   async getGroups(): Promise<ApiResponse<Group[]>> {
@@ -191,6 +210,16 @@ export default class GetCourse {
   /** Получить все отделы */
   async getDepartments(): Promise<ApiResponse<DialogDepartment[]>> {
     return this.transport.get('common/get-departments');
+  }
+
+  /**
+   * Получить ответы анкеты
+   *
+   * Вопросы приходят отдельным справочником `questions`: ключ — ID вопроса,
+   * значение — его текст. В ответах лежат те же ключи
+   */
+  async getSurveyAnswers(params: GetSurveyAnswersRequest): Promise<ApiResponse<SurveyAnswers>> {
+    return this.transport.get('common/get-survey-answer', params);
   }
 
   // ─── Call (звонки) ──────────────────────────────────────────────────────────
@@ -232,17 +261,17 @@ export default class GetCourse {
     return this.transport.post('deal/remove-positions', body);
   }
 
-  /** Обновить поля заказа */
-  async updateDealFields(body: UpdateDealFieldsRequest): Promise<ApiResponse<Deal>> {
+  /** Обновить информацию по заказу */
+  async updateDealInfo(body: UpdateDealInfoRequest): Promise<ApiResponse<Deal>> {
     return this.transport.post('deal/update-fields', body);
   }
 
-  /** Получить поля заказа */
-  async getDealFields(dealId: number): Promise<ApiResponse<Deal>> {
+  /** Получить информацию по заказу */
+  async getDealInfo(dealId: number): Promise<ApiResponse<DealWithTags>> {
     return this.transport.get('deal/get-fields', { dealId });
   }
 
-  /** Получить дополнительные поля заказа */
+  /** Получить доп. поля заказа */
   async getDealCustomFields(dealId: number): Promise<ApiResponse<DealCustomField[]>> {
     return this.transport.get('deal/get-custom-fields', { dealId });
   }
@@ -270,14 +299,27 @@ export default class GetCourse {
   }
 
   /** Получить заказы с тегами (с пагинацией) */
-  async getDealsWithTags(params?: PaginationParams): Promise<ApiResponse<DealTag[]>> {
+  async getDealsWithTags(params?: PaginationParams): Promise<ApiResponse<DealTagNames[]>> {
     return this.transport.get('deal/get-deals-tags', params);
   }
 
-  // ─── Dialog (диалоги) ───────────────────────────────────────────────────────
+  // ─── Dialog (диалоги в разделе «Входящие») ───────────────────────────────────────────────────────
 
   /** Отправить сообщение в диалог */
-  async sendDialogMessage(body: SendDialogMessageRequest): Promise<ApiResponse<SentMessageResult>> {
+  async sendDialogMessage(
+    body: SendDialogMessageRequest,
+  ): Promise<ApiResponse<SentDialogMessageResult>> {
+    const { attachedFiles, ...payload } = body;
+
+    return this.transport.postWithAttachments('dialog/add-comment', payload, attachedFiles);
+  }
+
+  /**
+   * Начать диалог с учеником — по ID ученика, а не по ID диалога
+   *
+   * При повторном вызове с тем же учеником сообщение уходит в уже открытый диалог — новый не создаётся
+   */
+  async startDialog(body: StartDialogRequest): Promise<ApiResponse<SentDialogMessageResult>> {
     const { attachedFiles, ...payload } = body;
 
     return this.transport.postWithAttachments('dialog/add-comment', payload, attachedFiles);
@@ -307,14 +349,27 @@ export default class GetCourse {
 
   // ─── HelpDesk (тикеты) ──────────────────────────────────────────────────────
 
-  /** Отправить сообщение в тикет */
-  async sendTicketMessage(body: SendTicketMessageRequest): Promise<ApiResponse<SentMessageResult>> {
+  /**
+   * Отправить сообщение в тикет
+   *
+   * В закрытый тикет сообщение не уходит: GetCourse отвечает `200` без ошибки,
+   * но с `result: false` и без указания причины. Статус тикета через API не получить,
+   * поэтому проверяйте `data.result` у ответа
+   */
+  async sendTicketMessage(
+    body: SendTicketMessageRequest,
+  ): Promise<ApiResponse<SentTicketMessageResult>> {
     const { attachedFiles, ...payload } = body;
 
     return this.transport.postWithAttachments('helpdesk/add-comment', payload, attachedFiles);
   }
 
-  /** Изменить отдел тикета */
+  /**
+   * Изменить отдел тикета
+   *
+   * У закрытого тикета отдел не меняется: GetCourse отвечает `200` без ошибки,
+   * но с `result: false` и без указания причины — проверяйте `data.result` у ответа
+   */
   async changeTicketDepartment(
     body: ChangeTicketDepartmentRequest,
   ): Promise<ApiResponse<ActionResult>> {
@@ -324,6 +379,15 @@ export default class GetCourse {
   /** Закрыть тикет */
   async closeTicket(body: CloseTicketRequest): Promise<ApiResponse<ActionResult>> {
     return this.transport.post('helpdesk/close', body);
+  }
+
+  /**
+   * Добавить заметку к тикету HelpDesk — видна только сотрудникам
+   *
+   * В отличие от `addDialogNote` требует ID сотрудника, от чьего имени добавляется заметка
+   */
+  async addTicketNote(body: AddTicketNoteRequest): Promise<ApiResponse<AddedNoteResult>> {
+    return this.transport.post('helpdesk/add-note', body);
   }
 
   /** Получить историю переписки тикета */
@@ -368,7 +432,7 @@ export default class GetCourse {
   }
 
   /** Получить офферы с тегами (с пагинацией) */
-  async getOffersWithTags(params?: PaginationParams): Promise<ApiResponse<OfferTag[]>> {
+  async getOffersWithTags(params?: PaginationParams): Promise<ApiResponse<OfferTagNames[]>> {
     return this.transport.get('offer/get-offers-tags', params);
   }
 
@@ -404,15 +468,15 @@ export default class GetCourse {
     return this.transport.post('user/set-personal-manager', body);
   }
 
-  /** Обновить дополнительные поля пользователя */
+  /** Обновить доп. поля пользователя */
   async updateUserCustomFields(
     body: UpdateUserCustomFieldsRequest,
   ): Promise<ApiResponse<UpdatedCustomField[]>> {
     return this.transport.post('user/update-custom-fields', body);
   }
 
-  /** Обновить поля пользователя */
-  async updateUserFields(body: UpdateUserFieldsRequest): Promise<ApiResponse<[]>> {
+  /** Обновить информацию по пользователю */
+  async updateUserInfo(body: UpdateUserInfoRequest): Promise<ApiResponse<[]>> {
     return this.transport.post('user/update-fields', body);
   }
 
@@ -432,16 +496,25 @@ export default class GetCourse {
   }
 
   /** Получить ответы пользователя на анкеты */
-  async getUserSurveyAnswers(params: UserIdentifier): Promise<ApiResponse<SurveyAnswer[]>> {
+  async getUserSurveyAnswers(params: UserIdentifier): Promise<ApiResponse<UserSurveyAnswer[]>> {
     return this.transport.get('user/get-answers', params);
   }
 
-  /** Найти пользователя по Telegram Chat ID */
+  /**
+   * Найти пользователя по Telegram Chat ID
+   *
+   * @deprecated Используйте `getUserByChatId` — он покрывает все мессенджеры
+   */
   async getUserByTelegramChatId(chatId: number): Promise<ApiResponse<User[]>> {
     return this.transport.get('user/get-user-by-telegram-chat-id', { chatId });
   }
 
-  /** Получить дополнительные поля пользователя */
+  /** Найти пользователя по chat ID мессенджера — Telegram, ВКонтакте или MAX */
+  async getUserByChatId(params: GetUserByChatIdRequest): Promise<ApiResponse<User>> {
+    return this.transport.get('user/get-user-by-chat-id', params);
+  }
+
+  /** Получить доп. поля пользователя */
   async getUserCustomFields(
     params: UserIdentifier,
   ): Promise<ApiResponse<Record<string, UserCustomField>>> {
@@ -453,13 +526,47 @@ export default class GetCourse {
     return this.transport.get('user/get-deals', params);
   }
 
+  /**
+   * Получить все диалоги пользователя из Входящих
+   *
+   * Формат сообщений совпадает с `getDialogHistory`
+   * Лимит — не более 100 диалогов на страницу (по умолчанию: 50)
+   */
+  async getUserDialogs(params: GetUserDialogsRequest): Promise<ApiResponse<UserDialog[]>> {
+    return this.transport.get('user/get-dialogs', params);
+  }
+
+  /**
+   * Получить все тикеты HelpDesk пользователя
+   *
+   * Формат сообщений совпадает с `getTicketHistory`, в `dialog_id` приходит ID тикета
+   * Лимит — не более 100 тикетов на страницу (по умолчанию: 50)
+   */
+  async getUserTickets(params: GetUserDialogsRequest): Promise<ApiResponse<UserDialog[]>> {
+    return this.transport.get('user/get-helpdesk-dialogs', params);
+  }
+
   /** Получить дипломы пользователя */
   async getUserDiplomas(params: UserIdentifier): Promise<ApiResponse<UserDiploma[]>> {
     return this.transport.get('user/get-diplomas', params);
   }
 
-  /** Получить поля пользователя */
-  async getUserFields(params: UserIdentifier): Promise<ApiResponse<User>> {
+  /**
+   * Получить информацию по пользователю
+   *
+   * Если совпадений нет — бросает `GetCourseApiError`, а не возвращает пустой результат
+   */
+  async getUserInfo(params: UserIdentifier & { phone?: never }): Promise<ApiResponse<User>>;
+
+  /**
+   * Найти пользователей по номеру телефона
+   *
+   * Возвращает словарь: ключ — ID пользователя строкой, значение — сам пользователь
+   * Один номер может принадлежать нескольким пользователям
+   */
+  async getUserInfo(params: { phone: string }): Promise<ApiResponse<Record<string, User>>>;
+
+  async getUserInfo(params: GetUserInfoRequest): Promise<ApiResponse<User | Record<string, User>>> {
     return this.transport.get('user/get-fields', params);
   }
 
@@ -610,7 +717,7 @@ export default class GetCourse {
   }
 
   /**
-   * Получить дополнительные поля аккаунта (Legacy API)
+   * Получить доп. поля аккаунта (Legacy API)
    *
    * Возвращает справочник дополнительных полей пользователей и заказов
    */
