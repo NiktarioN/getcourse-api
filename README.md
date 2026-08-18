@@ -5,8 +5,6 @@
 [![npm version](https://img.shields.io/npm/v/getcourse-api)](https://www.npmjs.com/package/getcourse-api)
 [![license](https://img.shields.io/github/license/NiktarioN/getcourse-api)](https://github.com/NiktarioN/getcourse-api/blob/master/LICENSE)
 
-> **Обновляетесь с 1.x?** В 2.х есть глобальные изменения: переименованы методы, изменился импорт через `require`, поднялась минимальная версия Node. Что и на что менять — [заметках к релизу](https://github.com/NiktarioN/getcourse-api/releases/tag/v2.0.0)
->
 > Перед обновлением до любой новой версии заглядывайте в [релизы](https://github.com/NiktarioN/getcourse-api/releases) — там описано, что изменилось
 
 Официальная документация:
