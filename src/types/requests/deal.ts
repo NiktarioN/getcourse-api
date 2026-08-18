@@ -44,8 +44,8 @@ export interface UpdateDealCustomFieldsRequest {
   customFields: Record<string, string | number>;
 }
 
-/** Обновить поля заказа */
-export interface UpdateDealFieldsRequest {
+/** Обновить информацию по заказу */
+export interface UpdateDealInfoRequest {
   /** ID заказа */
   dealId: number;
   /** ID менеджера */
