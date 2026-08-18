@@ -1,4 +1,4 @@
-import { describe, it } from 'vitest';
+import { describe, expect, it } from 'vitest';
 
 import gc from '../helpers/client.ts';
 import envNum from '../helpers/env.ts';
@@ -9,11 +9,26 @@ const userId = envNum(process.env.TEST_USER_ID);
 const adminUserId = envNum(process.env.TEST_ADMIN_USER_ID);
 const groupId = envNum(process.env.TEST_GROUP_ID);
 const telegramChatId = envNum(process.env.TEST_TELEGRAM_CHAT_ID);
+const vkChatId = envNum(process.env.TEST_VK_CHAT_ID);
+const maxChatId = envNum(process.env.TEST_MAX_CHAT_ID);
 const diplomaTemplateId = envNum(process.env.TEST_DIPLOMA_TEMPLATE_ID);
+const userPhone = process.env.TEST_USER_PHONE ?? '';
 
 describe('user', () => {
-  it.skipIf(Number.isNaN(userId))('getUserFields', async () => {
-    await expectTrue(gc.getUserFields({ userId }));
+  it.skipIf(Number.isNaN(userId))('getUserInfo через ID или почту', async () => {
+    const response = await gc.getUserInfo({ userId });
+
+    globalThis.console.dir(response, { depth: null });
+    expect(response.status).toBe(true);
+    expect(typeof response.data.id).toBe('number');
+  });
+
+  it.skipIf(!userPhone)('getUserInfo по телефону', async () => {
+    const response = await gc.getUserInfo({ phone: userPhone });
+
+    globalThis.console.dir(response, { depth: null });
+    expect(response.status).toBe(true);
+    expect(Object.values(response.data).every((user) => typeof user.id === 'number')).toBe(true);
   });
 
   it.skipIf(Number.isNaN(userId))('getUserCustomFields', async () => {
@@ -60,8 +75,28 @@ describe('user', () => {
     await expectTrue(gc.getUserDiplomas({ userId }));
   });
 
+  it.skipIf(Number.isNaN(userId))('getUserDialogs', async () => {
+    await expectTrue(gc.getUserDialogs({ userId }));
+  });
+
+  it.skipIf(Number.isNaN(userId))('getUserTickets', async () => {
+    await expectTrue(gc.getUserTickets({ userId }));
+  });
+
   it.skipIf(Number.isNaN(telegramChatId))('getUserByTelegramChatId', async () => {
     await expectTrue(gc.getUserByTelegramChatId(telegramChatId));
+  });
+
+  it.skipIf(Number.isNaN(telegramChatId))('getUserByChatId: tg', async () => {
+    await expectTrue(gc.getUserByChatId({ messengerType: 'tg', chatId: telegramChatId }));
+  });
+
+  it.skipIf(Number.isNaN(vkChatId))('getUserByChatId: vk', async () => {
+    await expectTrue(gc.getUserByChatId({ messengerType: 'vk', chatId: vkChatId }));
+  });
+
+  it.skipIf(Number.isNaN(maxChatId))('getUserByChatId: max', async () => {
+    await expectTrue(gc.getUserByChatId({ messengerType: 'max', chatId: maxChatId }));
   });
 
   it.skipIf(Number.isNaN(userId) || Number.isNaN(groupId))('addUserGroups', async () => {
@@ -80,8 +115,8 @@ describe('user', () => {
     await expectTrue(gc.setPersonalManager({ userId, managerId: adminUserId }));
   });
 
-  it.skipIf(Number.isNaN(userId))('updateUserFields', async () => {
-    await expectTrue(gc.updateUserFields({ userId, comment: 'Тестовый комментарий' }));
+  it.skipIf(Number.isNaN(userId))('updateUserInfo', async () => {
+    await expectTrue(gc.updateUserInfo({ userId, comment: 'Тестовый комментарий' }));
   });
 
   it.skipIf(Number.isNaN(userId) || Number.isNaN(adminUserId))('addUserComment', async () => {
