@@ -97,3 +97,6 @@ export type CurrencyType =
   | 'NOK'
   | 'NGN'
   | 'HKD';
+
+/** Типы мессенджеров */
+export type MessengerType = 'tg' | 'vk' | 'max';

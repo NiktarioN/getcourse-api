@@ -66,8 +66,23 @@ export interface Deal {
   positions: DealPosition[];
 }
 
+/**
+ * Заказ вместе с тегами
+ *
+ * Теги приходят только из `deal/get-fields` — в `user/get-deals` их нет
+ */
+export interface DealWithTags extends Deal {
+  tags: DealTag[];
+}
+
 /** Тег заказа */
 export interface DealTag {
+  id: number;
+  name: string;
+}
+
+/** Имена тегов заказа */
+export interface DealTagNames {
   dealId: number;
   tags: string[];
 }

@@ -33,6 +33,17 @@ export interface SentMessageResult {
   comment_id: number;
 }
 
+/** Результат отправки сообщения в диалог */
+export interface SentDialogMessageResult extends SentMessageResult {
+  /** ID диалога — новый, если диалог был создан */
+  dialog_id: number;
+}
+
+/** Результат отправки сообщения в тикет HelpDesk */
+export interface SentTicketMessageResult extends SentMessageResult {
+  ticket_id: number;
+}
+
 /** Сообщение из истории диалога или тикета HelpDesk */
 export interface DialogMessage {
   message_id: number;
@@ -44,4 +55,17 @@ export interface DialogMessage {
   attached_files: { url: string }[] | null;
   transport: (MessageTransport | null)[] | null;
   comment_text: string;
+}
+
+/** Диалог пользователя с историей сообщений */
+export interface UserDialog {
+  dialog_id: number;
+  messages: DialogMessage[];
+}
+
+/** Результат добавления заметки */
+export interface AddedNoteResult {
+  result: boolean;
+  /** ID созданной заметки */
+  note_id: number;
 }
