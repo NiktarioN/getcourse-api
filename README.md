@@ -5,7 +5,7 @@
 [![npm version](https://img.shields.io/npm/v/getcourse-api)](https://www.npmjs.com/package/getcourse-api)
 [![license](https://img.shields.io/github/license/NiktarioN/getcourse-api)](https://github.com/NiktarioN/getcourse-api/blob/master/LICENSE)
 
-> **Обновляетесь с 1.x?** В 2.0.0 есть глобальные изменения: переименованы методы, изменился импорт через `require`, поднялась минимальная версия Node. Что и на что менять — [заметках к релизу](https://github.com/NiktarioN/getcourse-api/releases/tag/v2.0.0)
+> **Обновляетесь с 1.x?** В 2.х есть глобальные изменения: переименованы методы, изменился импорт через `require`, поднялась минимальная версия Node. Что и на что менять — [заметках к релизу](https://github.com/NiktarioN/getcourse-api/releases/tag/v2.0.0)
 >
 > Перед обновлением до любой новой версии заглядывайте в [релизы](https://github.com/NiktarioN/getcourse-api/releases) — там описано, что изменилось
 
@@ -36,7 +36,7 @@ GetCourse предоставляет два API: новое и старое. О�
 npm install getcourse-api
 ```
 
-Нужен Node 22 или новее
+Нужен `Node 22` или новее
 
 ## 🚀 Быстрый старт
 
@@ -50,14 +50,10 @@ const gc = new GetCourse({
 });
 
 // Получить данные пользователя
-const user = await gc.getUserFields({ userId: 123 });
-console.log(user.data.first_name);
-
-// Получить заказы пользователя
-const deals = await gc.getUserDeals({ email: "user@mail.ru" });
+const userInfo = await gc.getUserInfo({ userId: 123 });
 
 // Получить данные заказа
-const deal = await gc.getDealFields(12345);
+const dealInfo = await gc.getDealInfo(12345);
 ```
 
 ## 🔑 Получение токена
@@ -112,7 +108,7 @@ const gc = new GetCourse({
 import { GetCourseApiError, GetCourseNetworkError, GetCourseValidationError } from "getcourse-api";
 
 try {
-  const deal = await gc.getDealFields(99999);
+  const deal = await gc.getDealInfo(99999);
 } catch (err) {
   if (err instanceof GetCourseValidationError) {
     console.error(err.message); // Текст ошибки
@@ -243,37 +239,38 @@ await gc.unsubscribeWebhook({
 
 ### 🏫 Общее
 
-| Метод                   | Описание                              |
-| ----------------------- | ------------------------------------- |
-| `getGroups()`           | Получить все группы пользователей     |
-| `getPersonalManagers()` | Получить всех персональных менеджеров |
-| `getTrainings()`        | Получить все тренинги                 |
-| `getDepartments()`      | Получить все отделы                   |
+| Метод                      | Описание                              |
+| -------------------------- | ------------------------------------- |
+| `getGroups()`              | Получить все группы пользователей     |
+| `getPersonalManagers()`    | Получить всех персональных менеджеров |
+| `getTrainings()`           | Получить все тренинги                 |
+| `getDepartments()`         | Получить все отделы                   |
+| `getSurveyAnswers(params)` | Получить ответы анкеты                |
 
 ---
 
 ### 🧾 Заказы
 
-| Метод                          | Описание                       |
-| ------------------------------ | ------------------------------ |
-| `getDealFields(dealId)`        | Получить поля заказа           |
-| `getDealCustomFields(dealId)`  | Получить кастомные поля заказа |
-| `getDealComments(dealId)`      | Получить комментарии заказа    |
-| `getDealCalls(dealId)`         | Получить звонки по заказу      |
-| `getDealCancelReasons()`       | Получить причины отмены        |
-| `getDealsWithTags(params?)`    | Получить заказы с тегами       |
-| `addDealComment(body)`         | Добавить комментарий заказу    |
-| `addDealPositions(body)`       | Добавить позиции в заказ       |
-| `removeDealPositions(body)`    | Удалить позиции из заказа      |
-| `updateDealFields(body)`       | Обновить поля заказа           |
-| `updateDealCustomFields(body)` | Обновить кастомные поля заказа |
+| Метод                          | Описание                            |
+| ------------------------------ | ----------------------------------- |
+| `getDealInfo(dealId)`          | Получить информацию по заказу       |
+| `getDealCustomFields(dealId)`  | Получить дополнительные поля заказа |
+| `getDealComments(dealId)`      | Получить комментарии заказа         |
+| `getDealCalls(dealId)`         | Получить звонки по заказу           |
+| `getDealCancelReasons()`       | Получить причины отмены заказовы    |
+| `getDealsWithTags(params?)`    | Получить заказы с тегами            |
+| `addDealComment(body)`         | Добавить комментарий заказу         |
+| `addDealPositions(body)`       | Добавить позиции в заказ            |
+| `removeDealPositions(body)`    | Удалить позиции из заказа           |
+| `updateDealInfo(body)`         | Обновить информацию по заказу       |
+| `updateDealCustomFields(body)` | Обновить дополнительные поля заказа |
 
 ```ts
-// Получить заказ
-const deal = await gc.getDealFields(12345);
+// Получить информацию по заказу
+const dealInfo = await gc.getDealInfo(12345);
 
 // Обновить статус заказа
-await gc.updateDealFields({
+await gc.updateDealInfo({
   dealId: 12345,
   status: "cancelled",
   cancel_reason_comment: "Клиент передумал",
@@ -290,10 +287,10 @@ await gc.addDealPositions({
 
 ### 📞 Звонки
 
-| Метод                        | Описание                               |
-| ---------------------------- | -------------------------------------- |
-| `addCallComment(body)`       | Добавить комментарий — поле «Описание» |
-| `addCallTranscription(body)` | Добавить транскрибацию звонка          |
+| Метод                        | Описание                                 |
+| ---------------------------- | ---------------------------------------- |
+| `addCallComment(body)`       | Добавить комментарий (в поле «Описание») |
+| `addCallTranscription(body)` | Добавить транскрибацию звонка            |
 
 ```ts
 await gc.addCallComment({
@@ -336,17 +333,29 @@ await gc.addCallTranscription({ callId: 8421, text: replicas.join("<br />") });
 
 ---
 
-### 💬 Диалоги
+### 💬 Диалоги (раздел «Входящие»)
 
-| Метод                          | Описание                                    |
-| ------------------------------ | ------------------------------------------- |
-| `getDialogHistory(body)`       | Получить историю диалога                    |
-| `sendDialogMessage(body)`      | Отправить сообщение в диалог                |
-| `addDialogNote(body)`          | Добавить заметку — видна только сотрудникам |
-| `changeDialogDepartment(body)` | Изменить отдел диалога                      |
-| `closeDialog(body)`            | Закрыть диалог                              |
+| Метод                          | Описание                     |
+| ------------------------------ | ---------------------------- |
+| `getDialogHistory(body)`       | Получить историю диалога     |
+| `sendDialogMessage(body)`      | Отправить сообщение в диалог |
+| `startDialog(body)`            | Начать диалог с учеником     |
+| `addDialogNote(body)`          | Добавить заметку             |
+| `changeDialogDepartment(body)` | Изменить отдел диалога       |
+| `closeDialog(body)`            | Закрыть диалог               |
 
-### 📎 Вложения в сообщениях
+Написать ученику первым — по ID ученика, а не по ID диалога
+
+```ts
+await gc.startDialog({
+  recipientId: 251804773,
+  commentText: "Здравствуйте! Ваш заказ готов",
+  transport: [3],
+  userId: 903417,
+});
+```
+
+### 🔗 Вложения в сообщениях
 
 К сообщению в диалоге или тикете можно приложить до 5 файлов, каждый до 5 МБ
 
@@ -379,6 +388,7 @@ await gc.sendDialogMessage({
 | ------------------------------ | --------------------------- |
 | `getTicketHistory(body)`       | Получить историю тикета     |
 | `sendTicketMessage(body)`      | Отправить сообщение в тикет |
+| `addTicketNote(body)`          | Добавить заметку            |
 | `changeTicketDepartment(body)` | Изменить отдел тикета       |
 | `closeTicket(body)`            | Закрыть тикет               |
 
@@ -416,38 +426,59 @@ HelpDesk работает по аналогии с обычными диалог
 
 ### 👤 Пользователи
 
-| Метод                             | Описание                          |
-| --------------------------------- | --------------------------------- |
-| `getUserFields(params)`           | Получить поля пользователя        |
-| `getUserCustomFields(params)`     | Получить кастомные поля           |
-| `getUserDeals(params)`            | Получить заказы пользователя      |
-| `getUserDiplomas(params)`         | Получить дипломы                  |
-| `getUserGroups(params)`           | Получить группы                   |
-| `getUserBalance(params)`          | Получить баланс                   |
-| `getUserPurchases(params)`        | Получить покупки                  |
-| `getUserTrainings(params)`        | Получить тренинги                 |
-| `getUserSchedule(params)`         | Получить расписание               |
-| `getUserGoalRecords(params)`      | Получить записи целей             |
-| `getUserSurveyAnswers(params)`    | Получить ответы на анкеты         |
-| `getUserLessonAnswers(params)`    | Получить ответы на уроки          |
-| `getUserByTelegramChatId(chatId)` | Найти по Telegram Chat ID         |
-| `addUserBalance(body)`            | Добавить баланс                   |
-| `addUserComment(body)`            | Добавить комментарий пользователю |
-| `addUserGroups(body)`             | Добавить в группы                 |
-| `removeUserGroups(body)`          | Удалить из групп                  |
-| `setUserGroups(body)`             | Установить группы                 |
-| `setPersonalManager(body)`        | Установить менеджера              |
-| `updateUserFields(body)`          | Обновить поля пользователя        |
-| `updateUserCustomFields(body)`    | Обновить кастомные поля           |
-| `createDiploma(body)`             | Создать диплом                    |
+| Метод                             | Описание                            |
+| --------------------------------- | ----------------------------------- |
+| `getUserInfo(params)`             | Получить информацию по пользователю |
+| `getUserCustomFields(params)`     | Получить дополнительные поля        |
+| `getUserDeals(params)`            | Получить заказы пользователя        |
+| `getUserDiplomas(params)`         | Получить дипломы                    |
+| `getUserGroups(params)`           | Получить группы                     |
+| `getUserBalance(params)`          | Получить баланс                     |
+| `getUserPurchases(params)`        | Получить покупки                    |
+| `getUserTrainings(params)`        | Получить тренинги                   |
+| `getUserSchedule(params)`         | Получить расписание                 |
+| `getUserGoalRecords(params)`      | Получить записи целей               |
+| `getUserSurveyAnswers(params)`    | Получить ответы на анкеты           |
+| `getUserLessonAnswers(params)`    | Получить ответы на уроки            |
+| `getUserDialogs(params)`          | Получить диалоги из Входящих        |
+| `getUserTickets(params)`          | Получить тикеты HelpDesk            |
+| `getUserByTelegramChatId(chatId)` | Найти по Telegram Chat ID           |
+| `getUserByChatId(params)`         | Найти по chat ID мессенджера        |
+| `addUserBalance(body)`            | Пополнить баланс                    |
+| `addUserComment(body)`            | Добавить комментарий пользователю   |
+| `addUserGroups(body)`             | Добавить в группы                   |
+| `removeUserGroups(body)`          | Удалить из групп                    |
+| `setUserGroups(body)`             | Установить группы                   |
+| `setPersonalManager(body)`        | Закрепить персонального менеджера   |
+| `updateUserInfo(body)`            | Обновить информацию по пользователю |
+| `updateUserCustomFields(body)`    | Обновить дополнительные поля        |
+| `createDiploma(body)`             | Выдать диплом                       |
+
+### 🔍 Поиск пользователя
+
+По `userId` или `email` метод возвращает одного пользователя, по телефону — словарь `{ [userId]: User }`: один номер может принадлежать нескольким
 
 ```ts
-// Поиск по userId или email
-const user = await gc.getUserFields({ userId: 123 });
-const user2 = await gc.getUserFields({ email: "user@example.com" });
+const userInfo = await gc.getUserInfo({ userId: 251804773 });
 
+const usersByPhone = await gc.getUserInfo({ phone: "+70000000000" });
+const emails = Object.values(usersByPhone.data).map((person) => person.email);
+```
+
+Если совпадений нет ни по одному из способов поиска — метод бросает `GetCourseApiError`, а не возвращает пустой результат
+
+Поиск по chat ID мессенджера — Telegram, VK или MAX (всегда возвращает одного пользователя)
+
+```ts
+const userInfo = await gc.getUserByChatId({
+  messengerType: "tg",
+  chatId: 118472905,
+});
+```
+
+```ts
 // Получить баланс
-const balance = await gc.getUserBalance({ userId: 123, type: "virtual" });
+const userBalance = await gc.getUserBalance({ userId: 123, type: "virtual" });
 
 // Добавить баланс
 await gc.addUserBalance({
@@ -464,12 +495,12 @@ await gc.addUserComment({
   text: "Тестовый комментарий в ленту пользователя",
 });
 
-// Обновить поля
-await gc.updateUserFields({
+// Обновить информацию
+await gc.updateUserInfo({
   userId: 123,
   first_name: "Иван",
   last_name: "Иванов",
-  phone: "+79991234567",
+  phone: "+70000000001",
 });
 ```
 
@@ -503,19 +534,19 @@ await gc.updateUserFields({
 ```ts
 // Создать пользователя
 await gc.addUser({
-  user: { email: "user@mail.ru", first_name: "Иван" },
+  user: { email: "test@example.com", first_name: "Иван" },
   system: { refresh_if_exists: 1 },
 });
 
 // Создать сделку (вариант 1: по offer_code)
 await gc.createDeal({
-  user: { email: "user@mail.ru" },
+  user: { email: "test@example.com" },
   deal: { offer_code: "offer123", deal_cost: "1990" },
 });
 
 // Создать сделку (вариант 2: по offer_id)
 await gc.createDeal({
-  user: { email: "user@mail.ru" },
+  user: { email: "test@example.com" },
   deal: { offer_id: "42" },
 });
 ```
@@ -577,15 +608,16 @@ npm run test:export
 npm run test -- tests/api/user.test.ts
 
 # Запуск конкретного теста в файле по имени
-npm run test -- tests/api/user.test.ts -t "getUserFields"
+npm run test -- tests/api/user.test.ts -t "getUserInfo"
 
 # Подписка на все события вебхуков и отписка от всех
 npm run test -- tests/api/webhooks/subscribe.test.ts
 npm run test -- tests/api/webhooks/unsubscribe.test.ts
 
 # Точечно, по названиям или номерам событий
-npm run test -- tests/api/webhooks/subscribe.test.ts -t "(1,1)"
-npm run test -- tests/api/webhooks/unsubscribe.test.ts -t "(1,1)"
+npm run test -- tests/api/webhooks/subscribe.test.ts -t "1,1"
+npm run test -- tests/api/webhooks/unsubscribe.test.ts -t "1,1"
+npm run test -- tests/api/webhooks/subscribe.test.ts -t "Заказ оплачен: 2,3"
 ```
 
 ---
