@@ -7,7 +7,7 @@ export default defineConfig({
   sourcemap: false,
   dts: { build: true },
   clean: true,
-  platform: 'neutral',
+  platform: 'node',
   target: 'es2024',
   outputOptions: {
     exports: 'named',
