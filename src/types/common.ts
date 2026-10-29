@@ -44,6 +44,11 @@ export interface PaginationParams {
 }
 
 /**
+ * Да/нет во всех форматах в GetCourse
+ */
+export type BooleanLike = boolean | '0' | '1' | 0 | 1;
+
+/**
  * Интерфейс логгера — совместим с winston, pino, console и любым другим логгером
  */
 export interface Logger {

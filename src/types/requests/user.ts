@@ -22,6 +22,17 @@ export interface AddUserBalanceRequest extends UserIdentifier {
   comment: string;
 }
 
+/** Начислить или списать баллы по шкале достижений */
+export interface AddUserAchievementPointsRequest {
+  userId: number;
+  /** ID шкалы достижений */
+  scaleId: number;
+  /** Баллы: положительное значение начисляет, отрицательное списывает */
+  value: number;
+  /** Комментарий к операции */
+  description?: string;
+}
+
 /** Добавить пользователя в группы */
 export interface AddUserGroupsRequest extends UserIdentifier {
   /** ID групп */

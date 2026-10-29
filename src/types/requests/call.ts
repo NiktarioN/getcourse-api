@@ -30,3 +30,17 @@ export interface AddCallTranscriptionRequest {
    */
   text: string;
 }
+
+/** Получить звонки в аккаунте */
+export interface GetCallsRequest {
+  /** Начало интервала по дате создания, `Y-m-d H:i:s` — дата без времени даёт HTTP 400 */
+  start_at?: string;
+  /** Конец интервала по дате создания, `Y-m-d H:i:s` */
+  finish_at?: string;
+  /** ID менеджера */
+  manager_user_id?: number;
+  /** Сколько звонков вернуть — по умолчанию 100, максимум 1000 */
+  limit?: number;
+  /** Смещение для пагинации */
+  offset?: number;
+}

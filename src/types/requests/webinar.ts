@@ -16,12 +16,12 @@ export interface SendWebinarMessageRequest {
   text: string;
   /** ID запущенного автовебинара (для типов "Частые параллельные запуски" или "По расписанию") */
   webinarLaunchNumber?: number;
-  /** Ответить лично */
+  /** Ответить лично — нужны replyToUserId и replyToUserType, без них сообщение уйдёт всем */
   isPrivateReply?: boolean;
   /** ID пользователя, на сообщение которого отвечаем */
   replyToUserId?: number;
   /** Тип пользователя, на сообщение которого отвечаем */
-  replyToUserType?: number;
+  replyToUserType?: WebinarUserType;
 }
 
 /** Действие модерации сообщения в чате вебинара */

@@ -1,8 +1,8 @@
 /**
  * Транспорт сообщения диалога или тикета HelpDesk:
- * 0 — сайт, 1 — email, 2 — SMS, 3 — Telegram, 4 — Facebook, 5 — VK,
- * 6 — Chatium, 7 — WhatsApp, 8 — Viber, 11 — форма обратной связи,
- * 12 — форма GC, 13 — MAX, 14 — Instagram
+ * 0 — Сайт, 1 — Email, 2 — SMS, 3 — Telegram, 4 — Facebook, 5 — VK,
+ * 6 — GetCourse Mobile, 7 — WhatsApp, 8 — Viber, 11 — Форма обратной связи,
+ * 12 — Форма GetCourse, 13 — MAX, 14 — Instagram
  */
 export type MessageTransport = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 11 | 12 | 13 | 14;
 

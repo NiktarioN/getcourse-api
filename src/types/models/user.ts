@@ -34,6 +34,11 @@ export interface Group {
   name: string;
 }
 
+/** Группа пользователя с датой добавления в неё */
+export interface UserGroup extends Group {
+  added_at: string;
+}
+
 /** Покупка пользователя */
 export interface UserPurchase {
   id: number;
@@ -89,7 +94,7 @@ export interface User {
   id: number;
   deleted: boolean;
   deleted_at: string | null;
-  type: string;
+  type: 'user' | 'teacher' | 'admin';
   profile_image: string | null;
   status: string;
   created_at: string;
@@ -104,11 +109,12 @@ export interface User {
   phone_confirmed: boolean;
   comment: string | null;
   partner_user_id: number | null;
+  personal_manager_user_id: number | null;
   subscribe_status: string;
   timezone_offset: number;
   birthday: string | null;
   language: string;
-  gender: string | null;
+  gender: 'male' | 'female' | null;
   email: string;
   is_email_confirmed: boolean;
   geo_area_id: number | null;
@@ -129,4 +135,22 @@ export interface UserBalance {
   value: number;
   currency: CurrencyType;
   type: string;
+}
+
+/** Баллы пользователя по шкале достижений */
+export interface AchievementResult {
+  scale_id: number;
+  user_id: number;
+  value: number;
+}
+
+/** Запись о начислении или списании баллов по шкале достижений */
+export interface AchievementRecord {
+  id: number;
+  scale_id: number;
+  user_id: number;
+  /** Сколько баллов начислено (положительное) или списано (отрицательное) этой операцией */
+  value: number;
+  /** Комментарий к операции, без него — `null` */
+  description: string | null;
 }
