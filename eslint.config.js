@@ -137,7 +137,7 @@ const configStylistic = defineConfig([
 ]);
 
 export default defineConfig([
-  globalIgnores(['node_modules', 'dist', 'docs']),
+  globalIgnores(['node_modules', 'dist', 'docs', 'scripts/local', '.claude']),
   configBase,
   configTypescript,
   configNaming,
