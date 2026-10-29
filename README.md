@@ -202,10 +202,12 @@ function getTelegramId(user) {
 
 ### 🔔 Вебхуки
 
-| Метод                       | Описание               |
-| --------------------------- | ---------------------- |
-| `subscribeWebhook(body)`    | Подписаться на событие |
-| `unsubscribeWebhook(event)` | Отписаться от события  |
+| Метод                        | Описание                                      |
+| ---------------------------- | --------------------------------------------- |
+| `subscribeWebhook(body)`     | Подписаться на событие                        |
+| `unsubscribeWebhook(event)`  | Отписаться от события                         |
+| `getWebhooks()`              | Все вебхуки ключа разработчика во всех школах |
+| `unsubscribeWebhooks(hooks)` | Отписаться от списка вебхуков                 |
 
 | Объект события        | `event_object_id` | `event_id`                                                                                     |
 | --------------------- | ----------------- | ---------------------------------------------------------------------------------------------- |
@@ -231,19 +233,38 @@ await gc.unsubscribeWebhook({
 });
 ```
 
+Список и отписка работают по ключу разработчика сразу во всех школах, где он подключён. Отбирайте хуки по `account` и `uri`, иначе отписка заденет другие школы
+
+```ts
+const { hooks } = await gc.getWebhooks();
+
+await gc.unsubscribeWebhooks(
+  hooks.filter((hook) => hook.account === "school" && hook.uri === "https://example.com/webhook"),
+);
+```
+
 Здесь собраны примеры тел вебхуков, которые прилетают на подписанный URI: [examples/webhooks](https://github.com/NiktarioN/getcourse-api/tree/master/examples/webhooks)
 
 ---
 
 ### 🏫 Общее
 
-| Метод                      | Описание                              |
-| -------------------------- | ------------------------------------- |
-| `getGroups()`              | Получить все группы пользователей     |
-| `getPersonalManagers()`    | Получить всех персональных менеджеров |
-| `getTrainings()`           | Получить все тренинги                 |
-| `getDepartments()`         | Получить все отделы                   |
-| `getSurveyAnswers(params)` | Получить ответы анкеты                |
+| Метод                            | Описание                            |
+| -------------------------------- | ----------------------------------- |
+| `getGroups()`                    | Получить все группы пользователей   |
+| `getManagers()`                  | Получить всех менеджеров            |
+| `getTrainings()`                 | Получить все тренинги               |
+| `getDepartments()`               | Получить все отделы                 |
+| `getSurveyAnswers(params)`       | Получить ответы анкеты              |
+| `getMailings(params?)`           | Получить рассылки                   |
+| `getMailingContent(id)`          | Получить содержимое рассылки        |
+| `getMailingStats(params?)`       | Получить статистику рассылок        |
+| `getAchievementResults(params?)` | Получить баллы по шкалам достижений |
+
+```ts
+const { data } = await gc.getMailingStats({ ids: [11729467, 11729468] });
+const sent = Object.values(data).reduce((sum, stat) => sum + stat.cnt_sent, 0);
+```
 
 ---
 
@@ -287,8 +308,19 @@ await gc.addDealPositions({
 
 | Метод                        | Описание                                 |
 | ---------------------------- | ---------------------------------------- |
+| `getCalls(params?)`          | Получить звонки в аккаунте               |
 | `addCallComment(body)`       | Добавить комментарий (в поле «Описание») |
 | `addCallTranscription(body)` | Добавить транскрибацию звонка            |
+
+```ts
+const { data: calls } = await gc.getCalls({
+  start_at: "2026-10-01 00:00:00",
+  finish_at: "2026-10-31 23:59:59",
+  limit: 100,
+});
+
+const dealCalls = calls.filter((call) => call.context_type === "Deal");
+```
 
 ```ts
 await gc.addCallComment({
@@ -326,8 +358,6 @@ await gc.addCallTranscription({ callId: 8421, text: replicas.join("<br />") });
 Расшифровка попадает в разметку как есть, поэтому символы `<`, `>` и `&` в тексте нужно экранировать
 
 Оба метода перезаписывают значение: повторный вызов заменяет текст, а не добавляет ещё один
-
-У транскрибации есть недокументированный предел длины: на превышении API отвечает `500` с пустым `errors`, отличить это от падения сервера нельзя. Замеры по живому API — кириллица упирается около 4600 символов, латиница держит больше 60 000, текст пополам — около 8700. Для русского текста безопасный ориентир — **до 4000 символов**
 
 ---
 
@@ -371,13 +401,6 @@ await gc.sendDialogMessage({
 
 Файл принимается байтами — `Buffer`, `Uint8Array` или `Blob`
 
-Что стоит знать:
-
-- **Расширение в `filename` обязательно** — GetCourse определяет тип файла только по нему, MIME-тип запроса он игнорирует
-- **Лимиты проверяются до отправки** — при шести файлах или файле больше 5 МБ пакет бросит `GetCourseValidationError`, не заливая файлы на сервер
-- **Без вложений запрос не меняется** — уходит прежний JSON
-- **Ссылки на вложения приходят с разных доменов** — часть файлов лежит на `fs.getcourse.ru`, часть на домене школы, причём вторые открываются только авторизованному пользователю. Разбирать URL по домену не стоит
-
 ---
 
 ### 🎫 HelpDesk
@@ -406,7 +429,7 @@ HelpDesk работает по аналогии с обычными диалог
 
 | Метод                            | Описание                      |
 | -------------------------------- | ----------------------------- |
-| `getLessonAnswers(lessonId?)`    | Получить ответы на урок       |
+| `getLessonAnswers(lessonId)`     | Получить ответы на урок       |
 | `addLessonAnswerComment(body)`   | Добавить комментарий к ответу |
 | `changeLessonAnswerStatus(body)` | Изменить статус ответа        |
 
@@ -416,41 +439,50 @@ HelpDesk работает по аналогии с обычными диалог
 
 | Метод                        | Описание                      |
 | ---------------------------- | ----------------------------- |
-| `getOffers()`                | Получить все предложения      |
+| `getOffers(params?)`         | Получить все предложения      |
 | `getOfferById(offerId)`      | Получить предложение по ID    |
 | `getOffersWithTags(params?)` | Получить предложения с тегами |
 
 ---
 
+### 🛒 Покупки
+
+| Метод                      | Описание         |
+| -------------------------- | ---------------- |
+| `updatePurchaseInfo(body)` | Обновить покупку |
+
+---
+
 ### 👤 Пользователи
 
-| Метод                             | Описание                            |
-| --------------------------------- | ----------------------------------- |
-| `getUserInfo(params)`             | Получить информацию по пользователю |
-| `getUserCustomFields(params)`     | Получить дополнительные поля        |
-| `getUserDeals(params)`            | Получить заказы пользователя        |
-| `getUserDiplomas(params)`         | Получить дипломы                    |
-| `getUserGroups(params)`           | Получить группы                     |
-| `getUserBalance(params)`          | Получить баланс                     |
-| `getUserPurchases(params)`        | Получить покупки                    |
-| `getUserTrainings(params)`        | Получить тренинги                   |
-| `getUserSchedule(params)`         | Получить расписание                 |
-| `getUserGoalRecords(params)`      | Получить записи целей               |
-| `getUserSurveyAnswers(params)`    | Получить ответы на анкеты           |
-| `getUserLessonAnswers(params)`    | Получить ответы на уроки            |
-| `getUserDialogs(params)`          | Получить диалоги из Входящих        |
-| `getUserTickets(params)`          | Получить тикеты HelpDesk            |
-| `getUserByTelegramChatId(chatId)` | Найти по Telegram Chat ID           |
-| `getUserByChatId(params)`         | Найти по chat ID мессенджера        |
-| `addUserBalance(body)`            | Пополнить баланс                    |
-| `addUserComment(body)`            | Добавить комментарий пользователю   |
-| `addUserGroups(body)`             | Добавить в группы                   |
-| `removeUserGroups(body)`          | Удалить из групп                    |
-| `setUserGroups(body)`             | Установить группы                   |
-| `setPersonalManager(body)`        | Закрепить персонального менеджера   |
-| `updateUserInfo(body)`            | Обновить информацию по пользователю |
-| `updateUserCustomFields(body)`    | Обновить дополнительные поля        |
-| `createDiploma(body)`             | Выдать диплом                       |
+| Метод                             | Описание                             |
+| --------------------------------- | ------------------------------------ |
+| `getUserInfo(params)`             | Получить информацию по пользователю  |
+| `getUserCustomFields(params)`     | Получить дополнительные поля         |
+| `getUserDeals(params)`            | Получить заказы пользователя         |
+| `getUserDiplomas(params)`         | Получить дипломы                     |
+| `getUserGroups(params)`           | Получить группы                      |
+| `getUserBalance(params)`          | Получить баланс                      |
+| `getUserPurchases(params)`        | Получить покупки                     |
+| `getUserTrainings(params)`        | Получить тренинги                    |
+| `getUserSchedule(params)`         | Получить расписание                  |
+| `getUserGoalRecords(params)`      | Получить записи целей                |
+| `getUserSurveyAnswers(params)`    | Получить ответы на анкеты            |
+| `getUserLessonAnswers(params)`    | Получить ответы на уроки             |
+| `getUserDialogs(params)`          | Получить диалоги из Входящих         |
+| `getUserTickets(params)`          | Получить тикеты HelpDesk             |
+| `getUserByTelegramChatId(chatId)` | Найти по Telegram Chat ID            |
+| `getUserByChatId(params)`         | Найти по chat ID мессенджера         |
+| `addUserBalance(body)`            | Пополнить баланс                     |
+| `addUserAchievementPoints(body)`  | Начислить или списать баллы по шкале |
+| `addUserComment(body)`            | Добавить комментарий пользователю    |
+| `addUserGroups(body)`             | Добавить в группы                    |
+| `removeUserGroups(body)`          | Удалить из групп                     |
+| `setUserGroups(body)`             | Установить группы                    |
+| `setPersonalManager(body)`        | Закрепить персонального менеджера    |
+| `updateUserInfo(body)`            | Обновить информацию по пользователю  |
+| `updateUserCustomFields(body)`    | Обновить дополнительные поля         |
+| `createDiploma(body)`             | Выдать диплом                        |
 
 ### 🔍 Поиск пользователя
 
@@ -616,6 +648,9 @@ npm run test -- tests/api/webhooks/unsubscribe.test.ts
 npm run test -- tests/api/webhooks/subscribe.test.ts -t "1,1"
 npm run test -- tests/api/webhooks/unsubscribe.test.ts -t "1,1"
 npm run test -- tests/api/webhooks/subscribe.test.ts -t "Заказ оплачен: 2,3"
+
+# Список вебхуков ключа разработчика и отписка списком
+npm run test -- tests/api/webhooks/list.test.ts
 ```
 
 ---
