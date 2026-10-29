@@ -1,4 +1,4 @@
-import { describe, it } from 'vitest';
+import { describe, expect, it } from 'vitest';
 
 import gc from '../helpers/client.ts';
 import envNum from '../helpers/env.ts';
@@ -18,13 +18,20 @@ describe('webinar', () => {
   });
 
   it.skipIf(Number.isNaN(webinarId) || Number.isNaN(userId))('sendWebinarMessage', async () => {
-    await expectTrue(
-      gc.sendWebinarMessage({
-        webinarId,
-        moderatorId: userId,
-        text: 'Тест',
-      }),
-    );
+    const sent = await gc.sendWebinarMessage({
+      webinarId,
+      moderatorId: userId,
+      text: 'Тестовое сообщение',
+    });
+
+    if (!sent.data.result) {
+      throw new Error('Сообщение в чат вебинара не отправлено');
+    }
+
+    const commentId: number = sent.data.comment_id;
+
+    expect(Number.isInteger(commentId)).toBe(true);
+    expect(sent.data[0].message).toBe('Тестовое сообщение');
   });
 
   it.skipIf(Number.isNaN(webinarId) || Number.isNaN(webinarMessageId) || Number.isNaN(userId))(

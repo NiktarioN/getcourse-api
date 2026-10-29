@@ -14,6 +14,12 @@ const findCall = async () => {
 };
 
 describe('call', () => {
+  it('getCalls', async () => {
+    const calls = await gc.getCalls({ limit: 10 });
+
+    expect(calls.status).toBe(true);
+  });
+
   it.skipIf(Number.isNaN(callId))('addCallComment', async () => {
     // В «Описании» переносом работает любой из \n, \r, \r\n
     await expectResultTrue(

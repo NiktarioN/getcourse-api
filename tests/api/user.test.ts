@@ -12,10 +12,11 @@ const telegramChatId = envNum(process.env.TEST_TELEGRAM_CHAT_ID);
 const vkChatId = envNum(process.env.TEST_VK_CHAT_ID);
 const maxChatId = envNum(process.env.TEST_MAX_CHAT_ID);
 const diplomaTemplateId = envNum(process.env.TEST_DIPLOMA_TEMPLATE_ID);
+const achievementScaleId = envNum(process.env.TEST_ACHIEVEMENT_SCALE_ID);
 const userPhone = process.env.TEST_USER_PHONE ?? '';
 
 describe('user', () => {
-  it.skipIf(Number.isNaN(userId))('getUserInfo через ID или почту', async () => {
+  it.skipIf(Number.isNaN(userId))('getUserInfo: через ID или почту', async () => {
     const response = await gc.getUserInfo({ userId });
 
     globalThis.console.dir(response, { depth: null });
@@ -23,7 +24,7 @@ describe('user', () => {
     expect(typeof response.data.id).toBe('number');
   });
 
-  it.skipIf(!userPhone)('getUserInfo по телефону', async () => {
+  it.skipIf(!userPhone)('getUserInfo: по телефону', async () => {
     const response = await gc.getUserInfo({ phone: userPhone });
 
     globalThis.console.dir(response, { depth: null });
@@ -139,6 +140,31 @@ describe('user', () => {
       }),
     );
   });
+
+  it.skipIf(Number.isNaN(userId) || Number.isNaN(achievementScaleId))(
+    'addUserAchievementPoints',
+    async () => {
+      const accrual = await gc.addUserAchievementPoints({
+        userId,
+        scaleId: achievementScaleId,
+        value: 1,
+        description: 'Начисляем тестовые баллы',
+      });
+
+      const writeOff = await gc.addUserAchievementPoints({
+        userId,
+        scaleId: achievementScaleId,
+        value: -1,
+        description: 'Списываем тестовые балы',
+      });
+
+      globalThis.console.dir({ accrual, writeOff }, { depth: null });
+      expect(accrual.status).toBe(true);
+      expect(accrual.data.value).toBe(1);
+      expect(writeOff.status).toBe(true);
+      expect(writeOff.data.value).toBe(-1);
+    },
+  );
 
   it.skipIf(Number.isNaN(userId) || Number.isNaN(diplomaTemplateId))('createDiploma', async () => {
     await expectTrue(
