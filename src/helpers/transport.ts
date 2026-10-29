@@ -76,6 +76,15 @@ export default class HttpTransport {
   }
 
   /**
+   * GET-запрос к API с нестандартным телом ответа
+   *
+   * В отличие от get(), возвращает тело ответа как есть, а не ApiResponse<T>
+   */
+  async getRaw<R>(path: string): Promise<R> {
+    return this.execute<R>('GET', path, async () => this.client.get<R>(path));
+  }
+
+  /**
    * POST-запрос с файлами
    *
    * Без файлов уходит обычный JSON — у существующих вызовов формат не меняется
@@ -104,11 +113,21 @@ export default class HttpTransport {
 
   /**
    * Убирает undefined/null/'' из объекта параметров перед отправкой
+   *
+   * Массив остаётся массивом строк — axios сам разложит его в `ids[]=1&ids[]=2`,
+   * пустые элементы внутри него убираются так же, как пустые параметры,
+   * а пустой массив в запрос не попадёт
    */
-  private static filterParams(params: object): Record<string, string> {
-    const result: Record<string, string> = {};
+  private static filterParams(params: object): Record<string, string | string[]> {
+    const result: Record<string, string | string[]> = {};
 
     Object.entries(params).forEach(([key, value]) => {
+      if (Array.isArray(value)) {
+        result[key] = value.filter(isPresent).map(String);
+
+        return;
+      }
+
       if (isPresent(value)) {
         result[key] = String(value);
       }
