@@ -32,3 +32,22 @@ export type SubscribeWebhookRequest = WebhookSubscription & { subscribe?: 0 | 1 
 export interface SubscribeWebhookResponse {
   success: 'OK';
 }
+
+/** Подписка из списка вебхуков ключа разработчика: событие + школа и флаг подписки */
+export type WebhookListItem = WebhookSubscription & {
+  /** Системный домен школы */
+  account: string;
+  /** 1 — подписан, 0 — отписан */
+  subscribe: 0 | 1;
+};
+
+/** Ответ списка вебхуков и отписки списком */
+export interface WebhookListResponse {
+  success: 'OK';
+  /** Подписки после запроса */
+  hooks: WebhookListItem[];
+  /** Снятые подписки — заполняется только при отписке */
+  unsubscribed: WebhookListItem[];
+  /** Элементы запроса, для которых подписка не найдена */
+  not_found: WebhookListItem[];
+}

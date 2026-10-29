@@ -10,13 +10,17 @@ docs
 # LOGS
 *.log*
 
+#SCRIPTS
+scripts/local
+
 # ENV
 .env*
 !.env.example
 
-# CLAUDE
+# AGENTS
 .claude
-CLAUDE.MD
+AGENTS.md
+CLAUDE.md
 
 # OS
 .DS_Store

@@ -23,6 +23,16 @@ export type LessonAnswerStatus = 'new' | 'declined' | 'accepted' | 'viewed';
 /** Тип ответа на урок */
 export type LessonAnswerType = 'mission_answer' | 'free_comment' | 'mission_answer_no_check';
 
+/** Результат теста в ответе на урок */
+export interface LessonAnswerTesting {
+  testing_answer_id: number;
+  testing_id: number;
+  status: 'active' | 'complete';
+  questions_count: number;
+  answers_count: number;
+  right_answers_count: number;
+}
+
 /** Ответ на урок */
 export interface LessonAnswer {
   id: number;
@@ -45,4 +55,6 @@ export interface LessonAnswer {
   response_teacher_id: number | null;
   comments: LessonAnswerComment[];
   additional_fields: LessonAnswerAdditionalField[];
+  /** Результат теста, `null` — в ответе нет теста */
+  testing: LessonAnswerTesting | null;
 }

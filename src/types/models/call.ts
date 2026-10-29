@@ -56,3 +56,27 @@ export interface ContactActivity {
   /** Поле «Транскрибация» — её пишет addCallTranscription */
   comment: string | null;
 }
+
+/** Привязка звонка: к заказу или пользователю — с ID, без привязки — оба null */
+export type CallContext =
+  | {
+      [Type in CallContextType]: { context_type: Type; context_id: number };
+    }[CallContextType]
+  | { context_type: null; context_id: null };
+
+/**
+ * Звонок
+ *
+ * context_type: Deal — звонок по заказу, User — по пользователю, null — без привязки
+ * Звонок по пользователю обычно приходит с null, а клиент — в user_id. Context User
+ * бывает в редких случаях, тогда context_id совпадает с user_id
+ */
+export type Call = Omit<
+  ContactActivity,
+  'user_id' | 'manager_user_id' | 'context_type' | 'context_id'
+> & {
+  user_id: number | null;
+  manager_user_id: number | null;
+  /** Ссылки на записи разговора */
+  attached_files: { url: string }[];
+} & CallContext;

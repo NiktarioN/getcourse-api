@@ -26,7 +26,7 @@ import type {
   CreateDealRequest,
   CreateDealResult,
 } from './types/legacy/import.ts';
-import type { ContactActivity } from './types/models/call.ts';
+import type { Call, ContactActivity } from './types/models/call.ts';
 import type {
   DealCustomField,
   UpdatedCustomField,
@@ -48,21 +48,34 @@ import type {
   UserDialog,
 } from './types/models/dialog.ts';
 import type { LessonAnswer, LessonAnswerComment } from './types/models/lesson.ts';
+import type {
+  Mailing,
+  MailingContent,
+  MailingStat,
+  MailingWithParams,
+} from './types/models/mailing.ts';
 import type { Offer, OfferTagNames } from './types/models/offer.ts';
 import type { SurveyAnswers, UserSurveyAnswer } from './types/models/survey.ts';
 import type { Training } from './types/models/training.ts';
 import type {
+  AchievementRecord,
+  AchievementResult,
   CreatedDiploma,
   Group,
   User,
   UserBalance,
   UserDiploma,
   UserGoal,
+  UserGroup,
   UserPurchase,
   UserSchedule,
 } from './types/models/user.ts';
-import type { Webinar } from './types/models/webinar.ts';
-import type { AddCallCommentRequest, AddCallTranscriptionRequest } from './types/requests/call.ts';
+import type { SentWebinarMessageResult, Webinar } from './types/models/webinar.ts';
+import type {
+  AddCallCommentRequest,
+  AddCallTranscriptionRequest,
+  GetCallsRequest,
+} from './types/requests/call.ts';
 import type {
   AddDealCommentRequest,
   AddDealPositionsRequest,
@@ -89,8 +102,11 @@ import type {
   AddLessonAnswerCommentRequest,
   ChangeLessonAnswerStatusRequest,
 } from './types/requests/lesson.ts';
+import type { GetMailingsRequest, GetMailingStatsRequest } from './types/requests/mailing.ts';
+import type { UpdatePurchaseInfoRequest } from './types/requests/purchase.ts';
 import type { GetSurveyAnswersRequest } from './types/requests/survey.ts';
 import type {
+  AddUserAchievementPointsRequest,
   AddUserBalanceRequest,
   AddUserCommentRequest,
   AddUserGroupsRequest,
@@ -109,6 +125,8 @@ import type {
 import type {
   SubscribeWebhookRequest,
   SubscribeWebhookResponse,
+  WebhookListItem,
+  WebhookListResponse,
   WebhookSubscription,
 } from './types/requests/webhook.ts';
 import type {
@@ -190,6 +208,29 @@ export default class GetCourse {
     return this.transport.postRaw<SubscribeWebhookResponse>('set-uri', { ...event, subscribe: 0 });
   }
 
+  /**
+   * Все вебхуки ключа разработчика
+   *
+   * Список общий для всех школ, где подключён ключ разработчика, а не только для школы из apiKey
+   * В списке могут быть дубли — одинаковые школа, URI и событие
+   */
+  async getWebhooks(): Promise<WebhookListResponse> {
+    return this.transport.getRaw<WebhookListResponse>('list-uri');
+  }
+
+  /**
+   * Отписать список вебхуков — каждому ставится subscribe: 0
+   *
+   * Подписка определяется по account, event_object_id, event_id и uri. Один элемент снимает
+   * все свои дубли, повторный элемент попадает в not_found
+   */
+  async unsubscribeWebhooks(hooks: WebhookListItem[]): Promise<WebhookListResponse> {
+    return this.transport.postRaw<WebhookListResponse>(
+      'list-uri',
+      hooks.map((hook) => ({ ...hook, subscribe: 0 })),
+    );
+  }
+
   // ─── Common (общее) ────────────────────────────────────────────────────────
 
   /** Получить все группы пользователей */
@@ -197,8 +238,16 @@ export default class GetCourse {
     return this.transport.get('common/get-groups');
   }
 
-  /** Получить всех персональных менеджеров */
+  /** Получить всех персональных менеджеров
+   * @deprecated Используйте `getManagers` — это аналогичный метод, но с более правильным названием
+   */
   async getPersonalManagers(): Promise<ApiResponse<User[]>> {
+    return this.transport.get('common/get-personal-managers');
+  }
+
+  /** Получить всех менеджеров
+   */
+  async getManagers(): Promise<ApiResponse<User[]>> {
     return this.transport.get('common/get-personal-managers');
   }
 
@@ -222,7 +271,69 @@ export default class GetCourse {
     return this.transport.get('common/get-survey-answer', params);
   }
 
+  /**
+   * Получить рассылки вместе с настройками
+   *
+   * Без `limit` отдаёт первые 100 рассылок. С `showInfo: true` в ответ добавляются настройки `params`.
+   * У уведомлений без настроек `params` приходит `[]`
+   */
+  async getMailings(
+    params: GetMailingsRequest & { showInfo: true },
+  ): Promise<ApiResponse<MailingWithParams[]>>;
+
+  /**
+   * Получить рассылки
+   *
+   * Без `limit` отдаёт первые 100 рассылок
+   * Настройки `params` приходят только с `showInfo: true`
+   */
+  async getMailings(
+    params?: GetMailingsRequest & { showInfo?: false },
+  ): Promise<ApiResponse<Mailing[]>>;
+
+  async getMailings(
+    params?: GetMailingsRequest & { showInfo?: boolean },
+  ): Promise<ApiResponse<Mailing[] | MailingWithParams[]>> {
+    return this.transport.get('common/get-mailing', params);
+  }
+
+  /** Получить содержимое рассылки */
+  async getMailingContent(id: number): Promise<ApiResponse<MailingContent>> {
+    return this.transport.get('common/get-mailing-content', { id });
+  }
+
+  /**
+   * Получить статистику рассылок
+   *
+   * Возвращает словарь: ключ — ID рассылки строкой, значение — статистика
+   * Без совпадений приходит `[]`, а не `{}`
+   * Без `limit` отдаёт первые 100
+   */
+  async getMailingStats(
+    params?: GetMailingStatsRequest,
+  ): Promise<ApiResponse<Record<string, MailingStat> | []>> {
+    return this.transport.get('common/get-mailing-stat', params);
+  }
+
+  /** Получить баллы пользователей по шкалам достижений */
+  async getAchievementResults(
+    params?: PaginationParams,
+  ): Promise<ApiResponse<AchievementResult[]>> {
+    return this.transport.get('common/get-scale', params);
+  }
+
   // ─── Call (звонки) ──────────────────────────────────────────────────────────
+
+  /**
+   * Получить звонки в аккаунте
+   *
+   * В списке идут сначала новые
+   * Без `params` отдаёт 100 последних звонков
+   * При большом limit ответ бывает дольше 15 секунд
+   */
+  async getCalls(params?: GetCallsRequest): Promise<ApiResponse<Call[]>> {
+    return this.transport.get('call/get-calls', params);
+  }
 
   /**
    * Добавить комментарий к звонку — попадает в поле «Описание»
@@ -298,7 +409,11 @@ export default class GetCourse {
     return this.transport.get('deal/get-cancel-reasons');
   }
 
-  /** Получить заказы с тегами (с пагинацией) */
+  /**
+   * Получить заказы с тегами
+   *
+   * Без `params` отдаёт не больше 1000 записей
+   */
   async getDealsWithTags(params?: PaginationParams): Promise<ApiResponse<DealTagNames[]>> {
     return this.transport.get('deal/get-deals-tags', params);
   }
@@ -412,11 +527,8 @@ export default class GetCourse {
   }
 
   /** Получить ответы на урок */
-  async getLessonAnswers(lessonId?: number): Promise<ApiResponse<LessonAnswer[]>> {
-    return this.transport.get(
-      'lesson/get-answers',
-      lessonId === undefined ? undefined : { lessonId },
-    );
+  async getLessonAnswers(lessonId: number): Promise<ApiResponse<LessonAnswer[]>> {
+    return this.transport.get('lesson/get-answers', { lessonId });
   }
 
   // ─── Offer (предложения) ────────────────────────────────────────────────────
@@ -426,14 +538,34 @@ export default class GetCourse {
     return this.transport.get('offer/get-offer-by-id', { offerId });
   }
 
-  /** Получить все офферы */
-  async getOffers(): Promise<ApiResponse<Offer[]>> {
-    return this.transport.get('offer/get-offers');
+  /**
+   * Получить все офферы
+   *
+   * Без `params` отдаёт не больше 1000 записей
+   */
+  async getOffers(params?: PaginationParams): Promise<ApiResponse<Offer[]>> {
+    return this.transport.get('offer/get-offers', params);
   }
 
-  /** Получить офферы с тегами (с пагинацией) */
+  /**
+   * Получить офферы с тегами
+   *
+   * Без `params` отдаёт не больше 1000 записей
+   */
   async getOffersWithTags(params?: PaginationParams): Promise<ApiResponse<OfferTagNames[]>> {
     return this.transport.get('offer/get-offers-tags', params);
+  }
+
+  // ─── Purchase (покупки) ─────────────────────────────────────────────────────
+
+  /**
+   * Обновить покупку
+   *
+   * Смена `period_type` на `unlimited` не очищает `finish_at` — передайте `finish_at: null`.
+   * Дату начала так же сбрасывает `start_at: null`
+   */
+  async updatePurchaseInfo(body: UpdatePurchaseInfoRequest): Promise<ApiResponse<[]>> {
+    return this.transport.post('userproduct/update-fields', body);
   }
 
   // ─── User (пользователи) ────────────────────────────────────────────────────
@@ -441,6 +573,17 @@ export default class GetCourse {
   /** Добавить баланс пользователю */
   async addUserBalance(body: AddUserBalanceRequest): Promise<ApiResponse<UserBalance>> {
     return this.transport.post('user/add-balance', body);
+  }
+
+  /**
+   * Начислить или списать баллы по шкале достижений
+   *
+   * Положительное `value` начисляет баллы, отрицательное списывает
+   */
+  async addUserAchievementPoints(
+    body: AddUserAchievementPointsRequest,
+  ): Promise<ApiResponse<AchievementRecord>> {
+    return this.transport.post('user/edit-scale', body);
   }
 
   /** Добавить комментарий в ленту пользователя */
@@ -576,7 +719,7 @@ export default class GetCourse {
   }
 
   /** Получить группы пользователя */
-  async getUserGroups(params: UserIdentifier): Promise<ApiResponse<Group[]>> {
+  async getUserGroups(params: UserIdentifier): Promise<ApiResponse<UserGroup[]>> {
     return this.transport.get('user/get-groups', params);
   }
 
@@ -607,15 +750,20 @@ export default class GetCourse {
     return this.transport.post('webinar/get-webinars-by-ids', body);
   }
 
-  /** Отправить сообщение в чат вебинара */
-  async sendWebinarMessage(body: SendWebinarMessageRequest): Promise<ApiResponse<[]>> {
+  /**
+   * Отправить сообщение в чат вебинара
+   *
+   * Если сообщение не отправлено — например, moderatorId не сотрудник школы
+   * или replyToUserType не 1 и не 2, то API отвечает result: false, а не ошибкой
+   */
+  async sendWebinarMessage(
+    body: SendWebinarMessageRequest,
+  ): Promise<ApiResponse<SentWebinarMessageResult>> {
     return this.transport.post('webinar/add-comment', body);
   }
 
   /** Модерация сообщения в чате вебинара */
-  async moderateWebinarMessage(
-    body: ModerateWebinarMessageRequest,
-  ): Promise<ApiResponse<Webinar[]>> {
+  async moderateWebinarMessage(body: ModerateWebinarMessageRequest): Promise<ApiResponse<[]>> {
     return this.transport.post('webinar/moderation-comment', body);
   }
 
