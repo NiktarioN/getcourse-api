@@ -17,6 +17,7 @@ export { default as GetCourseValidationError } from './helpers/errors/validation
 export type {
   ActionResult,
   ApiResponse,
+  BooleanLike,
   GetCourseConfig,
   Logger,
   PaginationParams,
@@ -38,6 +39,8 @@ export type * from './types/models/dialog.ts';
 
 export type * from './types/models/lesson.ts';
 
+export type * from './types/models/mailing.ts';
+
 export type * from './types/models/offer.ts';
 
 export type * from './types/models/survey.ts';
@@ -58,6 +61,10 @@ export type * from './types/requests/dialog.ts';
 export type * from './types/requests/helpdesk.ts';
 
 export type * from './types/requests/lesson.ts';
+
+export type * from './types/requests/mailing.ts';
+
+export type * from './types/requests/purchase.ts';
 
 export type * from './types/requests/survey.ts';
 
