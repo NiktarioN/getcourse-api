@@ -24,4 +24,6 @@ export interface GetMailingsRequest extends GetMailingStatsRequest {
   title?: string;
   /** ID родительской рассылки */
   parentId?: number;
+  /** Добавить в ответ настройки `params` */
+  showInfo?: boolean;
 }

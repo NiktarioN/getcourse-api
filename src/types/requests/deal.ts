@@ -44,16 +44,20 @@ export interface UpdateDealCustomFieldsRequest {
   customFields: Record<string, string | number>;
 }
 
+/** Статус, который можно поставить заказу, — без pending: API отвечает HTTP 400 */
+export type DealStatusUpdate = Exclude<DealStatus, 'pending'>;
+
 /** Обновить информацию по заказу */
 export interface UpdateDealInfoRequest {
-  /** ID заказа */
   dealId: number;
-  /** ID менеджера */
-  manager_user_id?: number;
+  /** ID менеджера. `''` — снять менеджера */
+  manager_user_id?: number | '';
   /** Статус заказа */
-  status?: DealStatus;
+  status?: DealStatusUpdate;
+  /** ID причины отмены, вместе со `status: 'cancelled'` */
+  cancel_reason_id?: number;
   /** Комментарий к причине отмены */
   cancel_reason_comment?: string;
-  /** Теги */
+  /** Заменяет все теги заказа, `[]` — снять все */
   tags?: string[];
 }
