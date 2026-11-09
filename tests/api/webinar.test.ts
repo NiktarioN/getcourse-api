@@ -13,8 +13,16 @@ describe('webinar', () => {
     await expectTrue(gc.getWebinars());
   });
 
+  it('getWebinars: с фильтром', async () => {
+    await expectTrue(gc.getWebinars({ type: 'LiveWebinar', limit: 5 }));
+  });
+
   it.skipIf(Number.isNaN(webinarId))('getWebinarsByIds', async () => {
     await expectTrue(gc.getWebinarsByIds({ ids: [webinarId] }));
+  });
+
+  it.skipIf(Number.isNaN(webinarId))('getWebinarStats', async () => {
+    await expectTrue(gc.getWebinarStats({ webinarId, limit: 5, show_presence: true }));
   });
 
   it.skipIf(Number.isNaN(webinarId) || Number.isNaN(userId))('sendWebinarMessage', async () => {
