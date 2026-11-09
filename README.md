@@ -538,13 +538,25 @@ await gc.updateUserInfo({
 
 ### 🎥 Вебинары
 
-| Метод                          | Описание                            |
-| ------------------------------ | ----------------------------------- |
-| `getWebinars()`                | Получить все вебинары               |
-| `getWebinarsByIds(body)`       | Получить вебинары по ID             |
-| `sendWebinarMessage(body)`     | Отправить сообщение в чат вебинара  |
-| `moderateWebinarMessage(body)` | Модерация сообщения в чате вебинара |
-| `moderateWebinarUser(body)`    | Модерация пользователя вебинара     |
+| Метод                          | Описание                                |
+| ------------------------------ | --------------------------------------- |
+| `getWebinars(params?)`         | Получить вебинары                       |
+| `getWebinarsByIds(body)`       | Получить вебинары по ID                 |
+| `getWebinarStats(params)`      | Получить статистику участников вебинара |
+| `sendWebinarMessage(body)`     | Отправить сообщение в чат вебинара      |
+| `moderateWebinarMessage(body)` | Модерация сообщения в чате вебинара     |
+| `moderateWebinarUser(body)`    | Модерация пользователя вебинара         |
+
+```ts
+const { data } = await gc.getWebinarStats({
+  webinarId: 3021548,
+  show_presence: true,
+  show_deals: true,
+  limit: 100,
+});
+
+const watchedToEnd = data.users.filter((user) => user.presence?.finished);
+```
 
 ---
 
