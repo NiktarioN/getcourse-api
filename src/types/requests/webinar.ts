@@ -1,4 +1,30 @@
-import type { WebinarUserType } from '../models/webinar.ts';
+import type { PaginationParams } from '../common.ts';
+import type { WebinarSubtype, WebinarUserType } from '../models/webinar.ts';
+
+/** Получить вебинары */
+export interface GetWebinarsRequest extends PaginationParams {
+  /** Вид вебинара. Неизвестное значение — HTTP 400 */
+  type?: WebinarSubtype;
+}
+
+/** Получить статистику участников вебинара */
+export interface GetWebinarStatsRequest extends PaginationParams {
+  /** ID вебинара */
+  webinarId: number;
+  /** Вид вебинара */
+  type?: WebinarSubtype;
+  /** Номер запуска, без него — последний. У живого вебинара — 0 */
+  launchNumber?: number;
+  /** Нижняя граница даты вебинара, `Y-m-d` или `Y-m-d H:i:s` */
+  minDate?: string;
+  /** Верхняя граница даты вебинара, `Y-m-d` или `Y-m-d H:i:s` */
+  maxDate?: string;
+  show_presence?: boolean;
+  show_clicks?: boolean;
+  show_comments?: boolean;
+  show_deals?: boolean;
+  show_payments?: boolean;
+}
 
 /** Получить вебинары по ID */
 export interface GetWebinarsByIdsRequest {

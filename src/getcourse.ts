@@ -70,7 +70,13 @@ import type {
   UserPurchase,
   UserSchedule,
 } from './types/models/user.ts';
-import type { SentWebinarMessageResult, Webinar } from './types/models/webinar.ts';
+import type {
+  SentWebinarMessageResult,
+  Webinar,
+  WebinarById,
+  WebinarPresence,
+  WebinarStats,
+} from './types/models/webinar.ts';
 import type {
   AddCallCommentRequest,
   AddCallTranscriptionRequest,
@@ -131,6 +137,8 @@ import type {
 } from './types/requests/webhook.ts';
 import type {
   GetWebinarsByIdsRequest,
+  GetWebinarsRequest,
+  GetWebinarStatsRequest,
   ModerateWebinarMessageRequest,
   ModerateWebinarUserRequest,
   SendWebinarMessageRequest,
@@ -291,8 +299,17 @@ export default class GetCourse {
     params?: GetMailingsRequest & { showInfo?: false },
   ): Promise<ApiResponse<Mailing[]>>;
 
+  /**
+   * Получить рассылки
+   *
+   * Если `showInfo` передан переменной типа `boolean`, `params` у рассылок может не быть
+   */
   async getMailings(
-    params?: GetMailingsRequest & { showInfo?: boolean },
+    params?: GetMailingsRequest,
+  ): Promise<ApiResponse<Mailing[] | MailingWithParams[]>>;
+
+  async getMailings(
+    params?: GetMailingsRequest,
   ): Promise<ApiResponse<Mailing[] | MailingWithParams[]>> {
     return this.transport.get('common/get-mailing', params);
   }
@@ -740,22 +757,50 @@ export default class GetCourse {
 
   // ─── Webinar (вебинары) ─────────────────────────────────────────────────────
 
-  /** Получить все вебинары */
-  async getWebinars(): Promise<ApiResponse<Webinar[]>> {
-    return this.transport.get('webinar/get-all-webinars');
+  /**
+   * Получить вебинары
+   *
+   * Без `limit` отдаёт все вебинары, старые первыми
+   */
+  async getWebinars(params?: GetWebinarsRequest): Promise<ApiResponse<Webinar[]>> {
+    return this.transport.get('webinar/get-all-webinars', params);
   }
 
   /** Получить вебинары по ID */
-  async getWebinarsByIds(body: GetWebinarsByIdsRequest): Promise<ApiResponse<Webinar[]>> {
+  async getWebinarsByIds(body: GetWebinarsByIdsRequest): Promise<ApiResponse<WebinarById[]>> {
     return this.transport.post('webinar/get-webinars-by-ids', body);
   }
 
   /**
-   * Отправить сообщение в чат вебинара
+   * Получить статистику участников вебинара
    *
-   * Если сообщение не отправлено — например, moderatorId не сотрудник школы
-   * или replyToUserType не 1 и не 2, то API отвечает result: false, а не ошибкой
+   * С `show_presence: true` в `presence` приходят входы и выходы участника, у некоторых участников — `null`
    */
+  async getWebinarStats(
+    params: GetWebinarStatsRequest & { show_presence: true },
+  ): Promise<ApiResponse<WebinarStats<WebinarPresence | null>>>;
+
+  /**
+   * Получить статистику участников вебинара
+   *
+   * Без `show_presence` в `presence` приходит `[]`
+   */
+  async getWebinarStats(
+    params: GetWebinarStatsRequest & { show_presence?: false },
+  ): Promise<ApiResponse<WebinarStats<[]>>>;
+
+  /**
+   * Получить статистику участников вебинара
+   *
+   * Если `show_presence` передан переменной типа `boolean`, `presence` — объект, `null` или `[]`
+   */
+  async getWebinarStats(params: GetWebinarStatsRequest): Promise<ApiResponse<WebinarStats>>;
+
+  async getWebinarStats(params: GetWebinarStatsRequest): Promise<ApiResponse<WebinarStats>> {
+    return this.transport.get('webinar/get-webinar-stat', params);
+  }
+
+  /** Отправить сообщение в чат вебинара */
   async sendWebinarMessage(
     body: SendWebinarMessageRequest,
   ): Promise<ApiResponse<SentWebinarMessageResult>> {

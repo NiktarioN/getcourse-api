@@ -3,6 +3,7 @@ import type { CurrencyType } from '../dictionaries.ts';
 /** Статус заказа */
 export type DealStatus =
   | 'new'
+  | 'pending'
   | 'in_work'
   | 'not_confirmed'
   | 'payment_waiting'

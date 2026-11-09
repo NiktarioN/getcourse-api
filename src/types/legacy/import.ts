@@ -49,6 +49,7 @@ interface BaseDealParams {
   product_title?: string;
   product_description?: string;
   quantity?: number;
+  /** Цена позиции с переданным предложением */
   deal_cost?: string;
   deal_status?: LegacyDealStatus;
   deal_is_paid?: 1 | 0;
@@ -56,6 +57,7 @@ interface BaseDealParams {
   deal_created_at?: DateTime;
   deal_finished_at?: DateTime;
   deal_comment?: string;
+  /** Регистр важен — неизвестный код сохраняется как есть */
   payment_type?: PaymentType;
   payment_status?: LegacyPaymentStatus;
   partner_email?: string;

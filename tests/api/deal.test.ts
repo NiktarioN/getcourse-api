@@ -36,8 +36,31 @@ describe('deal', () => {
     await expectTrue(gc.getDealCalls(dealId));
   });
 
-  it.skipIf(Number.isNaN(dealId))('updateDealInfo', async () => {
-    await expectTrue(gc.updateDealInfo({ dealId }));
+  it.skipIf(Number.isNaN(dealId))('updateDealInfo: статус', async () => {
+    await expectTrue(gc.updateDealInfo({ dealId, status: 'in_work' }));
+  });
+
+  it.skipIf(Number.isNaN(dealId))('updateDealInfo: отмена с причиной', async () => {
+    const { data: reasons } = await gc.getDealCancelReasons();
+
+    await expectTrue(
+      gc.updateDealInfo({
+        dealId,
+        status: 'cancelled',
+        cancel_reason_id: reasons[0].id,
+        cancel_reason_comment: 'Тест API',
+      }),
+    );
+  });
+
+  it.skipIf(Number.isNaN(dealId))('updateDealInfo: менеджер', async () => {
+    const { data: managers } = await gc.getManagers();
+
+    await expectTrue(gc.updateDealInfo({ dealId, manager_user_id: managers[0].id }));
+  });
+
+  it.skipIf(Number.isNaN(dealId))('updateDealInfo: теги', async () => {
+    await expectTrue(gc.updateDealInfo({ dealId, tags: ['тех_ТЕСТЫ-НАСТРОЕК'] }));
   });
 
   it.skipIf(Number.isNaN(dealId) || Number.isNaN(offerId))('addDealPositions', async () => {
