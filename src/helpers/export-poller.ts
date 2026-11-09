@@ -1,3 +1,5 @@
+import { setTimeout as wait } from 'node:timers/promises';
+
 import GetCourseApiError from './errors/api-error.ts';
 
 import type { ApiResponse, Logger } from '../types/common.ts';
@@ -65,9 +67,7 @@ export default class ExportPoller {
       if (error instanceof GetCourseApiError && error.apiCode === 909) {
         this.logger.debug(`Поллинг экспорта ${exportId}: не готов (909), ждём ${interval}мс`);
 
-        await new Promise((resolve) => {
-          setTimeout(resolve, interval);
-        });
+        await wait(interval);
 
         return this.pollOnce(exportId, interval, timeout, startAt);
       }
